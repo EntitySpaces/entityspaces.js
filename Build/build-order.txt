@@ -1,0 +1,7 @@
+..\Src\Namespace.js
+..\Src\Constants.js
+..\Src\utils.js
+..\Src\ajax.js
+..\Src\BaseClasses\BaseEntity.js
+..\Src\BaseClasses\BaseCollection.js
+..\Src\BaseClasses\DefineEntity.js
