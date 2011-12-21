@@ -8,7 +8,28 @@
 window['es'] = {}; //define root namespace
 
 "use-strict";
- 
+
+var config = window.esConfig || {};
+
+config = $.extend(config, {
+    //defines the namespace where the Business Objects will be stored
+    namespace: 'es.objects'
+
+});
+
+//ensure the namespace is built out...
+(function () {
+    
+    var path = config.namespace.split('.');
+    var target = window;
+
+    for(var i = 0; i < path.length; i++){
+        target = target[path[i]] || {};
+    }
+
+    es.generatedNamespace = target;
+
+}()); 
  
  
 /*********************************************** 
@@ -254,15 +275,18 @@ es.ajax = ajax;
  
  
 /*********************************************** 
-* FILE: ..\Src\BaseClasses\BaseEntity.js 
+* FILE: ..\Src\BaseClasses\EsEntity.js 
 ***********************************************/ 
 ﻿/*globals es */
 /// <reference path="../Libs/jquery-1.7.1.js" />
 /// <reference path="../Libs/json2.js" />
 /// <reference path="../Libs/knockout-2.0.RC.js" />
-/// <reference path="Utils.js" />
+/// <reference path="../Constants.js" />
+/// <reference path="../Namespace.js" />
+/// <reference path="../Utils.js" />
 
-es.BaseEntity = function () { //empty constructor
+
+es.EsEntity = function () { //empty constructor
     var self, //is only set when we call 'init'
         extenders = [];
 
@@ -300,6 +324,14 @@ es.BaseEntity = function () { //empty constructor
     };
     //#endregion
 
+    this.applyDefaults = function () {
+        //here to be overridden higher up the prototype chain
+    };
+
+    this.markAsDeleted = function () {
+        this.RowState(es.RowState.DELETED);
+    };
+
     //#region Loads
     this.load = function (options) {
         //if a route was passed in, use that route to pull the ajax options url & type
@@ -310,7 +342,7 @@ es.BaseEntity = function () { //empty constructor
 
         //sprinkle in our own success handler, but make sure the original still gets called
         var origSuccessHandler = options.success;
-        
+
         options.success = function (data) {
             self.populateEntity(data);
             if (origSuccessHandler) { origSuccessHandler(data); }
@@ -320,6 +352,8 @@ es.BaseEntity = function () { //empty constructor
     };
 
     //#endregion Save
+
+    //#region Save
     this.save = function () {
         var route,
             ajaxOptions = {
@@ -354,13 +388,23 @@ es.BaseEntity = function () { //empty constructor
 
         es.ajax.executeRequest(ajaxOptions);
     };
-    //#region
+    //#endregion
+
+    //#region Serialization
+    this.toJS = function () {
+        return ko.toJS(this);
+    };
+
+    this.toJSON = function () {
+        return ko.toJSON(this);
+    };
+    //#endregion
 
 }; 
  
  
 /*********************************************** 
-* FILE: ..\Src\BaseClasses\BaseCollection.js 
+* FILE: ..\Src\BaseClasses\EsEntityCollection.js 
 ***********************************************/ 
 ﻿/* File Created: December 20, 2011 */ 
  
@@ -369,18 +413,22 @@ es.BaseEntity = function () { //empty constructor
 * FILE: ..\Src\BaseClasses\DefineEntity.js 
 ***********************************************/ 
 ﻿
-es.defineEntity = function (ctor) {
+es.defineEntity = function (Ctor) {
 
     var EsCtor = function () {
-        //fire the provided constructor
-        ctor.call(this);
 
-        //call the init method on the prototype
+        //MUST do this here so that obj.hasOwnProperty actually returns the keys in the object!
+        Ctor.call(this);
+
+        //call apply defaults here before change tracking is enabled
+        this.applyDefaults();
+
+        //call the init method on the base prototype
         this.init();
     };
 
     //Setup the prototype chain correctly
-    EsCtor.prototype = new es.BaseEntity();
+    EsCtor.prototype = new es.EsEntity();
 
     return EsCtor;
 }; 

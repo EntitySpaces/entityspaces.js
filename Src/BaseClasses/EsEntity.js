@@ -2,9 +2,12 @@
 /// <reference path="../Libs/jquery-1.7.1.js" />
 /// <reference path="../Libs/json2.js" />
 /// <reference path="../Libs/knockout-2.0.RC.js" />
-/// <reference path="Utils.js" />
+/// <reference path="../Constants.js" />
+/// <reference path="../Namespace.js" />
+/// <reference path="../Utils.js" />
 
-es.BaseEntity = function () { //empty constructor
+
+es.EsEntity = function () { //empty constructor
     var self, //is only set when we call 'init'
         extenders = [];
 
@@ -42,6 +45,14 @@ es.BaseEntity = function () { //empty constructor
     };
     //#endregion
 
+    this.applyDefaults = function () {
+        //here to be overridden higher up the prototype chain
+    };
+
+    this.markAsDeleted = function () {
+        this.RowState(es.RowState.DELETED);
+    };
+
     //#region Loads
     this.load = function (options) {
         //if a route was passed in, use that route to pull the ajax options url & type
@@ -52,7 +63,7 @@ es.BaseEntity = function () { //empty constructor
 
         //sprinkle in our own success handler, but make sure the original still gets called
         var origSuccessHandler = options.success;
-        
+
         options.success = function (data) {
             self.populateEntity(data);
             if (origSuccessHandler) { origSuccessHandler(data); }
@@ -62,6 +73,8 @@ es.BaseEntity = function () { //empty constructor
     };
 
     //#endregion Save
+
+    //#region Save
     this.save = function () {
         var route,
             ajaxOptions = {
@@ -96,6 +109,16 @@ es.BaseEntity = function () { //empty constructor
 
         es.ajax.executeRequest(ajaxOptions);
     };
-    //#region
+    //#endregion
+
+    //#region Serialization
+    this.toJS = function () {
+        return ko.toJS(this);
+    };
+
+    this.toJSON = function () {
+        return ko.toJSON(this);
+    };
+    //#endregion
 
 };

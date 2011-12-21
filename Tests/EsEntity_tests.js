@@ -54,10 +54,65 @@ test('Extended Constructor Test', function () {
 
 });
 
-test('Ensure Change Tracking Test', function () {
+test('Testing Multiple Objects prototype chain', function () {
 
     //define an object
     var Product = es.defineEntity(function (data) {
+        this.ProductId = ko.observable(null);
+    });
+
+    Product.prototype.extend(function () {
+        this.OtherProductId = ko.observable(null);
+    });
+
+    var testP1 = new Product();
+    testP1.ProductId('testId')
+    testP1.OtherProductId('testId2');
+
+    var testP2 = new Product();
+    testP2.ProductId('testId3');
+    testP2.OtherProductId('testId4');
+
+
+    equals(testP1.ProductId(), 'testId', 'Product Id matches passed in value');
+    equals(testP1.OtherProductId(), 'testId2', 'Product Id matches passed in value');
+
+    equals(testP2.ProductId(), 'testId3', 'Product Id matches passed in value');
+    equals(testP2.OtherProductId(), 'testId4', 'Product Id matches passed in value');
+
+});
+
+test('Testing Multiple Objects prototype BASE chain', function () {
+
+    //define an object
+    var Product = es.defineEntity(function () {
+        this.ProductId = ko.observable(null);
+    });
+
+    Product.prototype.extend(function () {
+        this.OtherProductId = ko.observable(null);
+    });
+
+    var testP1 = new Product();
+    testP1.RowState(es.RowState.UNCHANGED); //Mark it as unchanged
+
+    testP1.ProductId('testId'); //should trip the RowState to modified
+    testP1.OtherProductId('testId2');
+
+    var testP2 = new Product(); //rowstate should stay as added
+
+    equals(testP1.ProductId(), 'testId', 'Product Id matches passed in value');
+    equals(testP1.OtherProductId(), 'testId2', 'OtherProduct Id matches passed in value');
+    equals(testP1.RowState(), es.RowState.MODIFIED, 'Base RowState changed independently of other instances');
+
+    equals(testP2.RowState(), es.RowState.ADDED, 'Base RowState changed independently of other instances');
+
+});
+
+test('Ensure Change Tracking Test', function () {
+
+    //define an object
+    var Product = es.defineEntity(function () {
         this.ProductId = ko.observable('something');
     });
 
@@ -77,7 +132,7 @@ test('Ensure Change Tracking Test', function () {
 test('Ensure Change Tracking Test - Modification', function () {
 
     //define an object
-    var Product = es.defineEntity(function (data) {
+    var Product = es.defineEntity(function () {
         this.ProductId = ko.observable('something');
     });
 
