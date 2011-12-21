@@ -1,6 +1,6 @@
 ﻿
 es.defineEntity = function (typeName, constrctor) {
-    var isAnonymous = (typeOf(typeName) !== 'string'),
+    var isAnonymous = (typeof(typeName) !== 'string'),
         Ctor = isAnonymous ? arguments[0] : arguments[1];
 
     var EsCtor = function () {

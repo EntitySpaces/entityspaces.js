@@ -24,3 +24,21 @@ config = $.extend(config, {
     es.generatedNamespace = target;
 
 }());
+
+
+es.getGeneratedNamespaceObj = function(){
+        
+    return es.generatedNamespace;
+};
+
+es.getType = function (typeName) {
+    var ns = es.getGeneratedNamespaceObj();
+    
+    return ns[typeName];       
+}
+
+es.clearTypes = function(){
+    
+    es.generatedNamespace = {};
+
+};

@@ -12,7 +12,7 @@ es.EsEntity = function () { //empty constructor
         extenders = [];
 
     //#region Initialization Logic
-    this.extend = function (extender) {
+    this.customize = function (extender) {
         extenders.push(extender);
         return this;
     };

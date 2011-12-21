@@ -4,7 +4,7 @@
 /// <reference path="../Libs/knockout-2.0.RC.js" />
 
 var utils = {
-    
+
     extendObservable: function (target, source) {
         var prop;
 
@@ -83,7 +83,7 @@ var utils = {
 
                 if (property instanceof Array) { continue; }
 
-                if(entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
+                if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
                     utils.addPropertyChangedHandlers(entity, propertyName);
                 }
             }

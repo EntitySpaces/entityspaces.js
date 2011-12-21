@@ -1,10 +1,15 @@
 ﻿
 
+//Define an esConfig object to set certain runtime options
+window.esConfig = {
+    namespace: 'myNS'
+};
+
 (function (es, myNS) { //myNS = "myNameSpace" ... for example purposes
 
     if (typeof (es) === undefined) { throw "Please Load EntitySpaces.Core First"; }
 
-    myNS.Product = function (data) {
+    myNS.Product = es.defineEntity(function() {
         this.ProductId = null,
         this.OrganizationId = null,
         this.Sku = ko.observable(null),
@@ -23,19 +28,15 @@
         this.ModifiedOn = null,
         this.ModifiedBy = null,
         this.Version = null
-
-        this.init(data); //base object
-    };
-
-    myNS.Product.prototype = new es.BaseEsObject();
+    });
 
     //#region Routing
 
     myNS.Product.prototype.routes = {
         create: { method: 'PUT', url: '/Product/Create' },
-        update: { method: 'POST', url: '/Product/Update'},
-        del: { method: 'DELETE', url: '/Product/Delete'},
-        loadByPrimaryKey: { method: 'GET', url: '/Product/{id}'}
+        update: { method: 'POST', url: '/Product/Update' },
+        del: { method: 'DELETE', url: '/Product/Delete' },
+        loadByPrimaryKey: { method: 'GET', url: '/Product/{id}' }
     };
 
     //#endregion

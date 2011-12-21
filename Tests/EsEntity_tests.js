@@ -41,7 +41,7 @@ test('Extended Constructor Test', function () {
         this.ProductId = ko.observable('something');
     });
 
-    Product.prototype.extend(function () {
+    Product.prototype.customize(function () {
         this.OtherProductId = ko.observable('something2');
     });
 
@@ -61,7 +61,7 @@ test('Testing Multiple Objects prototype chain', function () {
         this.ProductId = ko.observable(null);
     });
 
-    Product.prototype.extend(function () {
+    Product.prototype.customize(function () {
         this.OtherProductId = ko.observable(null);
     });
 
@@ -89,7 +89,7 @@ test('Testing Multiple Objects prototype BASE chain', function () {
         this.ProductId = ko.observable(null);
     });
 
-    Product.prototype.extend(function () {
+    Product.prototype.customize(function () {
         this.OtherProductId = ko.observable(null);
     });
 

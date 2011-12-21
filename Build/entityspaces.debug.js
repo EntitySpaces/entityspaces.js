@@ -29,7 +29,25 @@ config = $.extend(config, {
 
     es.generatedNamespace = target;
 
-}()); 
+}());
+
+
+es.getGeneratedNamespaceObj = function(){
+        
+    return es.generatedNamespace;
+};
+
+es.getType = function (typeName) {
+    var ns = es.getGeneratedNamespaceObj();
+    
+    return ns[typeName];       
+}
+
+es.clearTypes = function(){
+    
+    es.generatedNamespace = {};
+
+}; 
  
  
 /*********************************************** 
@@ -54,7 +72,7 @@ es.RowState = {
 /// <reference path="../Libs/knockout-2.0.RC.js" />
 
 var utils = {
-    
+
     extendObservable: function (target, source) {
         var prop;
 
@@ -133,7 +151,7 @@ var utils = {
 
                 if (property instanceof Array) { continue; }
 
-                if(entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
+                if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
                     utils.addPropertyChangedHandlers(entity, propertyName);
                 }
             }
@@ -291,7 +309,7 @@ es.EsEntity = function () { //empty constructor
         extenders = [];
 
     //#region Initialization Logic
-    this.extend = function (extender) {
+    this.customize = function (extender) {
         extenders.push(extender);
         return this;
     };
@@ -406,14 +424,42 @@ es.EsEntity = function () { //empty constructor
 /*********************************************** 
 * FILE: ..\Src\BaseClasses\EsEntityCollection.js 
 ***********************************************/ 
-﻿/* File Created: December 20, 2011 */ 
+﻿/// <reference path="../../Libs/jquery-1.7.1.js" />
+/// <reference path="../../Libs/json2.js" />
+/// <reference path="../../Libs/knockout-2.0.RC.js" />
+
+
+es.EsEntityCollection = function () {
+    var obs = ko.observableArray([]);
+
+    //add all of our extra methods to the array
+    ko.utils.extend(obs, es.EsEntityCollection.fn);
+
+    return obs;
+};
+
+es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
+
+    filter: function (predicate) {
+        var array = this();
+
+        return ko.utils.arrayFilter(array, predicate);
+    },
+
+    load: function (options) {
+        es.ajax.executeRequest(options);
+    }
+
+}; 
  
  
 /*********************************************** 
 * FILE: ..\Src\BaseClasses\DefineEntity.js 
 ***********************************************/ 
 ﻿
-es.defineEntity = function (Ctor) {
+es.defineEntity = function (typeName, constrctor) {
+    var isAnonymous = (typeof(typeName) !== 'string'),
+        Ctor = isAnonymous ? arguments[0] : arguments[1];
 
     var EsCtor = function () {
 
@@ -430,6 +476,75 @@ es.defineEntity = function (Ctor) {
     //Setup the prototype chain correctly
     EsCtor.prototype = new es.EsEntity();
 
+    //add it to the correct namespace if it isn't an anonymous type
+    if (!isAnonymous) {
+        es.generatedNamespace[typeName] = Ctor;
+    }
+
     return EsCtor;
+}; 
+ 
+ 
+/*********************************************** 
+* FILE: ..\Src\BaseClasses\DefineCollection.js 
+***********************************************/ 
+﻿
+es.defineCollection = function (typeName, entityName) {
+    var isAnonymous = (typeof (typeName) !== 'string'),
+        ctorName = isAnonymous ? arguments[0] : arguments[1];
+
+    var EsCollCtor = function () {
+
+        var coll = new es.EsEntityCollection();
+
+        //add the type definition;
+        coll.entityTypeName = ctorName;
+
+        this.init.call(coll); //Trickery and sorcery on the prototype
+
+        return coll;
+
+    };
+
+    var F = function () {
+        var base = this,
+            extenders = [];
+
+        this.init = function () {
+            var self = this;
+
+            //loop through the extenders and call each one
+            ko.utils.arrayForEach(extenders, function(ext){
+                
+                //make sure to set 'this' properly
+                ext.call(self);
+            });
+
+            //loop through all the PROTOTYPE methods/properties and tack them on
+            for (var prop in base) {
+                if (base.hasOwnProperty(prop) && prop !== "init" && prop !== "customize") {
+
+                    self[prop] = base[prop];
+
+                }
+            }
+
+        };
+
+        this.customize = function (customizer) {
+
+            extenders.push(customizer);
+
+        };
+    };
+
+    EsCollCtor.prototype = new F();
+
+    //add it to the correct namespace if it isn't an anonymous type
+    if (!isAnonymous) {
+        es.generatedNamespace[typeName] = EsCollCtor;
+    }
+
+    return EsCollCtor;
 }; 
 }(window)); 
