@@ -20,9 +20,21 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         return ko.utils.arrayFilter(array, predicate);
     },
 
+    markAllAsDeleted: function () {
+        var i, entity,
+            coll = this(),
+            len = coll.length;
+
+        for (i = 0; i < len; i += 1) {
+            entity = coll[i];
+            if (entity['markAsDeleted']) {
+                entity.markAsDeleted();
+            }
+        }
+    },
 
     //#region Loads
-    load:  function (options) {
+    load: function (options) {
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
             options.url = this.routes[options.route].url;

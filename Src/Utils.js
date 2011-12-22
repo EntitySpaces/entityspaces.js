@@ -14,7 +14,7 @@ var utils = {
 
         for (prop in target) {
 
-            if (target.hasOwnProperty(prop) && source.hasOwnProperty(prop)) {
+            if (source.hasOwnProperty(prop)) {
 
                 if (ko.isObservable(target[prop])) { //set the observable property
 

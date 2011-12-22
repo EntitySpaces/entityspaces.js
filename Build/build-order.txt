@@ -1,5 +1,6 @@
 ..\Src\Namespace.js
 ..\Src\Constants.js
+..\Src\Core.js
 ..\Src\utils.js
 ..\Src\Visitor.js
 ..\Src\ajaxProvider.js

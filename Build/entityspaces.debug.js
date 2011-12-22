@@ -36,24 +36,6 @@ es.getGeneratedNamespaceObj = function(){
         
     return es.generatedNamespace;
 };
-
-es.getType = function (typeName) {
-    var ns = es.getGeneratedNamespaceObj();
-    
-    return ns[typeName];       
-}
-
-es.clearTypes = function(){
-    
-    es.generatedNamespace = {};
-
-};
-
-//Event to subscribe to for errors
-es.onError = ko.observable({});
-es.onError.subscribe(function (error) {
-    throw JSON.stringify(error);
-});
  
  
  
@@ -68,6 +50,55 @@ es.RowState = {
     DELETED: 8,
     MODIFIED: 16
 }; 
+ 
+ 
+/*********************************************** 
+* FILE: ..\Src\Core.js 
+***********************************************/ 
+﻿
+//#region TypeCache Methods
+es.getType = function (typeName) {
+    var ns = es.getGeneratedNamespaceObj();
+
+    return ns[typeName];
+}
+
+es.clearTypes = function () {
+
+    es.generatedNamespace = {};
+
+};
+
+//#endregion
+
+//#region Error Handling
+es.onError = ko.observable({});
+es.onError.subscribe(function (error) {
+    throw JSON.stringify(error);
+});
+
+//#endregion
+
+//#region Core Quick Methods
+
+es.isEsCollection = function (array) {
+
+    var isEsArray = false;
+
+    if (array.isArray || Object.prototype.toString.call(array) === '[object Array]') {
+        
+        if (array.length > 0) {
+            if (array[0].hasOwnProperty("RowState")) {
+                isEsArray = true;
+            }
+        }
+        
+    }
+    return isEsArray;
+}
+
+//#endregion
+ 
  
  
 /*********************************************** 
@@ -89,7 +120,7 @@ var utils = {
 
         for (prop in target) {
 
-            if (target.hasOwnProperty(prop) && source.hasOwnProperty(prop)) {
+            if (source.hasOwnProperty(prop)) {
 
                 if (ko.isObservable(target[prop])) { //set the observable property
 
@@ -364,7 +395,17 @@ es.EsEntity = function () { //empty constructor
     };
 
     this.markAsDeleted = function () {
-        this.RowState(es.RowState.DELETED);
+        var entity = this;
+
+        if (!entity.hasOwnProperty("RowState")) {
+            entity.RowState = ko.observable(es.RowStateEnum.deleted);
+        } else if (entity.RowState() !== es.RowStateEnum.deleted) {
+            entity.RowState(es.RowStateEnum.deleted);
+        }
+
+        if (entity.hasOwnProperty("ModifiedColumns")) {
+            entity.ModifiedColumns.removeAll();
+        }
     };
 
     //#region Loads
@@ -399,7 +440,7 @@ es.EsEntity = function () { //empty constructor
     this.loadByPrimaryKey = function (primaryKey, success) {
 
         this.load({
-            route : this.routes['loadByPrimaryKey'],
+            route: this.routes['loadByPrimaryKey'],
             data: primaryKey,
             success: success
         });
@@ -483,9 +524,21 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         return ko.utils.arrayFilter(array, predicate);
     },
 
+    markAllAsDeleted: function () {
+        var i, entity,
+            coll = this(),
+            len = coll.length;
+
+        for (i = 0; i < len; i += 1) {
+            entity = coll[i];
+            if (entity['markAsDeleted']) {
+                entity.markAsDeleted();
+            }
+        }
+    },
 
     //#region Loads
-    load:  function (options) {
+    load: function (options) {
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
             options.url = this.routes[options.route].url;
