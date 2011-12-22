@@ -61,7 +61,7 @@ es.getType = function (typeName) {
     var ns = es.getGeneratedNamespaceObj();
 
     return ns[typeName];
-}
+};
 
 es.clearTypes = function () {
 
@@ -81,21 +81,33 @@ es.onError.subscribe(function (error) {
 
 //#region Core Quick Methods
 
+es.isArray = function (array) {
+    return array.isArray || Object.prototype.toString.call(array) === '[object Array]';
+};
+
+es.objectKeys = Object.keys || function keys(obj) {
+    var res = [];
+    for (var key in obj) {
+        res.push(key);
+    }
+    return res;
+};
+
 es.isEsCollection = function (array) {
 
     var isEsArray = false;
 
-    if (array.isArray || Object.prototype.toString.call(array) === '[object Array]') {
-        
+    if (es.isArray(array)) {
+
         if (array.length > 0) {
             if (array[0].hasOwnProperty("RowState")) {
                 isEsArray = true;
             }
         }
-        
+
     }
     return isEsArray;
-}
+};
 
 //#endregion
  
@@ -270,7 +282,175 @@ es.utils = utils;
 /*********************************************** 
 * FILE: ..\Src\Visitor.js 
 ***********************************************/ 
-﻿/* File Created: December 22, 2011 */ 
+﻿
+es.Visit = function (obj) {
+    if (!(this instanceof es.Visit)) {
+        return new es.Visit(obj);
+    }
+    this.value = obj;
+};
+
+es.Visit.prototype.forEach = function (cb) {
+    this.value = walk(this.value, cb, false);
+    return this.value;
+};
+
+var forEach = function (xs, fn) {
+    if (xs.forEach) return xs.forEach(fn)
+    else for (var i = 0; i < xs.length; i++) {
+        fn(xs[i], i, xs);
+    }
+};
+
+var walk = function(root, cb, immutable) {
+    var path = [];
+    var parents = [];
+    var alive = true;
+
+    return (function walker(node_) {
+        var node = immutable ? copy(node_) : node_;
+        var modifiers = {};
+
+        var keepGoing = true;
+
+        var state = {
+            node: node,
+            node_: node_,
+            path: [].concat(path),
+            parent: parents[parents.length - 1],
+            parents: parents,
+            key: path.slice(-1)[0],
+            isRoot: path.length === 0,
+            level: path.length,
+            circular: null,
+            update: function (x, stopHere) {
+                if (!state.isRoot) {
+                    state.parent.node[state.key] = x;
+                }
+                state.node = x;
+                if (stopHere) { keepGoing = false; }
+            },
+            'delete': function (stopHere) {
+                delete state.parent.node[state.key];
+                if (stopHere) { keepGoing = false; }
+            },
+            remove: function (stopHere) {
+                if (es.isArray(state.parent.node)) {
+                    state.parent.node.splice(state.key, 1);
+                } else {
+                    delete state.parent.node[state.key];
+                }
+                if (stopHere) { keepGoing = false; }
+            },
+            keys: null,
+            before: function (f) { modifiers.before = f; },
+            after: function (f) { modifiers.after = f; },
+            pre: function (f) { modifiers.pre = f; },
+            post: function (f) { modifiers.post = f; },
+            stop: function () { alive = false; },
+            block: function () { keepGoing = false; }
+        };
+
+        if (!alive) { return state; }
+
+        if (typeof node === 'object' && node !== null) {
+            state.keys = es.objectKeys(node);
+
+            state.isLeaf = state.keys.length === 0;
+
+            for (var i = 0; i < parents.length; i++) {
+                if (parents[i].node_ === node_) {
+                    state.circular = parents[i];
+                    break;
+                }
+            }
+        }
+        else {
+            state.isLeaf = true;
+        }
+
+        state.notLeaf = !state.isLeaf;
+        state.notRoot = !state.isRoot;
+
+        // use return values to update if defined
+        var ret = cb.call(state, state.node);
+        if (ret !== undefined && state.update) state.update(ret);
+
+        if (modifiers.before) modifiers.before.call(state, state.node);
+
+        if (!keepGoing) return state;
+
+        if (typeof state.node === 'object' && state.node !== null && !state.circular) {
+            parents.push(state);
+
+            forEach(state.keys, function (key, i) {
+                path.push(key);
+
+                if (modifiers.pre) modifiers.pre.call(state, state.node[key], key);
+
+                var child = walker(state.node[key]);
+                if (immutable && Object.hasOwnProperty.call(state.node, key)) {
+                    state.node[key] = child.node;
+                }
+
+                child.isLast = i == state.keys.length - 1;
+                child.isFirst = i == 0;
+
+                if (modifiers.post) modifiers.post.call(state, child);
+
+                path.pop();
+            });
+            parents.pop();
+        }
+
+        if (modifiers.after) modifiers.after.call(state, state.node);
+
+        return state;
+    })(root).node;
+};
+
+var shallowCopy = function(src) {
+    if (typeof src === 'object' && src !== null) {
+        var dst;
+
+        if (es.isArray(src)) {
+            dst = [];
+        }
+        else if (src instanceof Date) {
+            dst = new Date(src);
+        }
+        else if (src instanceof Boolean) {
+            dst = new Boolean(src);
+        }
+        else if (src instanceof Number) {
+            dst = new Number(src);
+        }
+        else if (src instanceof String) {
+            dst = new String(src);
+        }
+        else if (Object.create && Object.getPrototypeOf) {
+            dst = Object.create(Object.getPrototypeOf(src));
+        }
+        else if (src.__proto__ || src.constructor.prototype) {
+            var proto = src.__proto__ || src.constructor.prototype || {};
+            var T = function () { };
+            T.prototype = proto;
+            dst = new T;
+            if (!dst.__proto__) dst.__proto__ = proto;
+        }
+
+        forEach(es.objectKeys(src), function (key) {
+            if (!es.isEntitySpacesCollection(src[key])) {
+                dst[key] = src[key];
+            }
+        });
+        return dst;
+    }
+    else return src;
+}
+
+
+ 
  
  
 /*********************************************** 
