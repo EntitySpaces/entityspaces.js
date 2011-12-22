@@ -50,7 +50,17 @@ es.EsEntity = function () { //empty constructor
     };
 
     this.markAsDeleted = function () {
-        this.RowState(es.RowState.DELETED);
+        var entity = this;
+
+        if (!entity.hasOwnProperty("RowState")) {
+            entity.RowState = ko.observable(es.RowStateEnum.deleted);
+        } else if (entity.RowState() !== es.RowStateEnum.deleted) {
+            entity.RowState(es.RowStateEnum.deleted);
+        }
+
+        if (entity.hasOwnProperty("ModifiedColumns")) {
+            entity.ModifiedColumns.removeAll();
+        }
     };
 
     //#region Loads
@@ -85,7 +95,7 @@ es.EsEntity = function () { //empty constructor
     this.loadByPrimaryKey = function (primaryKey, success) {
 
         this.load({
-            route : this.routes['loadByPrimaryKey'],
+            route: this.routes['loadByPrimaryKey'],
             data: primaryKey,
             success: success
         });

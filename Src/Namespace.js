@@ -30,21 +30,3 @@ es.getGeneratedNamespaceObj = function(){
         
     return es.generatedNamespace;
 };
-
-es.getType = function (typeName) {
-    var ns = es.getGeneratedNamespaceObj();
-    
-    return ns[typeName];       
-}
-
-es.clearTypes = function(){
-    
-    es.generatedNamespace = {};
-
-};
-
-//Event to subscribe to for errors
-es.onError = ko.observable({});
-es.onError.subscribe(function (error) {
-    throw JSON.stringify(error);
-});
