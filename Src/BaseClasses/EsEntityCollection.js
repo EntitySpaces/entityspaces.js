@@ -33,6 +33,14 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         }
     },
 
+    //call this when walking the returned server data to populate collection
+    populateCollection: function(dataArray){
+
+    },
+
+    createEntity: function(entityData){
+
+    },
     //#region Loads
     load: function (options) {
         //if a route was passed in, use that route to pull the ajax options url & type
