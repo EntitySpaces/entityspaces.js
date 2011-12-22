@@ -12,6 +12,8 @@ es.EsEntity = function () { //empty constructor
         extenders = [];
 
     //#region Initialization Logic
+    this.routes = {};
+
     this.customize = function (extender) {
         extenders.push(extender);
         return this;
@@ -53,18 +55,21 @@ es.EsEntity = function () { //empty constructor
                     if (EntityCtor) {
 
                         entityProp = new EntityCtor();
-                        if (entityProp.hasOwnProperty('___esCollection___')) {
+                        if (entityProp.hasOwnProperty('___esCollection___')) { //if its a collection call 'populateCollection'
                             entityProp.populateCollection(data[prop]);
-                        } else {
+                        } else { //else call 'populateEntity'
                             entityProp.populateEntity(data[prop]);
                         }
 
-                        this[prop] = entityProp;
+                        this[prop] = entityProp; //then set the property back to the new Entity Object
                     }
                 }
             }
         }
 
+        //reset change tracking variables
+        this.RowState(es.RowState.UNCHANGED);
+        this.ModifiedColumns([]);
 
     };
     //#endregion
@@ -129,11 +134,11 @@ es.EsEntity = function () { //empty constructor
     //#endregion Save
 
     //#region Save
-    this.save = function () {
+    this.save = function (origSuccess, origError) {
+        self = this;
+
         var route,
-            ajaxOptions = {
-                data: self.toJS()
-            };
+            options = {};
 
         switch (self.RowState() || es.RowState.ADDED) {
             case es.RowState.ADDED:
@@ -147,22 +152,24 @@ es.EsEntity = function () { //empty constructor
                 break;
         }
 
+        //TODO: potentially the most inefficient call in the whole lib
+        options.data = es.utils.getDirtyGraph(this.toJS(self));
+
         if (route) {
-            ajaxOptions.url = route.url;
-            ajaxOptions.type = route.method;
+            options.url = route.url;
+            options.type = route.method;
         }
 
-        ajaxOptions.success = function (data) {
+        options.success = function (data) {
             self.populateEntity(data);
+            origSuccess.call(self, data);
         };
 
-        ajaxOptions.error = function (xhr, textStatus, errorThrown) {
-
-            //any suggestions?
-
+        options.error = function (xhr, textStatus, errorThrown) {
+            origError.call(self, { code: textStatus, message: errorThrown });
         };
 
-        es.dataProvider.execute(ajaxOptions);
+        es.dataProvider.execute(options);
     };
     //#endregion
 

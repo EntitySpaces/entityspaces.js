@@ -11,17 +11,17 @@ es.Visit.prototype.forEach = function (cb) {
     return this.value;
 };
 
-var forEach = function (xs, fn) {
-    if (xs.forEach) return xs.forEach(fn)
-    else for (var i = 0; i < xs.length; i++) {
-        fn(xs[i], i, xs);
-    }
-};
-
 var walk = function(root, cb, immutable) {
     var path = [];
     var parents = [];
     var alive = true;
+
+    var forEach = function (xs, fn) {
+        if (xs.forEach) return xs.forEach(fn)
+        else for (var i = 0; i < xs.length; i++) {
+            fn(xs[i], i, xs);
+        }
+    };
 
     return (function walker(node_) {
         var node = immutable ? copy(node_) : node_;

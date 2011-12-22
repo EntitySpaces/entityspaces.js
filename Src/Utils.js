@@ -180,8 +180,8 @@ var utils = {
                 if (!dst.__proto__) { dst.__proto__ = proto; }
             }
 
-            es.Visit.forEach(es.objectKeys(src), function (key) {
-                if (!es.isEntitySpacesCollection(src[key])) {
+            ko.utils.arrayForEach(es.objectKeys(src), function(key) {
+                if (!es.isEsCollection(src[key])) {
                     dst[key] = src[key];
                 }
             });

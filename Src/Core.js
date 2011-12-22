@@ -25,10 +25,11 @@ es.onError.subscribe(function (error) {
 //#region Core Quick Methods
 
 es.isArray = function (array) {
+    if (!array) { return false; }
     return array.isArray || Object.prototype.toString.call(array) === '[object Array]';
 };
 
-es.objectKeys = Object.keys || function keys(obj) {
+es.objectKeys = Object.keys || function(obj) {
     var res = [];
     for (var key in obj) {
         res.push(key);
@@ -37,7 +38,6 @@ es.objectKeys = Object.keys || function keys(obj) {
 };
 
 es.isEsCollection = function (array) {
-
     var isEsArray = false;
 
     if (es.isArray(array)) {

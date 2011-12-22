@@ -162,4 +162,56 @@ test('Ensure "populateEntity" works and "ExtraColumns" are flattened', function 
     equals(testP.IDasExtraColumn(), 1519, 'IDasExtraColumn is present');
 });
 
+test('Test Basic Save', function () {
+    var saveReq;
+
+    //define an object
+    var Product = es.defineEntity(function () {
+        this.ProductId = ko.observable('something');
+        this.esExtendedData = null;
+    });
+    Product.prototype.routes['update'] = { method: 'POST', url: 'TestUrl' };
+
+
+    var testP = new Product();
+    testP.populateEntity({ "ProductId": 42, "esExtendedData": [{ "Key": "ExtraColumn", "Value": "asdf" }, { "Key": "IDasExtraColumn", "Value": 1519}] });
+    testP.RowState(es.RowState.UNCHANGED);
+
+    testP.ProductId(48);
+
+    //override the provider's execute method
+    es.testDataProvider.execute = function (options) {
+        saveReq = options;
+    };
+
+    testP.save();
+
+    ok(saveReq.data, 'data submitted for save');
+    equals(saveReq.data.ProductId, 48, 'Correct ProductId was handed back');
+    equals(saveReq.data.RowState, es.RowState.MODIFIED, 'Correct RowState was handed Back');
+});
+
+
+test('Hierarchical Save', function () {
+    var saveReq;
+
+    var emp = new es.objects.Employees();
+    emp.populateEntity(getEmployeeData());
+
+    emp.OrdersCollectionByEmployeeID()[0].CustomerID('ERIC');
+    emp.OrdersCollectionByEmployeeID()[0].OrderDetailsCollectionByOrderID()[0].Quantity(16);
+    emp.OrdersCollectionByEmployeeID()[1].Freight(55);
+    
+    //override the provider's execute method
+    es.testDataProvider.execute = function (options) {
+        saveReq = options;
+    };
+
+    emp.save();
+
+    ok(saveReq.data, 'data submitted for save');
+    equals(saveReq.data.OrdersCollectionByEmployeeID[0].CustomerID, 'ERIC', 'Correct CustomerID');
+    equals(saveReq.data.OrdersCollectionByEmployeeID[0].OrderDetailsCollectionByOrderID[0].Quantity, 16, 'Correct Quantity');
+    equals(saveReq.data.OrdersCollectionByEmployeeID[1].Freight, 55, 'Correct Freight');  
+});
 

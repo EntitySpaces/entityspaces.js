@@ -85,10 +85,11 @@ es.onError.subscribe(function (error) {
 //#region Core Quick Methods
 
 es.isArray = function (array) {
+    if (!array) { return false; }
     return array.isArray || Object.prototype.toString.call(array) === '[object Array]';
 };
 
-es.objectKeys = Object.keys || function keys(obj) {
+es.objectKeys = Object.keys || function(obj) {
     var res = [];
     for (var key in obj) {
         res.push(key);
@@ -97,7 +98,6 @@ es.objectKeys = Object.keys || function keys(obj) {
 };
 
 es.isEsCollection = function (array) {
-
     var isEsArray = false;
 
     if (es.isArray(array)) {
@@ -301,8 +301,8 @@ var utils = {
                 if (!dst.__proto__) { dst.__proto__ = proto; }
             }
 
-            es.Visit.forEach(es.objectKeys(src), function (key) {
-                if (!es.isEntitySpacesCollection(src[key])) {
+            ko.utils.arrayForEach(es.objectKeys(src), function(key) {
+                if (!es.isEsCollection(src[key])) {
                     dst[key] = src[key];
                 }
             });
@@ -312,7 +312,7 @@ var utils = {
         }
     },
 
-    getDirtyEntities: function (obj) {
+    getDirtyGraph: function (obj) {
 
         var i, k, dirty, paths = [], root = null;
 
@@ -416,17 +416,17 @@ es.Visit.prototype.forEach = function (cb) {
     return this.value;
 };
 
-var forEach = function (xs, fn) {
-    if (xs.forEach) return xs.forEach(fn)
-    else for (var i = 0; i < xs.length; i++) {
-        fn(xs[i], i, xs);
-    }
-};
-
 var walk = function(root, cb, immutable) {
     var path = [];
     var parents = [];
     var alive = true;
+
+    var forEach = function (xs, fn) {
+        if (xs.forEach) return xs.forEach(fn)
+        else for (var i = 0; i < xs.length; i++) {
+            fn(xs[i], i, xs);
+        }
+    };
 
     return (function walker(node_) {
         var node = immutable ? copy(node_) : node_;
@@ -618,6 +618,8 @@ es.EsEntity = function () { //empty constructor
         extenders = [];
 
     //#region Initialization Logic
+    this.routes = {};
+
     this.customize = function (extender) {
         extenders.push(extender);
         return this;
@@ -659,18 +661,21 @@ es.EsEntity = function () { //empty constructor
                     if (EntityCtor) {
 
                         entityProp = new EntityCtor();
-                        if (entityProp.hasOwnProperty('___esCollection___')) {
+                        if (entityProp.hasOwnProperty('___esCollection___')) { //if its a collection call 'populateCollection'
                             entityProp.populateCollection(data[prop]);
-                        } else {
+                        } else { //else call 'populateEntity'
                             entityProp.populateEntity(data[prop]);
                         }
 
-                        this[prop] = entityProp;
+                        this[prop] = entityProp; //then set the property back to the new Entity Object
                     }
                 }
             }
         }
 
+        //reset change tracking variables
+        this.RowState(es.RowState.UNCHANGED);
+        this.ModifiedColumns([]);
 
     };
     //#endregion
@@ -735,11 +740,11 @@ es.EsEntity = function () { //empty constructor
     //#endregion Save
 
     //#region Save
-    this.save = function () {
+    this.save = function (origSuccess, origError) {
+        self = this;
+
         var route,
-            ajaxOptions = {
-                data: self.toJS()
-            };
+            options = {};
 
         switch (self.RowState() || es.RowState.ADDED) {
             case es.RowState.ADDED:
@@ -753,22 +758,24 @@ es.EsEntity = function () { //empty constructor
                 break;
         }
 
+        //TODO: potentially the most inefficient call in the whole lib
+        options.data = es.utils.getDirtyGraph(this.toJS(self));
+
         if (route) {
-            ajaxOptions.url = route.url;
-            ajaxOptions.type = route.method;
+            options.url = route.url;
+            options.type = route.method;
         }
 
-        ajaxOptions.success = function (data) {
+        options.success = function (data) {
             self.populateEntity(data);
+            origSuccess.call(self, data);
         };
 
-        ajaxOptions.error = function (xhr, textStatus, errorThrown) {
-
-            //any suggestions?
-
+        options.error = function (xhr, textStatus, errorThrown) {
+            origError.call(self, { code: textStatus, message: errorThrown });
         };
 
-        es.dataProvider.execute(ajaxOptions);
+        es.dataProvider.execute(options);
     };
     //#endregion
 
