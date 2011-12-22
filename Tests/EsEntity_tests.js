@@ -146,3 +146,19 @@ test('Ensure Change Tracking Test - Modification', function () {
     equals(testP.RowState(), es.RowState.MODIFIED, 'RowState has changed to modified');
 });
 
+test('Ensure "populateEntity" works and "ExtraColumns" are flattened', function () {
+
+    //define an object
+    var Product = es.defineEntity(function () {
+        this.ProductId = ko.observable('something');
+    });
+
+    var testP = new Product();
+    testP.populateEntity({"ProductId": 42, "esExtendedData" : [{"Key":"ExtraColumn","Value":"asdf"},{"Key":"IDasExtraColumn","Value":1519}]});
+
+    equals(testP.ProductId(), 42, 'ProductId is present');
+    equals(testP.ExtraColumn(), 'asdf', 'ExtraColumn is present');
+    equals(testP.IDasExtraColumn(), 1519, 'IDasExtraColumn is present');
+});
+
+
