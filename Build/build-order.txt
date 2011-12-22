@@ -1,7 +1,8 @@
 ..\Src\Namespace.js
 ..\Src\Constants.js
 ..\Src\utils.js
-..\Src\ajax.js
+..\Src\Visitor.js
+..\Src\ajaxProvider.js
 ..\Src\BaseClasses\EsEntity.js
 ..\Src\BaseClasses\EsEntityCollection.js
 ..\Src\BaseClasses\DefineEntity.js

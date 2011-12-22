@@ -167,7 +167,7 @@ var utils = {
         return entity;
     },
 
-    expandExtraColumns: function (entity) {
+    expandExtraColumns: function (entity, shouldMakeObservable) {
         var data, i, ext,
                 makeObservable = arguments[1] || false;
 
@@ -237,7 +237,13 @@ es.utils = utils;
  
  
 /*********************************************** 
-* FILE: ..\Src\ajax.js 
+* FILE: ..\Src\Visitor.js 
+***********************************************/ 
+﻿/* File Created: December 22, 2011 */ 
+ 
+ 
+/*********************************************** 
+* FILE: ..\Src\ajaxProvider.js 
 ***********************************************/ 
 ﻿/// <reference path="../Libs/jquery-1.7.1.js" />
 /// <reference path="../Libs/json2.js" />

@@ -151,10 +151,11 @@ test('Ensure "populateEntity" works and "ExtraColumns" are flattened', function 
     //define an object
     var Product = es.defineEntity(function () {
         this.ProductId = ko.observable('something');
+        this.esExtendedData = null;
     });
 
     var testP = new Product();
-    testP.populateEntity({"ProductId": 42, "esExtendedData" : [{"Key":"ExtraColumn","Value":"asdf"},{"Key":"IDasExtraColumn","Value":1519}]});
+    testP.populateEntity({ "ProductId": 42, "esExtendedData": [{ "Key": "ExtraColumn", "Value": "asdf" }, { "Key": "IDasExtraColumn", "Value": 1519}] });
 
     equals(testP.ProductId(), 42, 'ProductId is present');
     equals(testP.ExtraColumn(), 'asdf', 'ExtraColumn is present');

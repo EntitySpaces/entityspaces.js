@@ -92,7 +92,7 @@ var utils = {
         return entity;
     },
 
-    expandExtraColumns: function (entity) {
+    expandExtraColumns: function (entity, shouldMakeObservable) {
         var data, i, ext,
                 makeObservable = arguments[1] || false;
 
