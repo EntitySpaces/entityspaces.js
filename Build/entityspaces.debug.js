@@ -47,7 +47,14 @@ es.clearTypes = function(){
     
     es.generatedNamespace = {};
 
-}; 
+};
+
+//Event to subscribe to for errors
+es.onError = ko.observable({});
+es.onError.subscribe(function (error) {
+    throw JSON.stringify(error);
+});
+ 
  
  
 /*********************************************** 
@@ -236,60 +243,64 @@ es.utils = utils;
 /// <reference path="../Libs/json2.js" />
 
 //set this up so we match jQuery's api style... if we want to rip it out later, we can...
-var ajax = {
+var ajaxProvider = (function () {
+    var noop = function () { },
+        parameterizeUrl = function (url, data) {
+            var rurlDataExpr = /\{([^\}]+)\}/g;
+            var newUrl;
 
-    executeRequest: function (options) {
-        var noop = function () { },
-            success = options.success || noop,
-            error = options.error || noop,
-            defaults = {
-                cache: false,
-                accepts: 'application/json; charset=utf-8;',
-                contentType: 'application/json; charset=utf-8;',
-                dataType: 'json',
-                type: 'GET'
+            if (typeof data === "string") {
+                return;
+            }
+
+            //thanks AmplifyJS for this little tidbit
+            // url = "/Product/{id}" => "/Product/57966910-C5EF-400A-8FC4-615159D95C2D
+            newUrl = url.replace(rurlDataExpr, function (m, key) {
+                if (key in data) {
+                    return ko.utils.unwrapObservable(data[key]);
+                }
+            });
+
+            return newUrl;
+        };
+
+    return {
+        execute: function (options) {
+
+            var origSuccess = options.success || noop,
+                origError = options.error || noop,
+                defaults = {
+                    cache: false,
+                    accepts: 'application/json; charset=utf-8;',
+                    contentType: 'application/json; charset=utf-8;',
+                    dataType: 'json',
+                    type: 'GET'
+                };
+
+            //extend the defaults with our options
+            options = $.extend(defaults, options);
+
+            // override the passed in successHandler so we can add global processing if needed
+            options.success = function (data) {
+                origSuccess(data);
             };
 
-        //extend the defaults with our options
-        options = $.extend(defaults, options);
+            // override the passed in errorHandler so we can add global processing if needed
+            options.error = function (jqXHR, textStatus, errorThrown) {
+                origError(jqXHR, textStatus, errorThrown);
+                es.onError({ code: textStatus, message: errorThrown });
+            };
 
-        // override the passed in successHandler so we can add global processing if needed
-        options.success = function (data) {
-            success(data);
-        };
+            //parameterize the Url
+            options.url = parameterizeUrl(options.url, options.data);
 
-        // override the passed in errorHandler so we can add global processing if needed
-        options.error = function (jqXHR, textStatus, errorThrown) {
-            error(jqXHR, textStatus, errorThrown);
-        };
-
-        //parameterize the Url
-        options.url = ajax.parameterizeUrl(options.url, options.data);
-
-        $.ajax(options);
-    },
-
-    parameterizeUrl: function (url, data) {
-        var rurlDataExpr = /\{([^\}]+)\}/g;
-        var newUrl;
-
-        if (typeof data === "string") {
-            return;
+            $.ajax(options);
         }
+    };
+} ());
+    
 
-        //thanks AmplifyJS for this little tidbit
-        // url = "/Product/{id}" => "/Product/57966910-C5EF-400A-8FC4-615159D95C2D
-        newUrl = url.replace(rurlDataExpr, function (m, key) {
-            if (key in data) {
-                return ko.utils.unwrapObservable(data[key]);
-            }
-        });
-
-        return newUrl;
-    }
-};
-
-es.ajax = ajax; 
+es.dataProvider = ajaxProvider; //assign default data provider 
  
  
 /*********************************************** 
@@ -358,24 +369,43 @@ es.EsEntity = function () { //empty constructor
             options.type = this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
         }
 
+        // ensure that the data is flattened
+        if (options.data && options.data['toJS']) {
+            options.data = options.data.toJS();
+        }
+
         //sprinkle in our own success handler, but make sure the original still gets called
         var origSuccessHandler = options.success;
 
+        //wrap the passed in success handler so that we can populate the Entity
         options.success = function (data) {
+
+            //populate the entity with the returned data;
             self.populateEntity(data);
+
+            //fire the passed in success handler
             if (origSuccessHandler) { origSuccessHandler(data); }
         };
 
-        es.ajax.executeRequest(options);
+        es.dataProvider.execute(options);
     };
 
+    this.loadByPrimaryKey = function (primaryKey, success) {
+
+        this.load({
+            route : this.routes['loadByPrimaryKey'],
+            data: primaryKey,
+            success: success
+        });
+
+    };
     //#endregion Save
 
     //#region Save
     this.save = function () {
         var route,
             ajaxOptions = {
-                data: self
+                data: self.toJS()
             };
 
         switch (self.RowState() || es.RowState.ADDED) {
@@ -400,11 +430,12 @@ es.EsEntity = function () { //empty constructor
         };
 
         ajaxOptions.error = function (xhr, textStatus, errorThrown) {
-            //improve this for 
-            throw JSON.stringify(errorThrown);
+
+            //any suggestions?
+
         };
 
-        es.ajax.executeRequest(ajaxOptions);
+        es.dataProvider.execute(ajaxOptions);
     };
     //#endregion
 
@@ -446,8 +477,82 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         return ko.utils.arrayFilter(array, predicate);
     },
 
-    load: function (options) {
-        es.ajax.executeRequest(options);
+
+    //#region Loads
+    load:  function (options) {
+        //if a route was passed in, use that route to pull the ajax options url & type
+        if (options.route) {
+            options.url = this.routes[options.route].url;
+            options.type = this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
+        }
+
+        // ensure that the data is flattened
+        if (options.data['toJS']) {
+            options.data = options.data.toJS();
+        }
+
+        //sprinkle in our own success handler, but make sure the original still gets called
+        var origSuccessHandler = options.success;
+
+        //wrap the passed in success handler so that we can populate the Entity
+        options.success = function (data) {
+
+            //populate the entity with the returned data;
+            self.populateEntity(data);
+
+            //fire the passed in success handler
+            if (origSuccessHandler) { origSuccessHandler(data); }
+        };
+
+        es.dataProvider.execute(options);
+    },
+    //#endregion Save
+
+    //#region Save
+    save: function () {
+        var route,
+            ajaxOptions = {
+                data: self.toJS()
+            };
+
+        switch (self.RowState() || es.RowState.ADDED) {
+            case es.RowState.ADDED:
+                route = self.routes['create'];
+                break;
+            case es.RowState.MODIFIED:
+                route = self.routes['update'];
+                break;
+            case es.RowState.DELETED:
+                route = self.routes['del'];
+                break;
+        }
+
+        if (route) {
+            ajaxOptions.url = route.url;
+            ajaxOptions.type = route.method;
+        }
+
+        ajaxOptions.success = function (data) {
+            self.populateEntity(data);
+        };
+
+        ajaxOptions.error = function (xhr, textStatus, errorThrown) {
+
+            //any suggestions?
+
+        };
+
+        es.dataProvider.execute(ajaxOptions);
+    },
+    //#endregion
+
+    //#region Serialization
+    toJS: function () {
+        return ko.toJS(this);
+    },
+
+    toJSON: function () {
+        return ko.toJSON(this);
     }
 
 }; 

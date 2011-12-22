@@ -42,3 +42,9 @@ es.clearTypes = function(){
     es.generatedNamespace = {};
 
 };
+
+//Event to subscribe to for errors
+es.onError = ko.observable({});
+es.onError.subscribe(function (error) {
+    throw JSON.stringify(error);
+});

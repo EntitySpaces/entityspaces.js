@@ -61,24 +61,43 @@ es.EsEntity = function () { //empty constructor
             options.type = this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
         }
 
+        // ensure that the data is flattened
+        if (options.data && options.data['toJS']) {
+            options.data = options.data.toJS();
+        }
+
         //sprinkle in our own success handler, but make sure the original still gets called
         var origSuccessHandler = options.success;
 
+        //wrap the passed in success handler so that we can populate the Entity
         options.success = function (data) {
+
+            //populate the entity with the returned data;
             self.populateEntity(data);
+
+            //fire the passed in success handler
             if (origSuccessHandler) { origSuccessHandler(data); }
         };
 
-        es.ajax.executeRequest(options);
+        es.dataProvider.execute(options);
     };
 
+    this.loadByPrimaryKey = function (primaryKey, success) {
+
+        this.load({
+            route : this.routes['loadByPrimaryKey'],
+            data: primaryKey,
+            success: success
+        });
+
+    };
     //#endregion Save
 
     //#region Save
     this.save = function () {
         var route,
             ajaxOptions = {
-                data: self
+                data: self.toJS()
             };
 
         switch (self.RowState() || es.RowState.ADDED) {
@@ -103,11 +122,12 @@ es.EsEntity = function () { //empty constructor
         };
 
         ajaxOptions.error = function (xhr, textStatus, errorThrown) {
-            //improve this for 
-            throw JSON.stringify(errorThrown);
+
+            //any suggestions?
+
         };
 
-        es.ajax.executeRequest(ajaxOptions);
+        es.dataProvider.execute(ajaxOptions);
     };
     //#endregion
 
