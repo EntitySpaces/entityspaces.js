@@ -125,44 +125,5 @@ var walk = function(root, cb, immutable) {
     })(root).node;
 };
 
-var shallowCopy = function(src) {
-    if (typeof src === 'object' && src !== null) {
-        var dst;
-
-        if (es.isArray(src)) {
-            dst = [];
-        }
-        else if (src instanceof Date) {
-            dst = new Date(src);
-        }
-        else if (src instanceof Boolean) {
-            dst = new Boolean(src);
-        }
-        else if (src instanceof Number) {
-            dst = new Number(src);
-        }
-        else if (src instanceof String) {
-            dst = new String(src);
-        }
-        else if (Object.create && Object.getPrototypeOf) {
-            dst = Object.create(Object.getPrototypeOf(src));
-        }
-        else if (src.__proto__ || src.constructor.prototype) {
-            var proto = src.__proto__ || src.constructor.prototype || {};
-            var T = function () { };
-            T.prototype = proto;
-            dst = new T;
-            if (!dst.__proto__) dst.__proto__ = proto;
-        }
-
-        forEach(es.objectKeys(src), function (key) {
-            if (!es.isEntitySpacesCollection(src[key])) {
-                dst[key] = src[key];
-            }
-        });
-        return dst;
-    }
-    else return src;
-}
 
 

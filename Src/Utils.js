@@ -81,7 +81,9 @@ var utils = {
 
                 var property = entity[propertyName];
 
-                if (property instanceof Array) { continue; }
+                if (property instanceof Array) {
+                    continue;
+                }
 
                 if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
                     utils.addPropertyChangedHandlers(entity, propertyName);
@@ -145,6 +147,122 @@ var utils = {
         }
 
         return entity;
+    },
+
+    // private function used by 'getDirtyEntities' below
+    shallowCopy: function (src) {
+        if (typeof src === 'object' && src !== null) {
+            var dst;
+
+            if (es.isArray(src)) {
+                dst = [];
+            }
+            else if (src instanceof Date) {
+                dst = new Date(src);
+            }
+            else if (src instanceof Boolean) {
+                dst = new Boolean(src);
+            }
+            else if (src instanceof Number) {
+                dst = new Number(src);
+            }
+            else if (src instanceof String) {
+                dst = new String(src);
+            }
+            else if (Object.create && Object.getPrototypeOf) {
+                dst = Object.create(Object.getPrototypeOf(src));
+            }
+            else if (src.__proto__ || src.constructor.prototype) {
+                var proto = src.__proto__ || src.constructor.prototype || {};
+                var T = function () { };
+                T.prototype = proto;
+                dst = new T;
+                if (!dst.__proto__) { dst.__proto__ = proto; }
+            }
+
+            es.Visit.forEach(es.objectKeys(src), function (key) {
+                if (!es.isEntitySpacesCollection(src[key])) {
+                    dst[key] = src[key];
+                }
+            });
+            return dst;
+        } else {
+            return src;
+        }
+    },
+
+    getDirtyEntities: function (obj) {
+
+        var i, k, dirty, paths = [], root = null;
+
+        es.Visit(obj).forEach(function (theObj) {
+
+            if (this.key === "esExtendedData") {
+                this.block();
+            } else {
+
+                if (this.isLeaf === false) {
+
+                    if (theObj instanceof Array) { return theObj; }
+
+                    if (theObj.hasOwnProperty("RowState")) {
+
+                        switch (theObj.RowState) {
+
+                            case es.RowState.ADDED:
+                            case es.RowState.DELETED:
+                            case es.RowState.MODIFIED:
+
+                                paths.push(this.path);
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return theObj;
+        });
+
+        if (paths.length > 0) {
+
+            if (es.isArray(obj)) {
+                dirty = [];
+            } else {
+                dirty = utils.shallowCopy(obj);
+            }
+
+            root = dirty;
+
+            for (i = 0; i < paths.length; i++) {
+
+                var thePath = paths[i];
+                var data = obj;
+                dirty = root;
+
+                for (k = 0; k < thePath.length; k++) {
+
+                    if (!dirty.hasOwnProperty(thePath[k])) {
+
+                        if (es.isArray(data[thePath[k]])) {
+                            dirty[thePath[k]] = [];
+                            dirty = dirty[thePath[k]];
+                        }
+                    } else {
+                        dirty = dirty[thePath[k]];
+                    }
+
+                    data = data[thePath[k]];
+                }
+
+                if (es.isArray(dirty)) {
+                    dirty.push(utils.shallowCopy(data));
+                } else {
+                    dirty = utils.shallowCopy(data);
+                }
+            }
+        }
+
+        return root;
     }
 };
 
