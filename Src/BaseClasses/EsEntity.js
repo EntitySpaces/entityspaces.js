@@ -20,7 +20,7 @@ es.EsEntity = function () { //empty constructor
     this.init = function () {
         self = this;
 
-        self['___esKey___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
+        self['___esEntity___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
 
         // before populating the data, call each extender to add the required functionality to our object        
         ko.utils.arrayForEach(extenders, function (extender) {
@@ -34,6 +34,8 @@ es.EsEntity = function () { //empty constructor
     };
 
     this.populateEntity = function (data) {
+        var prop, EntityCtor, entityProp;
+
         //populate the entity with data back from the server...
         es.utils.extendObservable(self, data);
 
@@ -42,6 +44,28 @@ es.EsEntity = function () { //empty constructor
 
         //start change tracking
         es.utils.startTracking(self);
+
+        for (prop in data) {
+            if (data.hasOwnProperty(prop)) {
+
+                if (this.esTypeDefs && this.esTypeDefs[prop]) {
+                    EntityCtor = es.getType(this.esTypeDefs[prop]);
+                    if (EntityCtor) {
+
+                        entityProp = new EntityCtor();
+                        if (entityProp.hasOwnProperty('___esCollection___')) {
+                            entityProp.populateCollection(data[prop]);
+                        } else {
+                            entityProp.populateEntity(data[prop]);
+                        }
+
+                        this[prop] = entityProp;
+                    }
+                }
+            }
+        }
+
+
     };
     //#endregion
 

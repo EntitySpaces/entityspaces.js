@@ -626,7 +626,7 @@ es.EsEntity = function () { //empty constructor
     this.init = function () {
         self = this;
 
-        self['___esKey___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
+        self['___esEntity___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
 
         // before populating the data, call each extender to add the required functionality to our object        
         ko.utils.arrayForEach(extenders, function (extender) {
@@ -640,6 +640,8 @@ es.EsEntity = function () { //empty constructor
     };
 
     this.populateEntity = function (data) {
+        var prop, EntityCtor, entityProp;
+
         //populate the entity with data back from the server...
         es.utils.extendObservable(self, data);
 
@@ -648,6 +650,28 @@ es.EsEntity = function () { //empty constructor
 
         //start change tracking
         es.utils.startTracking(self);
+
+        for (prop in data) {
+            if (data.hasOwnProperty(prop)) {
+
+                if (this.esTypeDefs && this.esTypeDefs[prop]) {
+                    EntityCtor = es.getType(this.esTypeDefs[prop]);
+                    if (EntityCtor) {
+
+                        entityProp = new EntityCtor();
+                        if (entityProp.hasOwnProperty('___esCollection___')) {
+                            entityProp.populateCollection(data[prop]);
+                        } else {
+                            entityProp.populateEntity(data[prop]);
+                        }
+
+                        this[prop] = entityProp;
+                    }
+                }
+            }
+        }
+
+
     };
     //#endregion
 
@@ -764,7 +788,8 @@ es.EsEntity = function () { //empty constructor
 /*********************************************** 
 * FILE: ..\Src\BaseClasses\EsEntityCollection.js 
 ***********************************************/ 
-﻿/// <reference path="../../Libs/jquery-1.7.1.js" />
+﻿/*globals es*/
+/// <reference path="../../Libs/jquery-1.7.1.js" />
 /// <reference path="../../Libs/json2.js" />
 /// <reference path="../../Libs/knockout-2.0.RC.js" />
 
@@ -774,6 +799,9 @@ es.EsEntityCollection = function () {
 
     //add all of our extra methods to the array
     ko.utils.extend(obs, es.EsEntityCollection.fn);
+
+    obs['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
+
 
     return obs;
 };
@@ -801,17 +829,26 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     //call this when walking the returned server data to populate collection
     populateCollection: function (dataArray) {
-        var entityTypeName = this.entityTypeName, // this should be set in the 'DefineCollection' call 
-            entityCtor = es.getType(entityTypeName),
+        var entityTypeName = this.entityTypeName, // this should be set in the 'DefineCollection' call, unless it was an anonymous definition
+            EntityCtor,
             finalColl = [],
             create = this.createEntity,
             entity;
 
+        if (entityTypeName) {
+            EntityCtor = es.getType(entityTypeName); //might return undefined
+        }
+
         if (dataArray && es.isArray(dataArray)) {
 
             ko.utils.arrayForEach(dataArray, function (data) {
-                entity = create(data, entityCtor);
-                finalColl.push(entity);
+
+                //call 'createEntity' for each item in the data array
+                entity = create(data, EntityCtor); //ok to pass an undefined Ctor
+
+                if (entity !== undefined && entity !== null) { //could be zeros or empty strings legitimately
+                    finalColl.push(entity);
+                }
             });
 
             //now set the observableArray that we inherit off of
@@ -820,18 +857,29 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     },
 
     createEntity: function (entityData, Ctor) {
-        var entityTypeName = this.entityTypeName, // this should be set in the 'DefineCollection' call 
-            EntityCtor = Ctor || es.getType(entityTypeName),
+        var entityTypeName, // this should be set in the 'DefineCollection' call 
+            EntityCtor = Ctor,
             entity;
 
-        entity = new EntityCtor();
-        entity.populateEntity(entityData);
+        if (!Ctor) { //undefined Ctor was passed in
+            entityTypeName = this.entityTypeName;
+            EntityCtor = es.getType(entityTypeName); //could return undefined
+        }
+
+        if (EntityCtor) { //if we have a constructor, new it up
+            entity = new EntityCtor();
+            entity.populateEntity(entityData);
+        } else { //else just set the entity to the passed in data
+            entity = entityData;
+        }
 
         return entity;
     },
 
     //#region Loads
     load: function (options) {
+        var self = this;
+
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
             options.url = this.routes[options.route].url;
@@ -850,10 +898,10 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         options.success = function (data) {
 
             //populate the entity with the returned data;
-            self.populateEntity(data);
+            self.populateCollection(data);
 
             //fire the passed in success handler
-            if (origSuccessHandler) { origSuccessHandler(data); }
+            if (origSuccessHandler) { origSuccessHandler.call(self, data); }
         };
 
         es.dataProvider.execute(options);
@@ -862,22 +910,11 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     //#region Save
     save: function () {
-        var route,
+        var self = this, 
+            route,
             ajaxOptions = {
                 data: self.toJS()
             };
-
-        switch (self.RowState() || es.RowState.ADDED) {
-            case es.RowState.ADDED:
-                route = self.routes['create'];
-                break;
-            case es.RowState.MODIFIED:
-                route = self.routes['update'];
-                break;
-            case es.RowState.DELETED:
-                route = self.routes['del'];
-                break;
-        }
 
         if (route) {
             ajaxOptions.url = route.url;
@@ -885,13 +922,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         }
 
         ajaxOptions.success = function (data) {
-            self.populateEntity(data);
-        };
-
-        ajaxOptions.error = function (xhr, textStatus, errorThrown) {
-
-            //any suggestions?
-
+            self.populateCollection(data);
         };
 
         es.dataProvider.execute(ajaxOptions);
@@ -900,11 +931,11 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     //#region Serialization
     toJS: function () {
-        return ko.toJS(this);
+        return ko.toJS(this()); //use this() to pull the array out
     },
 
     toJSON: function () {
-        return ko.toJSON(this);
+        return ko.toJSON(this()); //use this() to pull the array out
     }
 
 }; 

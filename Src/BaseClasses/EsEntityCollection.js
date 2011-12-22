@@ -10,6 +10,9 @@ es.EsEntityCollection = function () {
     //add all of our extra methods to the array
     ko.utils.extend(obs, es.EsEntityCollection.fn);
 
+    obs['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
+
+
     return obs;
 };
 
