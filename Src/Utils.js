@@ -98,7 +98,7 @@ var utils = {
         var data, i, ext,
                 makeObservable = arguments[1] || false;
 
-        if (entity.esExtendedData) {
+        if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
 
             data = ko.utils.unwrapObservable(entity.esExtendedData);
 
@@ -136,7 +136,7 @@ var utils = {
     removeExtraColumns: function (entity) {
         var i;
 
-        if (entity.esExtendedData !== undefined) {
+        if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
 
             var data = ko.utils.unwrapObservable(entity.esExtendedData);
 
