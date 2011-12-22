@@ -8,6 +8,9 @@ module('AJAX Loading Tests');
 
 asyncTest('Core Load Basic Test', function () {
 
+    //swap out the testDataProvider for the real AjaxProvider
+    es.dataProvider = new es.AjaxProvider();
+
     //Setup Mockjax
 
     $.mockjax({
@@ -32,11 +35,14 @@ asyncTest('Core Load Basic Test', function () {
         success: function () {
             ok(testP, 'Product Loaded');
             equals(testP.ProductId(), 'TestId', 'ProductId was set correctly');
-            
+
             //clear out the mockjax fake call for more tests            
             $.mockjaxClear();
 
             start(); //continue the Qunit tests
+
+            //reset the dataProvider
+            es.dataProvider = es.testDataProvider;
         }
     });
 });
