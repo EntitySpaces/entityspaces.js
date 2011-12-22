@@ -96,7 +96,7 @@ var utils = {
         var data, i, ext,
                 makeObservable = arguments[1] || false;
 
-        if (entity.esExtendedData !== undefined) {
+        if (entity.esExtendedData) {
 
             data = ko.utils.unwrapObservable(entity.esExtendedData);
 

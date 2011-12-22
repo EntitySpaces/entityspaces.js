@@ -65,10 +65,11 @@ es.EsEntity = function () { //empty constructor
 
     //#region Loads
     this.load = function (options) {
+        self = this;
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
-            options.url = this.routes[options.route].url;
-            options.type = this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
+            options.url = options.route.url || this.routes[options.route].url;
+            options.type = options.route.method || this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
         }
 
         // ensure that the data is flattened
@@ -86,7 +87,7 @@ es.EsEntity = function () { //empty constructor
             self.populateEntity(data);
 
             //fire the passed in success handler
-            if (origSuccessHandler) { origSuccessHandler(data); }
+            if (origSuccessHandler) { origSuccessHandler.call(self, data); }
         };
 
         es.dataProvider.execute(options);

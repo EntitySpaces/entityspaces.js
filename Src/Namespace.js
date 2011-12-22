@@ -18,7 +18,10 @@ config = $.extend(config, {
     var target = window;
 
     for(var i = 0; i < path.length; i++){
-        target = target[path[i]] || {};
+        if(target[path[i]] === undefined){
+            target[path[i]] = {};
+        }
+        target = target[path[i]];
     }
 
     es.generatedNamespace = target;

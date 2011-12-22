@@ -19,9 +19,7 @@ test('basic smoke Test', function () {
     var emp = new es.objects.Employees();
 
     //this will test the entire request pipeline
-    emp.loadbyPrimaryKey('testId', function () {
+    emp.loadByPrimaryKey('testId');
 
-        ok(this.EmployeeId, 'EmployeeId is not null');
-        //do assertions here;
-    });
+    equals(emp.EmployeeID(), 1, 'EmployeeId is correct');
 });
