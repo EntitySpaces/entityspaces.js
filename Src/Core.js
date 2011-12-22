@@ -4,7 +4,7 @@ es.getType = function (typeName) {
     var ns = es.getGeneratedNamespaceObj();
 
     return ns[typeName];
-}
+};
 
 es.clearTypes = function () {
 
@@ -24,20 +24,32 @@ es.onError.subscribe(function (error) {
 
 //#region Core Quick Methods
 
+es.isArray = function (array) {
+    return array.isArray || Object.prototype.toString.call(array) === '[object Array]';
+};
+
+es.objectKeys = Object.keys || function keys(obj) {
+    var res = [];
+    for (var key in obj) {
+        res.push(key);
+    }
+    return res;
+};
+
 es.isEsCollection = function (array) {
 
     var isEsArray = false;
 
-    if (array.isArray || Object.prototype.toString.call(array) === '[object Array]') {
-        
+    if (es.isArray(array)) {
+
         if (array.length > 0) {
             if (array[0].hasOwnProperty("RowState")) {
                 isEsArray = true;
             }
         }
-        
+
     }
     return isEsArray;
-}
+};
 
 //#endregion
