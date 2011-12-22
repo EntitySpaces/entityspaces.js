@@ -191,7 +191,7 @@ var utils = {
         }
     },
 
-    getDirtyEntities: function (obj) {
+    getDirtyGraph: function (obj) {
 
         var i, k, dirty, paths = [], root = null;
 
