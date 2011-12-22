@@ -799,6 +799,37 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         }
     },
 
+    //call this when walking the returned server data to populate collection
+    populateCollection: function (dataArray) {
+        var entityTypeName = this.entityTypeName, // this should be set in the 'DefineCollection' call 
+            entityCtor = es.getType(entityTypeName),
+            finalColl = [],
+            create = this.createEntity,
+            entity;
+
+        if (dataArray && es.isArray(dataArray)) {
+
+            ko.utils.arrayForEach(dataArray, function (data) {
+                entity = create(data, entityCtor);
+                finalColl.push(entity);
+            });
+
+            //now set the observableArray that we inherit off of
+            this(finalColl);
+        }
+    },
+
+    createEntity: function (entityData, Ctor) {
+        var entityTypeName = this.entityTypeName, // this should be set in the 'DefineCollection' call 
+            EntityCtor = Ctor || es.getType(entityTypeName),
+            entity;
+
+        entity = new EntityCtor();
+        entity.populateEntity(entityData);
+
+        return entity;
+    },
+
     //#region Loads
     load: function (options) {
         //if a route was passed in, use that route to pull the ajax options url & type
@@ -904,7 +935,7 @@ es.defineEntity = function (typeName, constrctor) {
 
     //add it to the correct namespace if it isn't an anonymous type
     if (!isAnonymous) {
-        es.generatedNamespace[typeName] = Ctor;
+        es.generatedNamespace[typeName] = EsCtor;
     }
 
     return EsCtor;

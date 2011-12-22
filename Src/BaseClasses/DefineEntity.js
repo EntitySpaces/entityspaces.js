@@ -20,7 +20,7 @@ es.defineEntity = function (typeName, constrctor) {
 
     //add it to the correct namespace if it isn't an anonymous type
     if (!isAnonymous) {
-        es.generatedNamespace[typeName] = Ctor;
+        es.generatedNamespace[typeName] = EsCtor;
     }
 
     return EsCtor;

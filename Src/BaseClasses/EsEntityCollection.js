@@ -1,4 +1,5 @@
-﻿/// <reference path="../../Libs/jquery-1.7.1.js" />
+﻿/*globals es*/
+/// <reference path="../../Libs/jquery-1.7.1.js" />
 /// <reference path="../../Libs/json2.js" />
 /// <reference path="../../Libs/knockout-2.0.RC.js" />
 
@@ -34,15 +35,58 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     },
 
     //call this when walking the returned server data to populate collection
-    populateCollection: function(dataArray){
+    populateCollection: function (dataArray) {
+        var entityTypeName = this.entityTypeName, // this should be set in the 'DefineCollection' call, unless it was an anonymous definition
+            EntityCtor,
+            finalColl = [],
+            create = this.createEntity,
+            entity;
 
+        if (entityTypeName) {
+            EntityCtor = es.getType(entityTypeName); //might return undefined
+        }
+
+        if (dataArray && es.isArray(dataArray)) {
+
+            ko.utils.arrayForEach(dataArray, function (data) {
+
+                //call 'createEntity' for each item in the data array
+                entity = create(data, EntityCtor); //ok to pass an undefined Ctor
+
+                if (entity !== undefined && entity !== null) { //could be zeros or empty strings legitimately
+                    finalColl.push(entity);
+                }
+            });
+
+            //now set the observableArray that we inherit off of
+            this(finalColl);
+        }
     },
 
-    createEntity: function(entityData){
+    createEntity: function (entityData, Ctor) {
+        var entityTypeName, // this should be set in the 'DefineCollection' call 
+            EntityCtor = Ctor,
+            entity;
 
+        if (!Ctor) { //undefined Ctor was passed in
+            entityTypeName = this.entityTypeName;
+            EntityCtor = es.getType(entityTypeName); //could return undefined
+        }
+
+        if (EntityCtor) { //if we have a constructor, new it up
+            entity = new EntityCtor();
+            entity.populateEntity(entityData);
+        } else { //else just set the entity to the passed in data
+            entity = entityData;
+        }
+
+        return entity;
     },
+
     //#region Loads
     load: function (options) {
+        var self = this;
+
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
             options.url = this.routes[options.route].url;
@@ -61,10 +105,10 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         options.success = function (data) {
 
             //populate the entity with the returned data;
-            self.populateEntity(data);
+            self.populateCollection(data);
 
             //fire the passed in success handler
-            if (origSuccessHandler) { origSuccessHandler(data); }
+            if (origSuccessHandler) { origSuccessHandler.call(self, data); }
         };
 
         es.dataProvider.execute(options);
@@ -73,22 +117,11 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     //#region Save
     save: function () {
-        var route,
+        var self = this, 
+            route,
             ajaxOptions = {
                 data: self.toJS()
             };
-
-        switch (self.RowState() || es.RowState.ADDED) {
-            case es.RowState.ADDED:
-                route = self.routes['create'];
-                break;
-            case es.RowState.MODIFIED:
-                route = self.routes['update'];
-                break;
-            case es.RowState.DELETED:
-                route = self.routes['del'];
-                break;
-        }
 
         if (route) {
             ajaxOptions.url = route.url;
@@ -96,13 +129,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         }
 
         ajaxOptions.success = function (data) {
-            self.populateEntity(data);
-        };
-
-        ajaxOptions.error = function (xhr, textStatus, errorThrown) {
-
-            //any suggestions?
-
+            self.populateCollection(data);
         };
 
         es.dataProvider.execute(ajaxOptions);
@@ -111,11 +138,11 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     //#region Serialization
     toJS: function () {
-        return ko.toJS(this);
+        return ko.toJS(this()); //use this() to pull the array out
     },
 
     toJSON: function () {
-        return ko.toJSON(this);
+        return ko.toJSON(this()); //use this() to pull the array out
     }
 
 };
