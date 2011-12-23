@@ -9,12 +9,14 @@ var getEmployeeCollectionData = function () {
             "EmployeeID": 1,
             "FirstName": "Jimmy",
             "LastName": "Jones",
+            "esExtendedData": [{ "Key": "ExtraColumn", "Value": "asdf" }, { "Key": "ExtraColumn2", "Value": 1519}],
             "OrdersCollectionByEmployeeID": [
                 {
                     "CustomerID": "ERNSH",
                     "EmployeeID": 1,
                     "Freight": 140,
                     "OrderDate": "/Date(837576000000-0400)/",
+                    "esExtendedData": [{ "Key": "ExtraColumn", "Value": "asdf" }, { "Key": "ExtraColumn2", "Value": 1519}],
                     "OrderDetailsCollectionByOrderID": [
                         {
                             "Discount": 0.2,
@@ -23,6 +25,7 @@ var getEmployeeCollectionData = function () {
                             "Quantity": 50,
                             "RowState": 2,
                             "UnitPrice": 15,
+                            "esExtendedData": [{ "Key": "ExtraColumn", "Value": "asdf" }, { "Key": "ExtraColumn2", "Value": 1519}],
                             "__type": "OrderDetails:#BusinessObjects"
                         },
                         {
@@ -32,6 +35,7 @@ var getEmployeeCollectionData = function () {
                             "Quantity": 65,
                             "RowState": 2,
                             "UnitPrice": 17,
+                            "esExtendedData": [{ "Key": "ExtraColumn", "Value": "asdf" }, { "Key": "ExtraColumn2", "Value": 1519}],
                             "__type": "OrderDetails:#BusinessObjects"
                         },
                         {
@@ -41,6 +45,7 @@ var getEmployeeCollectionData = function () {
                             "Quantity": 6,
                             "RowState": 2,
                             "UnitPrice": 25,
+                            "esExtendedData": [{ "Key": "ExtraColumn", "Value": "asdf" }, { "Key": "ExtraColumn2", "Value": 1519}],
                             "__type": "OrderDetails:#BusinessObjects"
                         }
                     ],
@@ -54,6 +59,7 @@ var getEmployeeCollectionData = function () {
                     "ShipPostalCode": "8010",
                     "ShipVia": 1,
                     "ShippedDate": "/Date(838094400000-0400)/",
+                    "esExtendedData": [{ "Key": "ExtraColumn", "Value": "asdf" }, { "Key": "ExtraColumn2", "Value": 1519}],
                     "__type": "Orders:#BusinessObjects"
                 },
                 {

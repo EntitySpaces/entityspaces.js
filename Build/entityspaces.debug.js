@@ -344,12 +344,13 @@ var utils = {
             return theObj;
         });
 
+        //#region Rebuild tree of dirty objects from "paths[]"
         if (paths.length > 0) {
 
             if (es.isArray(obj)) {
                 dirty = [];
             } else {
-                dirty = utils.shallowCopy(obj);
+                dirty = utils.shallowCopy(utils.removeExtraColumns(obj));
             }
 
             root = dirty;
@@ -375,6 +376,8 @@ var utils = {
                     data = data[thePath[k]];
                 }
 
+                data = utils.removeExtraColumns(data);
+
                 if (es.isArray(dirty)) {
                     dirty.push(utils.shallowCopy(data));
                 } else {
@@ -382,6 +385,7 @@ var utils = {
                 }
             }
         }
+        //#endregion Save
 
         return root;
     }
