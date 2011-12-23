@@ -140,7 +140,10 @@ es.EsEntity = function () { //empty constructor
         var route,
             options = {};
 
-        switch (self.RowState() || es.RowState.ADDED) {
+        // The default unless overriden
+        route = self.routes['commit'];
+
+        switch (self.RowState()) {
             case es.RowState.ADDED:
                 route = self.routes['create'];
                 break;

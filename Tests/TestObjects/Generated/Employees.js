@@ -40,10 +40,8 @@
     //#region Routing
 
     es.objects.Employees.prototype.routes = {
-        create: { method: 'PUT', url: '/Employees/Create' },
-        update: { method: 'POST', url: '/Employees/Update' },
-        del: { method: 'DELETE', url: '/Employees/Delete' },
-        loadByPrimaryKey: { method: 'GET', url: '/Product/{EmployeeID}' }
+        commit: { method: 'PUT', url: '/Employees/Save' },
+        loadByPrimaryKey: { method: 'GET', url: '/Employees/{EmployeeID}' }
     };
 
     //#endregion
