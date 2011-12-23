@@ -25,8 +25,12 @@
     es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
 
     var emp = new es.objects.Employees();
-    emp.loadByPrimaryKey(2, function () {
-        var str = "It Worked";
-    });
+    emp.loadByPrimaryKey(2);
+
+    var setbreakpointhere = 1;
+    
+//    , function () {
+//        var str = "It Worked";
+//    });
 
 </script>
