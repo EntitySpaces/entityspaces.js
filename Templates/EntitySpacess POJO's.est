@@ -9,7 +9,7 @@
     http://www.entityspaces.net 
 
     This template is bound by the EntitySpaces License Agreement which 
-    is located here:
+    is located here: 
 
     http://www.entityspaces.net/portal/License/tabid/97/Default.aspx
     
@@ -69,36 +69,53 @@ foreach(string tableOrView in entities)
 	// Begin actual template execution
 	//----------------------------------------	
 	string path = this.Template.Header.FilePath;%>
-(function (es, myNS) { //myNS = "myNameSpace" ... for example purposes
+(function (es) { //myNS = "myNameSpace" ... for example purposes
 
-	if (typeof (es) === undefined) { throw "Please Load EntitySpaces.Core First"; }
+    if (typeof (es) === undefined) {
+        throw "Please Load EntitySpaces.Core First";
+    }
 
-	myNS.<%=source.Entity%>  = function (data) {
-	<%
+    es.objects.<%=source.Entity%> = es.defineEntity(function () {
+
+        // core columns<% 
 	foreach(IColumn col in source.Columns)
 	{
 		if(!col.IsConcurrency && ! col.IsEntitySpacesConcurrency) {%>	
 		this.<%=col.PropertyName%> = ko.observable(null);<%} else {%>
 		this.<%=col.PropertyName%> = null;<%}}%>
 		
-		this.init(data); //base object
-    };
+        // extended colulmns
+        this.esExtendedData = null;
+    });
 
-	myNS.<%=source.Entity%>.prototype = new es.BaseEsObject();
+    //#region Routing
 
-	//#region Routing
-
-	myNS.<%=source.Entity%>.prototype.routes = {
-		create: { method: 'PUT', url: '/<%=source.Entity%>/Create' },
-		update: { method: 'POST', url: '/<%=source.Entity%>/Update'},
-		del: { method: 'DELETE', url: '/<%=source.Entity%>/Delete'},<%
+    es.objects.<%=source.Entity%>.prototype.routes = {
+        create: { method: 'PUT', url: '/<%=source.Entity%>/Create' },
+        update: { method: 'POST', url: '/<%=source.Entity%>/Update' },
+        del: { method: 'DELETE', url: '/<%=source.Entity%>/Delete' },<%
 		if(table != null) {%>
 		loadByPrimaryKey: { method: 'GET', url: '/<%=source.Entity%>/<% 
 		foreach(IColumn col in table.PrimaryKeys){%>{<%=col.ParameterName%>}<%}%>'}<%}%>
-	};
+    };
 
     //#endregion
-} (window.es, window.myNS));	
+} (window.es, window.myNS));
+
+(function (es) {
+
+    es.objects.<%=source.Collection%> = es.defineCollection('<%=source.Collection%>', '<%=source.Entity%>');
+
+    //#region Routing
+
+    es.objects.<%=source.Collection%>.prototype.routes = {
+        create: { method: 'PUT', url: '/<%=source.Collection%>/Create' },
+        update: { method: 'POST', url: '/<%=source.Collection%>/Update' },
+        del: { method: 'DELETE', url: '/<%=source.Collection%>/Delete' }
+    };
+
+    //#endregion
+} (window.es));	
 <%
 // Write out the Service Interface
 string filepath = source.Entity + ".js";
