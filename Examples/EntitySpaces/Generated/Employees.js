@@ -40,8 +40,8 @@
     //#region Routing
 
     es.objects.Employees.prototype.routes = {
-        commit: { method: 'PUT', url: 'http://localhost/esService/esJson.svc/Employees_Save' },
-        loadByPrimaryKey: { method: 'GET', url: 'http://localhost/esService/esJson.svc/Employees_LoadByPrimaryKey', synchronous: true }
+        commit: { method: 'PUT', url: 'Employees_Save' },
+        loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', synchronous: true }
     };
 
     //#endregion

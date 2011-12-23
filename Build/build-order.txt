@@ -3,7 +3,8 @@
 ..\Src\Core.js
 ..\Src\utils.js
 ..\Src\Visitor.js
-..\Src\ajaxProvider.js
+..\Src\Providers\ajaxProvider.js
+..\Src\Providers\XMLHttpRequestProvider.js
 ..\Src\BaseClasses\EsEntity.js
 ..\Src\BaseClasses\EsEntityCollection.js
 ..\Src\BaseClasses\DefineEntity.js

@@ -21,8 +21,11 @@
 
 <script language="javascript" type="text/javascript">
 
+    es.dataProvider = new es.XMLHttpRequestProvider();
+    es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
+
     var emp = new es.objects.Employees();
-    emp.loadByPrimaryKey({ EmployeeID: 2 }, function () {
+    emp.loadByPrimaryKey(2, function () {
         var str = "It Worked";
     });
 
