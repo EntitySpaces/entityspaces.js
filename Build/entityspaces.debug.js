@@ -755,13 +755,13 @@ es.EsEntity = function () { //empty constructor
 
         switch (self.RowState()) {
             case es.RowState.ADDED:
-                route = self.routes['create'];
+                route = self.routes['create'] || route;
                 break;
             case es.RowState.MODIFIED:
-                route = self.routes['update'];
+                route = self.routes['update'] || route;
                 break;
             case es.RowState.DELETED:
-                route = self.routes['del'];
+                route = self.routes['del'] || route;
                 break;
         }
 
