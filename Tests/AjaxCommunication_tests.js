@@ -1,6 +1,6 @@
 ﻿/// <reference path="../Libs/jquery-1.7.1.js" />
 /// <reference path="../Libs/json2.js" />
-/// <reference path="../Libs/knockout-2.0.RC.js" />
+/// <reference path="../Libs/knockout-2.0.0.debug.js" />
 /// <reference path="Qunit/qunit.js" />
 /// <reference path="MockJax/jquery.mockjax.js" />
 

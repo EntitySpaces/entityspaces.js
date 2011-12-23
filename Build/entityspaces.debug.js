@@ -122,7 +122,7 @@ es.isEsCollection = function (array) {
 ﻿/*globals es, ko*/
 
 /// <reference path="../Libs/jquery-1.7.1.js" />
-/// <reference path="../Libs/knockout-2.0.RC.js" />
+/// <reference path="../Libs/knockout-2.0.0.debug.js" />
 
 var utils = {
 
@@ -607,7 +607,7 @@ es.dataProvider = new es.AjaxProvider(); //assign default data provider
 ﻿/*globals es */
 /// <reference path="../Libs/jquery-1.7.1.js" />
 /// <reference path="../Libs/json2.js" />
-/// <reference path="../Libs/knockout-2.0.RC.js" />
+/// <reference path="../Libs/knockout-2.0.0.debug.js" />
 /// <reference path="../Constants.js" />
 /// <reference path="../Namespace.js" />
 /// <reference path="../Utils.js" />
@@ -798,7 +798,7 @@ es.EsEntity = function () { //empty constructor
 ﻿/*globals es*/
 /// <reference path="../../Libs/jquery-1.7.1.js" />
 /// <reference path="../../Libs/json2.js" />
-/// <reference path="../../Libs/knockout-2.0.RC.js" />
+/// <reference path="../../Libs/knockout-2.0.0.debug.js" />
 
 
 es.EsEntityCollection = function () {
