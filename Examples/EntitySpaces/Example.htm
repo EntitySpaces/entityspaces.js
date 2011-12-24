@@ -29,12 +29,16 @@
         var emp = new es.objects.Employees();
         emp.loadByPrimaryKey(2);
 
-        emp.FirstName(emp.FirstName() + "!");
+        emp.FirstName("This");
 
         emp.save();
 
         var coll = new es.objects.EmployeesCollection();
         coll.loadAll();
+
+        coll()[0].FirstName("Rocks!!");
+
+        coll.save();
 
         var setbreakpointhere = 1;
     }

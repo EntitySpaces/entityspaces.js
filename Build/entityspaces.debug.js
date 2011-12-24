@@ -1017,11 +1017,10 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     },
 
     //#region Save
-    save: function () {
+    save: function (origSuccess, origError) {
         var self = this;
 
-        var route,
-            options = {};
+        var options = {};
 
         // The default unless overriden
         options.route = self.routes['commit'];
@@ -1029,9 +1028,9 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         //TODO: potentially the most inefficient call in the whole lib
         options.data = es.utils.getDirtyGraph(ko.toJS(self));
 
-        if (route) {
-            options.url = route.url;
-            options.type = route.method;
+        if (options.route) {
+            options.url = options.route.url;
+            options.type = options.route.method;
         }
 
         options.success = function (data) {
