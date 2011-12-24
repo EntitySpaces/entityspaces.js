@@ -5,17 +5,17 @@ This is an example of real working code for the EntitySpaces Knockout/Javascript
 
 * **A simple button click to kick off our javascript method**
 
-<code>
+````html
 <html>
     <body>
         <button onclick="doIt()" />DoIt</button>
     </body>
 </html>
-<code>
+````
 
 * **The entityspaces.js syntax **
 
-<pre>
+````javascript
 <script language="javascript" type="text/javascript">
 
     es.dataProvider = new es.XMLHttpRequestProvider();
@@ -39,5 +39,4 @@ This is an example of real working code for the EntitySpaces Knockout/Javascript
     }
 
 </script>
-
-</pre>
+````
