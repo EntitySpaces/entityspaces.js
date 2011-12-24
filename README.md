@@ -1,7 +1,7 @@
-Purpose of entityspaces.js
-==================================
+entityspaces.js - A Knockout/Javascript ORM
+============================================
 
-This is an example of real working code for the EntitySpaces Knockout/Javascript ORM
+This is an example of real working code for the entityspaces.js
 
 * **A simple button click to kick off our javascript method**
 
