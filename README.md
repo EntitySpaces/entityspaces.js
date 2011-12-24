@@ -5,13 +5,12 @@ This is an example of real working code for the EntitySpaces Knockout/Javascript
 
 * **A simple button click to kick off our javascript method**
 
-<pre>
+
 <html>
     <body>
         <button onclick="doIt()" />DoIt</button>
     </body>
 </html>
-</pre>
 
 * **The entityspaces.js syntax **
 
