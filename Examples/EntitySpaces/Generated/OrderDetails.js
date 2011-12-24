@@ -22,10 +22,8 @@
     //#region Routing
 
     es.objects.OrderDetails.prototype.routes = {
-        create: { method: 'PUT', url: '/OrderDetails/Create' },
-        update: { method: 'POST', url: '/OrderDetails/Update' },
-        del: { method: 'DELETE', url: '/OrderDetails/Delete' },
-        loadByPrimaryKey: { method: 'GET', url: '/OrderDetails/{orderID}{productID}' }
+        commit: { method: 'PUT', url: 'OrderDetails_Save', response: 'entity' },
+        loadByPrimaryKey: { method: 'GET', url: 'OrderDetails_LoadByPrimaryKey', response: 'entity', synchronous: true }
     };
 
     //#endregion
@@ -38,9 +36,8 @@
     //#region Routing
 
     es.objects.OrderDetailsCollection.prototype.routes = {
-        create: { method: 'PUT', url: '/OrderDetailsCollection/Create' },
-        update: { method: 'POST', url: '/OrderDetailsCollection/Update' },
-        del: { method: 'DELETE', url: '/OrderDetailsCollection/Delete' }
+        commit: { method: 'PUT', url: 'OrdersCollection_Save', response: 'collection' },
+        loadAll: { method: 'GET', url: 'OrdersCollection_LoadAll', response: 'collection', synchronous: true }
     };
 
     //#endregion

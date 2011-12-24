@@ -54,7 +54,7 @@ es.XMLHttpRequestProvider = function () {
                     return origSuccess(theData[options.route.response]);
 
                 case 'collection':
-                    break;
+                    return origSuccess(theData[options.route.response]);
             }
 
         } else {

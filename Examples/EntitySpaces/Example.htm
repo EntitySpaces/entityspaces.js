@@ -24,7 +24,7 @@
     es.dataProvider = new es.XMLHttpRequestProvider();
     es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
 
-    doIt = function() {
+    doIt = function () {
 
         var emp = new es.objects.Employees();
         emp.loadByPrimaryKey(2);
@@ -32,6 +32,9 @@
         emp.FirstName(emp.FirstName() + "!");
 
         emp.save();
+
+        var coll = new es.objects.EmployeesCollection();
+        coll.loadAll();
 
         var setbreakpointhere = 1;
     }

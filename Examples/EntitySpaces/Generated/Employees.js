@@ -55,9 +55,8 @@
     //#region Routing
 
     es.objects.EmployeesCollection.prototype.routes = {
-        create: { method: 'PUT', url: '/EmployeesCollection/Create' },
-        update: { method: 'POST', url: '/EmployeesCollection/Update' },
-        del: { method: 'DELETE', url: '/EmployeesCollection/Delete' }
+        commit: { method: 'PUT', url: 'EmployeesCollection_Save', response: 'collection' },
+        loadAll: { method: 'GET', url: 'EmployeesCollection_LoadAll', response: 'collection', synchronous: true }
     };
 
     //#endregion

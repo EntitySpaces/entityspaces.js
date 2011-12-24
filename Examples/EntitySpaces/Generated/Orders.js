@@ -38,10 +38,8 @@
     //#region Routing
 
     es.objects.Orders.prototype.routes = {
-        create: { method: 'PUT', url: '/Orders/Create' },
-        update: { method: 'POST', url: '/Orders/Update' },
-        del: { method: 'DELETE', url: '/Orders/Delete' },
-        loadByPrimaryKey: { method: 'GET', url: '/Orders/{OrderID}' }
+        commit: { method: 'PUT', url: 'Orders_Save', response: 'entity' },
+        loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity', synchronous: true }
     };
 
     //#endregion
