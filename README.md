@@ -4,7 +4,9 @@ A Knockout/Javascript ORM
 
 This is an example of real working code for the entityspaces.js
 
+
 * **A simple button click to kick off our javascript method**
+
 
 ````html
 <html>
@@ -14,7 +16,9 @@ This is an example of real working code for the entityspaces.js
 </html>
 ````
 
+
 * **The entityspaces.js syntax**
+
 
 ````javascript
 <script language="javascript" type="text/javascript">
@@ -24,14 +28,14 @@ This is an example of real working code for the entityspaces.js
 
     doIt = function () {
 
-		// Single Employee load/save
+        // Single Employee load/save
         var emp = new es.objects.Employees();
         emp.loadByPrimaryKey(2);
 
         emp.FirstName("This");
         emp.save();
 
-		// Collection load/save
+        // Collection load/save
         var coll = new es.objects.EmployeesCollection();
         coll.loadAll();
 
