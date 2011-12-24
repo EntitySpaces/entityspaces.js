@@ -12,7 +12,6 @@ es.EsEntityCollection = function () {
 
     obs['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
 
-
     return obs;
 };
 
@@ -92,12 +91,12 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
-            options.url = this.routes[options.route].url;
-            options.type = this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
+            options.url = options.route.url || this.routes[options.route].url;
+            options.type = options.route.method || this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
         }
 
         // ensure that the data is flattened
-        if (options.data['toJS']) {
+        if (options.data && options.data['toJS']) {
             options.data = options.data.toJS();
         }
 
@@ -118,24 +117,43 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     },
     //#endregion Save
 
+    loadAll: function (success) {
+
+        this.load({
+            route: this.routes['loadAll'],
+            data: null,
+            success: success
+        });
+    },
+
     //#region Save
     save: function () {
-        var self = this, 
-            route,
-            ajaxOptions = {
-                data: self.toJS()
-            };
+        var self = this;
+
+        var route,
+            options = {};
+
+        // The default unless overriden
+        options.route = self.routes['commit'];
+
+        //TODO: potentially the most inefficient call in the whole lib
+        options.data = es.utils.getDirtyGraph(ko.toJS(self));
 
         if (route) {
-            ajaxOptions.url = route.url;
-            ajaxOptions.type = route.method;
+            options.url = route.url;
+            options.type = route.method;
         }
 
-        ajaxOptions.success = function (data) {
+        options.success = function (data) {
             self.populateCollection(data);
+            if (origSuccess) { origSuccess.call(self, data); }
         };
 
-        es.dataProvider.execute(ajaxOptions);
+        options.error = function (xhr, textStatus, errorThrown) {
+            if (origError) { origError.call(self, { code: textStatus, message: errorThrown }); }
+        };
+
+        es.dataProvider.execute(options);
     },
     //#endregion
 
