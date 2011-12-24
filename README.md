@@ -13,7 +13,7 @@ This is an example of real working code for the EntitySpaces Knockout/Javascript
 </html>
 ````
 
-* **The entityspaces.js syntax **
+* **The entityspaces.js syntax**
 
 ````javascript
 <script language="javascript" type="text/javascript">
@@ -23,18 +23,18 @@ This is an example of real working code for the EntitySpaces Knockout/Javascript
 
     doIt = function () {
 
+		// Single Employee load/save
         var emp = new es.objects.Employees();
         emp.loadByPrimaryKey(2);
 
         emp.FirstName("This");
-
         emp.save();
 
+		// Collection load/save
         var coll = new es.objects.EmployeesCollection();
         coll.loadAll();
 
         coll()[0].FirstName("Rocks!!");
-
         coll.save();
     }
 
