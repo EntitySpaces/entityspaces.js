@@ -1,4 +1,4 @@
-entityspaces.js - A Knockout/Javascript ORM
+A Knockout/Javascript ORM
 ============================================
 
 This is an example of real working code for the entityspaces.js
