@@ -4,6 +4,7 @@
         throw "Please Load EntitySpaces.Core First";
     }
 
+
     es.objects.Employees = es.defineEntity(function () {
 
         // core columns
@@ -40,8 +41,8 @@
     //#region Routing
 
     es.objects.Employees.prototype.routes = {
-        commit: { method: 'PUT', url: 'Employees_Save' },
-        loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', synchronous: true }
+        commit: { method: 'PUT', url: 'Employees_Save', response: 'entity' },
+        loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity', synchronous: true }
     };
 
     //#endregion

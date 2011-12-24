@@ -155,8 +155,10 @@ es.EsEntity = function () { //empty constructor
                 break;
         }
 
+        options.route = route;
+
         //TODO: potentially the most inefficient call in the whole lib
-        options.data = es.utils.getDirtyGraph(this.toJS(self));
+        options.data = es.utils.getDirtyGraph(ko.toJS(self));
 
         if (route) {
             options.url = route.url;
@@ -165,25 +167,27 @@ es.EsEntity = function () { //empty constructor
 
         options.success = function (data) {
             self.populateEntity(data);
-            origSuccess.call(self, data);
+            if (origSuccess) { origSuccess.call(self, data); }
         };
 
         options.error = function (xhr, textStatus, errorThrown) {
-            origError.call(self, { code: textStatus, message: errorThrown });
+            if (origError) { origError.call(self, { code: textStatus, message: errorThrown }); }
         };
 
         es.dataProvider.execute(options);
     };
     //#endregion
 
-    //#region Serialization
-    this.toJS = function () {
-        return ko.toJS(this);
-    };
+    // TODO : THIS CAUSE A RECURSIVE STACK OVERFLOW
 
-    this.toJSON = function () {
-        return ko.toJSON(this);
-    };
+    //#region Serialization
+    //    this.toJS = function () {
+    //        return ko.toJS(this);
+    //    };
+
+    //    this.toJSON = function () {
+    //        return ko.toJSON(this);
+    //    };
     //#endregion
 
 };

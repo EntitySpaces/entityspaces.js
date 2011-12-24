@@ -270,7 +270,9 @@ var utils = {
         return entity;
     },
 
-    // private function used by 'getDirtyEntities' below
+    // Private function used by 'getDirtyEntities' below
+    // NOTE: This strips out unwanted properties, this method is only to
+    //       be used to by getDirtyEntities
     shallowCopy: function (src) {
         if (typeof src === 'object' && src !== null) {
             var dst;
@@ -301,9 +303,18 @@ var utils = {
                 if (!dst.__proto__) { dst.__proto__ = proto; }
             }
 
-            ko.utils.arrayForEach(es.objectKeys(src), function(key) {
+            ko.utils.arrayForEach(es.objectKeys(src), function (key) {
                 if (!es.isEsCollection(src[key])) {
-                    dst[key] = src[key];
+
+                    switch (key) {
+                        case '___esEntity___':
+                        case 'esTypeDefs':
+                        case 'routes':
+                            break;
+                        default:
+                            dst[key] = src[key];
+                            break;
+                    }
                 }
             });
             return dst;
@@ -612,11 +623,17 @@ es.dataProvider = new es.AjaxProvider(); //assign default data provider
 
 es.XMLHttpRequestProvider = function () {
 
+    var noop = function () { };
     this.baseURL = "http://localhost";
 
     this.execute = function (options) {
 
-        var theData = null, path = null, xmlHttp;
+        var theData = null,
+            path = null,
+            xmlHttp,
+            origSuccess = options.success || noop,
+            origError = options.error || noop;
+
 
         // Create HTTP request
         try {
@@ -635,7 +652,7 @@ es.XMLHttpRequestProvider = function () {
         }
 
         // Build the operation URL
-        path = this.baseURL + options.route.url;
+        path = this.baseURL + options.url;
 
         // Make the HTTP request
         xmlHttp.open("POST", path, options.synchronous || false);
@@ -651,12 +668,23 @@ es.XMLHttpRequestProvider = function () {
             //es.makeRequstError = xmlHttp.responseText;
         }
 
-        return theData;
+        if (options.route.response !== undefined) {
+
+            switch (options.route.response) {
+                case 'entity':
+                    return origSuccess(theData[options.route.response]);
+
+                case 'collection':
+                    break;
+            }
+
+        } else {
+            return theData;
+        }
     };
 };
 
-
-es.dataProvider = new es.XMLHttpRequestProvider(); //assign default data provider 
+// es.dataProvider = new es.XMLHttpRequestProvider(); //assign default data provider 
  
  
 /*********************************************** 
@@ -819,8 +847,10 @@ es.EsEntity = function () { //empty constructor
                 break;
         }
 
+        options.route = route;
+
         //TODO: potentially the most inefficient call in the whole lib
-        options.data = es.utils.getDirtyGraph(this.toJS(self));
+        options.data = es.utils.getDirtyGraph(ko.toJS(self));
 
         if (route) {
             options.url = route.url;
@@ -829,25 +859,27 @@ es.EsEntity = function () { //empty constructor
 
         options.success = function (data) {
             self.populateEntity(data);
-            origSuccess.call(self, data);
+            if (origSuccess) { origSuccess.call(self, data); }
         };
 
         options.error = function (xhr, textStatus, errorThrown) {
-            origError.call(self, { code: textStatus, message: errorThrown });
+            if (origError) { origError.call(self, { code: textStatus, message: errorThrown }); }
         };
 
         es.dataProvider.execute(options);
     };
     //#endregion
 
-    //#region Serialization
-    this.toJS = function () {
-        return ko.toJS(this);
-    };
+    // TODO : THIS CAUSE A RECURSIVE STACK OVERFLOW
 
-    this.toJSON = function () {
-        return ko.toJSON(this);
-    };
+    //#region Serialization
+    //    this.toJS = function () {
+    //        return ko.toJS(this);
+    //    };
+
+    //    this.toJSON = function () {
+    //        return ko.toJSON(this);
+    //    };
     //#endregion
 
 }; 

@@ -2,11 +2,17 @@
 
 es.XMLHttpRequestProvider = function () {
 
+    var noop = function () { };
     this.baseURL = "http://localhost";
 
     this.execute = function (options) {
 
-        var theData = null, path = null, xmlHttp;
+        var theData = null,
+            path = null,
+            xmlHttp,
+            origSuccess = options.success || noop,
+            origError = options.error || noop;
+
 
         // Create HTTP request
         try {
@@ -25,7 +31,7 @@ es.XMLHttpRequestProvider = function () {
         }
 
         // Build the operation URL
-        path = this.baseURL + options.route.url;
+        path = this.baseURL + options.url;
 
         // Make the HTTP request
         xmlHttp.open("POST", path, options.synchronous || false);
@@ -41,9 +47,20 @@ es.XMLHttpRequestProvider = function () {
             //es.makeRequstError = xmlHttp.responseText;
         }
 
-        return theData;
+        if (options.route.response !== undefined) {
+
+            switch (options.route.response) {
+                case 'entity':
+                    return origSuccess(theData[options.route.response]);
+
+                case 'collection':
+                    break;
+            }
+
+        } else {
+            return theData;
+        }
     };
 };
 
-
-es.dataProvider = new es.XMLHttpRequestProvider(); //assign default data provider
+// es.dataProvider = new es.XMLHttpRequestProvider(); //assign default data provider

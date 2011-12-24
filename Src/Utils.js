@@ -149,7 +149,9 @@ var utils = {
         return entity;
     },
 
-    // private function used by 'getDirtyEntities' below
+    // Private function used by 'getDirtyEntities' below
+    // NOTE: This strips out unwanted properties, this method is only to
+    //       be used to by getDirtyEntities
     shallowCopy: function (src) {
         if (typeof src === 'object' && src !== null) {
             var dst;
@@ -180,9 +182,18 @@ var utils = {
                 if (!dst.__proto__) { dst.__proto__ = proto; }
             }
 
-            ko.utils.arrayForEach(es.objectKeys(src), function(key) {
+            ko.utils.arrayForEach(es.objectKeys(src), function (key) {
                 if (!es.isEsCollection(src[key])) {
-                    dst[key] = src[key];
+
+                    switch (key) {
+                        case '___esEntity___':
+                        case 'esTypeDefs':
+                        case 'routes':
+                            break;
+                        default:
+                            dst[key] = src[key];
+                            break;
+                    }
                 }
             });
             return dst;

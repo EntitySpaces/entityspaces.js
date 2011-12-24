@@ -15,7 +15,7 @@
     <title>EntitySpaces.js Basic Example</title>
 </head>
 <body>
-    
+    <button onclick="doIt()" />DoIt</button>
 </body>
 </html>
 
@@ -24,13 +24,16 @@
     es.dataProvider = new es.XMLHttpRequestProvider();
     es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
 
-    var emp = new es.objects.Employees();
-    emp.loadByPrimaryKey(2);
+    doIt = function() {
 
-    var setbreakpointhere = 1;
-    
-//    , function () {
-//        var str = "It Worked";
-//    });
+        var emp = new es.objects.Employees();
+        emp.loadByPrimaryKey(2);
+
+        emp.FirstName(emp.FirstName() + "!");
+
+        emp.save();
+
+        var setbreakpointhere = 1;
+    }
 
 </script>
