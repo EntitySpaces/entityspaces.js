@@ -45,3 +45,5 @@ This is an example of real working code for the entityspaces.js
 
 </script>
 ````
+
+[See a Video of entityspaces.js in action](http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces.html)
