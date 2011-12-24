@@ -5,7 +5,7 @@ A Knockout/Javascript ORM
 This is an example of real working code for the entityspaces.js
 
 
-* **A simple button click to kick off our javascript method**
+**A simple button click to kick off our javascript method**
 
 
 ````html
@@ -17,7 +17,7 @@ This is an example of real working code for the entityspaces.js
 ````
 
 
-* **The entityspaces.js syntax**
+**The entityspaces.js syntax**
 
 
 ````javascript
