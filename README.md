@@ -2,6 +2,11 @@ A Knockout/Javascript ORM
 ============================================
 
 
+**Watch a Video of entityspaces.js in action**
+
+[Video ...](http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces.html)
+
+
 This is an example of real working code for the entityspaces.js
 
 
@@ -45,6 +50,3 @@ This is an example of real working code for the entityspaces.js
 
 </script>
 ````
-**Watch a Video of entityspaces.js in action**
-
-[Video ...](http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces.html)
