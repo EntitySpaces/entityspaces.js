@@ -7,7 +7,7 @@ A Knockout/Javascript ORM
 [Video ...](http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces.html)
 
 
-This is an example of real working code for the entityspaces.js
+Below is an example of real working code for the entityspaces.js and is the same code demonstrated in the video above.
 
 
 **A simple button click to kick off our javascript method**
