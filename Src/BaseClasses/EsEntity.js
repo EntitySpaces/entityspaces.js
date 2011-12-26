@@ -95,6 +95,13 @@ es.EsEntity = function () { //empty constructor
     //#region Loads
     this.load = function (options) {
         self = this;
+
+        if (options.success !== undefined || options.error !== undefined) {
+            options.async = true;
+        } else {
+            options.async = false;
+        }
+
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
             options.url = options.route.url || this.routes[options.route].url;
@@ -134,11 +141,16 @@ es.EsEntity = function () { //empty constructor
     //#endregion Save
 
     //#region Save
-    this.save = function (origSuccess, origError) {
+    this.save = function (success, error) {
         self = this;
 
-        var route,
-            options = {};
+        var route, options = {};
+
+        if (success !== undefined || error !== undefined) {
+            options.async = true;
+        } else {
+            options.async = false;
+        }
 
         // The default unless overriden
         route = self.routes['commit'];
@@ -167,11 +179,11 @@ es.EsEntity = function () { //empty constructor
 
         options.success = function (data) {
             self.populateEntity(data);
-            if (origSuccess) { origSuccess.call(self, data); }
+            if (success) { success.call(self, data); }
         };
 
         options.error = function (xhr, textStatus, errorThrown) {
-            if (origError) { origError.call(self, { code: textStatus, message: errorThrown }); }
+            if (error) { error.call(self, { code: textStatus, message: errorThrown }); }
         };
 
         es.dataProvider.execute(options);

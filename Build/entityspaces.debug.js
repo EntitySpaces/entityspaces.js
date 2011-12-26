@@ -626,14 +626,9 @@ es.XMLHttpRequestProvider = function () {
     var noop = function () { };
     this.baseURL = "http://localhost";
 
-    this.execute = function (options) {
+    function createRequest() {
 
-        var theData = null,
-            path = null,
-            xmlHttp,
-            origSuccess = options.success || noop,
-            origError = options.error || noop;
-
+        var xmlHttp;
 
         // Create HTTP request
         try {
@@ -651,36 +646,112 @@ es.XMLHttpRequestProvider = function () {
             }
         }
 
+        return xmlHttp;
+    };
+
+    function executeCompleted(responseText, route) {
+
+        var theData = JSON.parse(responseText);
+
+        if (route.response !== undefined) {
+            switch (route.response) {
+                case 'entity':
+                    return theData[route.response];
+                case 'collection':
+                    return theData[route.response];
+            }
+        }
+
+        return theData;
+    };
+
+    // Called by the entityspaces.js framework when working with entities
+    this.execute = function (options) {
+
+        var theData = null, path = null, async = false, xmlHttp, success, failure;
+
+        success = options.success || noop;
+        failure = options.error || noop;
+
+        // Create HTTP request
+        xmlHttp = createRequest();
+
         // Build the operation URL
         path = this.baseURL + options.url;
 
         // Make the HTTP request
         xmlHttp.open("POST", path, options.synchronous || false);
         xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
+
+        if (options.async === true) {
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState === 4) {
+                    if (xmlHttp.status === 200) {
+                        success(executeCompleted(xmlHttp.responseText, options.route));
+                    } else {
+                        failure(xmlHttp.status, xmlHttp.statusText);
+                    }
+                }
+            };
+        }
+
         xmlHttp.send(ko.toJSON(options.data));
 
-        if (xmlHttp.status === 200) {
-            if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
-                theData = JSON.parse(xmlHttp.responseText);
+        if (options.async === false) {
+            if (xmlHttp.status === 200) {
+                if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
+                    success(executeCompleted(xmlHttp.responseText, options.route));
+                }
             }
-        } else {
-            var error = true;
-            //es.makeRequstError = xmlHttp.responseText;
+        }
+    };
+
+    // So developers can make their own requests, synchronous or aynchronous
+    this.makeRequest = function (url, methodName, params, successCallback, failureCallback) {
+
+        var theData = null, path = null, async = false, xmlHttp, success, failure;
+
+        if (successCallback !== undefined || failureCallback !== undefined) {
+            async = true;
+            success = successCallback || noop;
+            failure = failureCallback || noop;
         }
 
-        if (options.route.response !== undefined) {
+        // Create HTTP request
+        xmlHttp = createRequest();
 
-            switch (options.route.response) {
-                case 'entity':
-                    return origSuccess(theData[options.route.response]);
+        // Build the operation URL
+        path = url + methodName;
 
-                case 'collection':
-                    return origSuccess(theData[options.route.response]);
-            }
+        // Make the HTTP request
+        xmlHttp.open("POST", path, async);
+        xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
 
-        } else {
-            return theData;
+        if (async === true) {
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState === 4) {
+                    if (xmlHttp.status === 200) {
+                        success(JSON.parse(xmlHttp.responseText));
+                    } else {
+                        failure(xmlHttp.status, xmlHttp.statusText);
+                    }
+                }
+            };
         }
+
+        xmlHttp.send(params);
+
+        if (async === false) {
+            if (xmlHttp.status === 200) {
+                if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
+                    theData = JSON.parse(xmlHttp.responseText);
+                }
+            } else {
+                es.makeRequstError = xmlHttp.statusText;
+            }
+        }
+
+        return theData;
     };
 };
 
@@ -787,6 +858,13 @@ es.EsEntity = function () { //empty constructor
     //#region Loads
     this.load = function (options) {
         self = this;
+
+        if (options.success !== undefined || options.error !== undefined) {
+            options.async = true;
+        } else {
+            options.async = false;
+        }
+
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
             options.url = options.route.url || this.routes[options.route].url;
@@ -826,11 +904,16 @@ es.EsEntity = function () { //empty constructor
     //#endregion Save
 
     //#region Save
-    this.save = function (origSuccess, origError) {
+    this.save = function (success, error) {
         self = this;
 
-        var route,
-            options = {};
+        var route, options = {};
+
+        if (options.success !== undefined || options.error !== undefined) {
+            options.async = true;
+        } else {
+            options.async = false;
+        }
 
         // The default unless overriden
         route = self.routes['commit'];
@@ -859,11 +942,11 @@ es.EsEntity = function () { //empty constructor
 
         options.success = function (data) {
             self.populateEntity(data);
-            if (origSuccess) { origSuccess.call(self, data); }
+            if (success) { success.call(self, data); }
         };
 
         options.error = function (xhr, textStatus, errorThrown) {
-            if (origError) { origError.call(self, { code: textStatus, message: errorThrown }); }
+            if (error) { error.call(self, { code: textStatus, message: errorThrown }); }
         };
 
         es.dataProvider.execute(options);
@@ -979,6 +1062,12 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     load: function (options) {
         var self = this;
 
+        if (options.success !== undefined || options.error !== undefined) {
+            options.async = true;
+        } else {
+            options.async = false;
+        }
+
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
             options.url = options.route.url || this.routes[options.route].url;
@@ -1017,10 +1106,16 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     },
 
     //#region Save
-    save: function (origSuccess, origError) {
+    save: function (success, error) {
         var self = this;
 
         var options = {};
+
+        if (options.success !== undefined || options.error !== undefined) {
+            options.async = true;
+        } else {
+            options.async = false;
+        }
 
         // The default unless overriden
         options.route = self.routes['commit'];
@@ -1035,11 +1130,11 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         options.success = function (data) {
             self.populateCollection(data);
-            if (origSuccess) { origSuccess.call(self, data); }
+            if (success) { success.call(self, data); }
         };
 
         options.error = function (xhr, textStatus, errorThrown) {
-            if (origError) { origError.call(self, { code: textStatus, message: errorThrown }); }
+            if (error) { error.call(self, { code: textStatus, message: errorThrown }); }
         };
 
         es.dataProvider.execute(options);

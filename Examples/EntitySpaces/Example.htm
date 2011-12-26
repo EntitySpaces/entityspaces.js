@@ -15,7 +15,7 @@
     <title>EntitySpaces.js Basic Example</title>
 </head>
 <body>
-    <button onclick="doIt()" />DoIt</button>
+    <button onclick="doIt()"/>DoIt</button>
 </body>
 </html>
 
@@ -26,10 +26,23 @@
 
     doIt = function () {
 
-        var emp = new es.objects.Employees();
-        emp.loadByPrimaryKey(2);
+        var request = es.dataProvider.makeRequest("http://localhost/esService/esJson.svc/", "Employees_LoadForHierarchical", null);
 
-        emp.FirstName("This");
+        es.dataProvider.makeRequest("http://localhost/esService/esJson.svc/", "Employees_LoadForHierarchical", null,
+        function (data) {
+            var ii = 0;
+        },
+        function (status, error) {
+            var jj = 0;
+        });
+
+        var emp = new es.objects.Employees();
+        emp.loadByPrimaryKey(2, function (data) {
+            var iii = 0;
+            emp.FirstName("sync" + "!");
+        });
+
+        //emp.FirstName("This");
 
         emp.save();
 
@@ -38,7 +51,9 @@
 
         coll()[0].FirstName("Rocks!!");
 
-        coll.save();
+        coll.save(function (data) {
+            var klkl = 9;
+        });
 
         var setbreakpointhere = 1;
     }

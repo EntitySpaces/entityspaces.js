@@ -89,6 +89,12 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     load: function (options) {
         var self = this;
 
+        if (options.success !== undefined || options.error !== undefined) {
+            options.async = true;
+        } else {
+            options.async = false;
+        }
+
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
             options.url = options.route.url || this.routes[options.route].url;
@@ -127,10 +133,16 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     },
 
     //#region Save
-    save: function (origSuccess, origError) {
+    save: function (success, error) {
         var self = this;
 
         var options = {};
+
+        if (success !== undefined || error !== undefined) 
+            options.async = true;
+        } else {
+            options.async = false;
+        }
 
         // The default unless overriden
         options.route = self.routes['commit'];
@@ -145,11 +157,11 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         options.success = function (data) {
             self.populateCollection(data);
-            if (origSuccess) { origSuccess.call(self, data); }
+            if (success) { success.call(self, data); }
         };
 
         options.error = function (xhr, textStatus, errorThrown) {
-            if (origError) { origError.call(self, { code: textStatus, message: errorThrown }); }
+            if (error) { error.call(self, { code: textStatus, message: errorThrown }); }
         };
 
         es.dataProvider.execute(options);
@@ -157,12 +169,12 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     //#endregion
 
     //#region Serialization
-    toJS: function () {
-        return ko.toJS(this()); //use this() to pull the array out
-    },
+//    toJS: function () {
+//        return ko.toJS(this()); //use this() to pull the array out
+//    },
 
-    toJSON: function () {
-        return ko.toJSON(this()); //use this() to pull the array out
-    }
+//    toJSON: function () {
+//        return ko.toJSON(this()); //use this() to pull the array out
+//    }
 
 };

@@ -2,17 +2,12 @@
 
 es.XMLHttpRequestProvider = function () {
 
-    var noop = function () { };
+    var createRequest, executeCompleted, noop = function () { };
     this.baseURL = "http://localhost";
 
-    this.execute = function (options) {
+    createRequest = function () {
 
-        var theData = null,
-            path = null,
-            xmlHttp,
-            origSuccess = options.success || noop,
-            origError = options.error || noop;
-
+        var xmlHttp;
 
         // Create HTTP request
         try {
@@ -30,36 +25,112 @@ es.XMLHttpRequestProvider = function () {
             }
         }
 
+        return xmlHttp;
+    };
+
+    executeCompleted = function (responseText, route) {
+
+        var theData = JSON.parse(responseText);
+
+        if (route.response !== undefined) {
+            switch (route.response) {
+                case 'entity':
+                    return theData[route.response];
+                case 'collection':
+                    return theData[route.response];
+            }
+        }
+
+        return theData;
+    };
+
+    // Called by the entityspaces.js framework when working with entities
+    this.execute = function (options) {
+
+        var path = null, xmlHttp, success, failure;
+
+        success = options.success || noop;
+        failure = options.error || noop;
+
+        // Create HTTP request
+        xmlHttp = createRequest();
+
         // Build the operation URL
         path = this.baseURL + options.url;
 
         // Make the HTTP request
         xmlHttp.open("POST", path, options.synchronous || false);
         xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
+
+        if (options.async === true) {
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState === 4) {
+                    if (xmlHttp.status === 200) {
+                        success(executeCompleted(xmlHttp.responseText, options.route));
+                    } else {
+                        failure(xmlHttp.status, xmlHttp.statusText);
+                    }
+                }
+            };
+        }
+
         xmlHttp.send(ko.toJSON(options.data));
 
-        if (xmlHttp.status === 200) {
-            if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
-                theData = JSON.parse(xmlHttp.responseText);
+        if (options.async === false) {
+            if (xmlHttp.status === 200) {
+                if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
+                    success(executeCompleted(xmlHttp.responseText, options.route));
+                }
             }
-        } else {
-            var error = true;
-            //es.makeRequstError = xmlHttp.responseText;
+        }
+    };
+
+    // So developers can make their own requests, synchronous or aynchronous
+    this.makeRequest = function (url, methodName, params, successCallback, failureCallback) {
+
+        var theData = null, path = null, async = false, xmlHttp, success, failure;
+
+        if (successCallback !== undefined || failureCallback !== undefined) {
+            async = true;
+            success = successCallback || noop;
+            failure = failureCallback || noop;
         }
 
-        if (options.route.response !== undefined) {
+        // Create HTTP request
+        xmlHttp = createRequest();
 
-            switch (options.route.response) {
-                case 'entity':
-                    return origSuccess(theData[options.route.response]);
+        // Build the operation URL
+        path = url + methodName;
 
-                case 'collection':
-                    return origSuccess(theData[options.route.response]);
-            }
+        // Make the HTTP request
+        xmlHttp.open("POST", path, async);
+        xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
 
-        } else {
-            return theData;
+        if (async === true) {
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState === 4) {
+                    if (xmlHttp.status === 200) {
+                        success(JSON.parse(xmlHttp.responseText));
+                    } else {
+                        failure(xmlHttp.status, xmlHttp.statusText);
+                    }
+                }
+            };
         }
+
+        xmlHttp.send(params);
+
+        if (async === false) {
+            if (xmlHttp.status === 200) {
+                if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
+                    theData = JSON.parse(xmlHttp.responseText);
+                }
+            } else {
+                es.makeRequstError = xmlHttp.statusText;
+            }
+        }
+
+        return theData;
     };
 };
 
