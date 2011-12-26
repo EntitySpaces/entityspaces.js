@@ -138,7 +138,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         var options = {};
 
-        if (success !== undefined || error !== undefined) 
+        if (success !== undefined || error !== undefined) {
             options.async = true;
         } else {
             options.async = false;
@@ -165,7 +165,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         };
 
         es.dataProvider.execute(options);
-    },
+    }
     //#endregion
 
     //#region Serialization
@@ -176,5 +176,4 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 //    toJSON: function () {
 //        return ko.toJSON(this()); //use this() to pull the array out
 //    }
-
 };
