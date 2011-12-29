@@ -589,7 +589,6 @@ es.AjaxProvider = function () {
             origError = options.error || noop,
             defaults = {
                 cache: false,
-                accepts: 'application/json; charset=utf-8;',
                 contentType: 'application/json; charset=utf-8;',
                 dataType: 'json',
                 type: 'GET'
@@ -796,8 +795,10 @@ es.EsEntity = function () { //empty constructor
         // before populating the data, call each extender to add the required functionality to our object        
         ko.utils.arrayForEach(extenders, function (extender) {
 
-            //Make sure to set the 'this' properly by using 'call'
-            extender.call(self);
+            if (extender) {
+                //Make sure to set the 'this' properly by using 'call'
+                extender.call(self);
+            }
         });
 
         //start change tracking
@@ -853,9 +854,9 @@ es.EsEntity = function () { //empty constructor
         var entity = this;
 
         if (!entity.hasOwnProperty("RowState")) {
-            entity.RowState = ko.observable(es.RowStateEnum.deleted);
-        } else if (entity.RowState() !== es.RowStateEnum.deleted) {
-            entity.RowState(es.RowStateEnum.deleted);
+            entity.RowState = ko.observable(es.RowState.DELETED);
+        } else if (entity.RowState() !== es.RowState.DELETED) {
+            entity.RowState(es.RowState.DELETED);
         }
 
         if (entity.hasOwnProperty("ModifiedColumns")) {
