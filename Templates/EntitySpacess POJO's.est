@@ -81,11 +81,11 @@ foreach(string tableOrView in entities)
 	foreach(IColumn col in source.Columns)
 	{
 		if(!col.IsConcurrency && ! col.IsEntitySpacesConcurrency) {%>	
-		this.<%=col.PropertyName%> = ko.observable(null);<%} else {%>
-		this.<%=col.PropertyName%> = null;<%}}%>
+		this.<%=col.PropertyName%> = ko.observable();<%} else {%>
+		this.<%=col.PropertyName%>;<%}}%>
 		
         // extended colulmns
-        this.esExtendedData = null;
+        this.esExtendedData;
     });
 
     //#region Routing
