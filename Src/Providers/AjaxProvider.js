@@ -30,7 +30,6 @@ es.AjaxProvider = function () {
             origError = options.error || noop,
             defaults = {
                 cache: false,
-                accepts: 'application/json; charset=utf-8;',
                 contentType: 'application/json; charset=utf-8;',
                 dataType: 'json',
                 type: 'GET'
