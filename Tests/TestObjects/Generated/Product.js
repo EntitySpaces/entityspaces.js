@@ -2,25 +2,29 @@
 
     if (typeof (es) === undefined) { throw "Please Load EntitySpaces.Core First"; }
 
-    es.objects.Product = es.defineEntity(function() {
-        this.ProductId = null,
-        this.OrganizationId = null,
-        this.Sku = ko.observable(null),
-        this.Summary = ko.observable(null),
-        this.Description = ko.observable(null),
-        this.ClassId = null,
-        this.ColorCode = ko.observable(null),
-        this.Alert = ko.observable(null),
-        this.PrimaryFeatureCategoryId = null,
-        this.SecondaryFeatureCategoryId = null,
-        this.SupplierSku = ko.observable(null),
-        this.SupplierId = null,
-        this.ColorId = null,
-        this.ProductTypeKey = ko.observable(null),
-        this.CreatedOn = null,
-        this.ModifiedOn = null,
-        this.ModifiedBy = null,
-        this.Version = null
+    es.objects.Product = es.defineEntity(function () {
+
+        this.ProductId,
+        this.OrganizationId,
+        this.Sku = ko.observable(),
+        this.Summary = ko.observable(),
+        this.Description = ko.observable(),
+        this.ClassId,
+        this.ColorCode = ko.observable(),
+        this.Alert = ko.observable(),
+        this.PrimaryFeatureCategoryId,
+        this.SecondaryFeatureCategoryId ,
+        this.SupplierSku = ko.observable(),
+        this.SupplierId,
+        this.ColorId,
+        this.ProductTypeKey = ko.observable(),
+        this.CreatedOn,
+        this.ModifiedOn,
+        this.ModifiedBy,
+        this.Version,
+
+        // extended colulmns
+        this.esExtendedData;
     });
 
     //#region Routing

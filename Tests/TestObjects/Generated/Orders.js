@@ -9,26 +9,26 @@
     es.objects.Orders = es.defineEntity(function () {
 
         // core columns
-        this.OrderID = ko.observable(null);
-        this.CustomerID = ko.observable(null);
-        this.EmployeeID = ko.observable(null);
-        this.OrderDate = ko.observable(null);
-        this.RequiredDate = ko.observable(null);
-        this.ShippedDate = ko.observable(null);
-        this.ShipVia = ko.observable(null);
-        this.Freight = ko.observable(null);
-        this.ShipName = ko.observable(null);
-        this.ShipAddress = ko.observable(null);
-        this.ShipCity = ko.observable(null);
-        this.ShipRegion = ko.observable(null);
-        this.ShipPostalCode = ko.observable(null);
-        this.ShipCountry = ko.observable(null);
+        this.OrderID = ko.observable();
+        this.CustomerID = ko.observable();
+        this.EmployeeID = ko.observable();
+        this.OrderDate = ko.observable();
+        this.RequiredDate = ko.observable();
+        this.ShippedDate = ko.observable();
+        this.ShipVia = ko.observable();
+        this.Freight = ko.observable();
+        this.ShipName = ko.observable();
+        this.ShipAddress = ko.observable();
+        this.ShipCity = ko.observable();
+        this.ShipRegion = ko.observable();
+        this.ShipPostalCode = ko.observable();
+        this.ShipCountry = ko.observable();
 
         // extended colulmns
-        this.esExtendedData = null;
+        this.esExtendedData;
 
         // hierarchical data
-        this.OrderDetailsCollectionByOrderID = null;
+        this.OrderDetailsCollectionByOrderID;
 
         this.esTypeDefs = {
             OrderDetailsCollectionByOrderID: "OrderDetailsCollection"

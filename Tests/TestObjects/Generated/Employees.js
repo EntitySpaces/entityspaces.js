@@ -7,30 +7,30 @@
     es.objects.Employees = es.defineEntity(function () {
 
         // core columns
-        this.EmployeeID = ko.observable(null);
-        this.LastName = ko.observable(null);
-        this.FirstName = ko.observable(null);
-        this.Title = ko.observable(null);
-        this.TitleOfCourtesy = ko.observable(null);
-        this.BirthDate = ko.observable(null);
-        this.HireDate = ko.observable(null);
-        this.Address = ko.observable(null);
-        this.City = ko.observable(null);
-        this.Region = ko.observable(null);
-        this.PostalCode = ko.observable(null);
-        this.Country = ko.observable(null);
-        this.HomePhone = ko.observable(null);
-        this.Extension = ko.observable(null);
-        this.Photo = ko.observable(null);
-        this.Notes = ko.observable(null);
-        this.ReportsTo = ko.observable(null);
-        this.PhotoPath = ko.observable(null);
+        this.EmployeeID = ko.observable();
+        this.LastName = ko.observable();
+        this.FirstName = ko.observable();
+        this.Title = ko.observable();
+        this.TitleOfCourtesy = ko.observable();
+        this.BirthDate = ko.observable();
+        this.HireDate = ko.observable();
+        this.Address = ko.observable();
+        this.City = ko.observable();
+        this.Region = ko.observable();
+        this.PostalCode = ko.observable();
+        this.Country = ko.observable();
+        this.HomePhone = ko.observable();
+        this.Extension = ko.observable();
+        this.Photo = ko.observable();
+        this.Notes = ko.observable();
+        this.ReportsTo = ko.observable();
+        this.PhotoPath = ko.observable();
 
         // extended colulmns
-        this.esExtendedData = null;
+        this.esExtendedData;
 
         // hierarchical data
-        this.OrdersCollectionByEmployeeID = null;
+        this.OrdersCollectionByEmployeeID;
 
         this.esTypeDefs = {
             OrdersCollectionByEmployeeID: "OrdersCollection"
