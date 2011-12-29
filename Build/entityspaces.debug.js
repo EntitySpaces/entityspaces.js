@@ -157,13 +157,17 @@ var utils = {
 
             // This is the actual PropertyChanged event
             property.subscribe(function () {
-                if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
 
-                    if (propertyName !== "RowState") {
-                        obj.ModifiedColumns.push(propertyName);
+                if (obj.ignorePropertyChanged === false) {
 
-                        if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
-                            obj.RowState(es.RowState.MODIFIED);
+                    if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
+
+                        if (propertyName !== "RowState") {
+                            obj.ModifiedColumns.push(propertyName);
+
+                            if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
+                                obj.RowState(es.RowState.MODIFIED);
+                            }
                         }
                     }
                 }
@@ -774,6 +778,8 @@ es.EsEntity = function () { //empty constructor
     var self, //is only set when we call 'init'
         extenders = [];
 
+    this.ignorePropertyChanged = false;
+
     //#region Initialization Logic
     this.routes = {};
 
@@ -801,39 +807,41 @@ es.EsEntity = function () { //empty constructor
     this.populateEntity = function (data) {
         var prop, EntityCtor, entityProp;
 
-        //populate the entity with data back from the server...
-        es.utils.extendObservable(self, data);
+        self.ignorePropertyChanged = true;
 
-        //expand the Extra Columns
-        es.utils.expandExtraColumns(self, true);
+        try {
+            //populate the entity with data back from the server...
+            es.utils.extendObservable(self, data);
 
-        //start change tracking
-        es.utils.startTracking(self);
+            //expand the Extra Columns
+            es.utils.expandExtraColumns(self, true);
 
-        for (prop in data) {
-            if (data.hasOwnProperty(prop)) {
+            //start change tracking
+            es.utils.startTracking(self);
 
-                if (this.esTypeDefs && this.esTypeDefs[prop]) {
-                    EntityCtor = es.getType(this.esTypeDefs[prop]);
-                    if (EntityCtor) {
+            for (prop in data) {
+                if (data.hasOwnProperty(prop)) {
 
-                        entityProp = new EntityCtor();
-                        if (entityProp.hasOwnProperty('___esCollection___')) { //if its a collection call 'populateCollection'
-                            entityProp.populateCollection(data[prop]);
-                        } else { //else call 'populateEntity'
-                            entityProp.populateEntity(data[prop]);
+                    if (this.esTypeDefs && this.esTypeDefs[prop]) {
+                        EntityCtor = es.getType(this.esTypeDefs[prop]);
+                        if (EntityCtor) {
+
+                            entityProp = new EntityCtor();
+                            if (entityProp.hasOwnProperty('___esCollection___')) { //if its a collection call 'populateCollection'
+                                entityProp.populateCollection(data[prop]);
+                            } else { //else call 'populateEntity'
+                                entityProp.populateEntity(data[prop]);
+                            }
+
+                            this[prop] = entityProp; //then set the property back to the new Entity Object
                         }
-
-                        this[prop] = entityProp; //then set the property back to the new Entity Object
                     }
                 }
             }
+        } finally {
+            // We need to make sure we always turn this off ...
+            self.ignorePropertyChanged = false;
         }
-
-        //reset change tracking variables
-        this.RowState(es.RowState.UNCHANGED);
-        this.ModifiedColumns([]);
-
     };
     //#endregion
 

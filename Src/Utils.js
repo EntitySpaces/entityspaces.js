@@ -36,13 +36,17 @@ var utils = {
 
             // This is the actual PropertyChanged event
             property.subscribe(function () {
-                if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
 
-                    if (propertyName !== "RowState") {
-                        obj.ModifiedColumns.push(propertyName);
+                if (obj.ignorePropertyChanged === false) {
 
-                        if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
-                            obj.RowState(es.RowState.MODIFIED);
+                    if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
+
+                        if (propertyName !== "RowState") {
+                            obj.ModifiedColumns.push(propertyName);
+
+                            if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
+                                obj.RowState(es.RowState.MODIFIED);
+                            }
                         }
                     }
                 }
