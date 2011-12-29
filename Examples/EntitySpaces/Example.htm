@@ -22,9 +22,28 @@
 <script language="javascript" type="text/javascript">
 
     es.dataProvider = new es.XMLHttpRequestProvider();
-    es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
+//  es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
+    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     doIt = function () {
+
+        // Single Employee load/save
+        var emp = new es.objects.Employees();
+        emp.loadByPrimaryKey(2);
+
+        emp.FirstName("This");
+        emp.OrdersCollectionByEmployeeID()[0].ShipCity(Math.random().toString().substr(0, 4));
+        emp.save();
+
+        // Collection load/save
+        var coll = new es.objects.EmployeesCollection();
+        coll.loadAll();
+
+        coll()[0].FirstName("Rocks!!");
+        coll.save();
+    }
+
+    testCode = function () {
 
         var request = es.dataProvider.makeRequest("http://localhost/esService/esJson.svc/", "Employees_LoadForHierarchical", null);
 
@@ -39,7 +58,7 @@
         var emp = new es.objects.Employees();
         emp.loadByPrimaryKey(2, function (data) {
             var iii = 0;
-            emp.FirstName("sync" + "!");
+            emp.FirstName("sync" + "!!!");
         });
 
         //emp.FirstName("This");
@@ -56,6 +75,7 @@
         });
 
         var setbreakpointhere = 1;
+
     }
 
 </script>
