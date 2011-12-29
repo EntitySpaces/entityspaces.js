@@ -1,63 +1,72 @@
-﻿(function (es) { //myNS = "myNameSpace" ... for example purposes
 
-    if (typeof (es) === undefined) {
-        throw "Please Load EntitySpaces.Core First";
-    }
+(function (es) { //myNS = "myNameSpace" ... for example purposes
 
-    es.objects.Employees = es.defineEntity(function () {
+	if (typeof (es) === undefined) {
+		throw "Please Load EntitySpaces.Core First";
+	}
 
-        // core columns
-        this.EmployeeID = ko.observable();
-        this.LastName = ko.observable();
-        this.FirstName = ko.observable();
-        this.Title = ko.observable();
-        this.TitleOfCourtesy = ko.observable();
-        this.BirthDate = ko.observable();
-        this.HireDate = ko.observable();
-        this.Address = ko.observable();
-        this.City = ko.observable();
-        this.Region = ko.observable();
-        this.PostalCode = ko.observable();
-        this.Country = ko.observable();
-        this.HomePhone = ko.observable();
-        this.Extension = ko.observable();
-        this.Photo = ko.observable();
-        this.Notes = ko.observable();
-        this.ReportsTo = ko.observable();
-        this.PhotoPath = ko.observable();
+	es.objects.Employees = es.defineEntity(function () {
 
-        // extended colulmns
-        this.esExtendedData;
+		// core columns
+		this.EmployeeID = ko.observable();
+		this.LastName = ko.observable();
+		this.FirstName = ko.observable();
+		this.Title = ko.observable();
+		this.TitleOfCourtesy = ko.observable();
+		this.BirthDate = ko.observable();
+		this.HireDate = ko.observable();
+		this.Address = ko.observable();
+		this.City = ko.observable();
+		this.Region = ko.observable();
+		this.PostalCode = ko.observable();
+		this.Country = ko.observable();
+		this.HomePhone = ko.observable();
+		this.Extension = ko.observable();
+		this.Photo = ko.observable();
+		this.Notes = ko.observable();
+		this.ReportsTo = ko.observable();
+		this.PhotoPath = ko.observable();
 
-        // hierarchical data
-        this.OrdersCollectionByEmployeeID;
+		// extended colulmns
+		this.esExtendedData;
 
-        this.esTypeDefs = {
-            OrdersCollectionByEmployeeID: "OrdersCollection"
-        };
-    });
 
-    //#region Routing
+		// Hierarchical Properties
+		this.EmployeesCollectionByReportsTo;
+		this.UpToEmployeesByReportsTo;
+		this.UpToTerritoriesCollection;
+		this.EmployeeTerritoriesCollectionByEmployeeID;
+		this.OrdersCollectionByEmployeeID;
 
-    es.objects.Employees.prototype.routes = {
-        commit: { method: 'PUT', url: '/Employees/Save' },
-        loadByPrimaryKey: { method: 'GET', url: '/Employees/{EmployeeID}' }
-    };
+		this.esTypeDefs = {
+			EmployeesCollectionByReportsTo: "EmployeesCollection",
+			UpToEmployeesByReportsTo: "Employees",
+			UpToTerritoriesCollection: "TerritoriesCollection",
+			EmployeeTerritoriesCollectionByEmployeeID: "EmployeeTerritoriesCollection",
+			OrdersCollectionByEmployeeID: "OrdersCollection"
+		};
+	});
 
-    //#endregion
-} (window.es, window.myNS));
+	//#region Routing
+
+	es.objects.Employees.prototype.routes = {
+		commit: { method: 'PUT', url: 'Employees_Save', response: 'entity' },
+		loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity', synchronous: true }
+	};
+
+	//#endregion
+}(window.es, window.myNS));
 
 (function (es) {
 
-    es.objects.EmployeesCollection = es.defineCollection('EmployeesCollection', 'Employees');
+	es.objects.EmployeesCollection = es.defineCollection('EmployeesCollection', 'Employees');
 
-    //#region Routing
+	//#region Routing
 
-    es.objects.EmployeesCollection.prototype.routes = {
-        create: { method: 'PUT', url: '/EmployeesCollection/Create' },
-        update: { method: 'POST', url: '/EmployeesCollection/Update' },
-        del: { method: 'DELETE', url: '/EmployeesCollection/Delete' }
-    };
+	es.objects.EmployeesCollection.prototype.routes = {
+		commit: { method: 'PUT', url: 'EmployeesCollection_Save', response: 'collection' },
+		loadAll: { method: 'GET', url: 'EmployeesCollection_LoadAll', response: 'collection', synchronous: true }
+	};
 
-    //#endregion
-} (window.es));
+	//#endregion
+}(window.es));

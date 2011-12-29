@@ -1,47 +1,53 @@
-﻿/* File Created: December 22, 2011 */
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
-    if (typeof (es) === undefined) {
-        throw "Please Load EntitySpaces.Core First";
-    }
+	if (typeof (es) === undefined) {
+		throw "Please Load EntitySpaces.Core First";
+	}
 
-    es.objects.OrderDetails = es.defineEntity(function () {
+	es.objects.OrderDetails = es.defineEntity(function () {
 
-        // core columns
-        this.OrderID = ko.observable();
-        this.ProductID = ko.observable();
-        this.UnitPrice = ko.observable();
-        this.Quantity = ko.observable();
-        this.Discount = ko.observable();
+		// core columns
+		this.OrderID = ko.observable();
+		this.ProductID = ko.observable();
+		this.UnitPrice = ko.observable();
+		this.Quantity = ko.observable();
+		this.Discount = ko.observable();
 
-        // extended colulmns
-        this.esExtendedData;
-    });
+		// extended colulmns
+		this.esExtendedData;
 
-    //#region Routing
 
-    es.objects.OrderDetails.prototype.routes = {
-        create: { method: 'PUT', url: '/OrderDetails/Create' },
-        update: { method: 'POST', url: '/OrderDetails/Update' },
-        del: { method: 'DELETE', url: '/OrderDetails/Delete' },
-        loadByPrimaryKey: { method: 'GET', url: '/OrderDetails/{orderID}{productID}' }
-    };
+		// Hierarchical Properties
+		this.UpToOrdersByOrderID;
+		this.UpToProductsByProductID;
 
-    //#endregion
-} (window.es, window.myNS));
+		this.esTypeDefs = {
+			UpToOrdersByOrderID: "Orders",
+			UpToProductsByProductID: "Products"
+		};
+	});
+
+	//#region Routing
+
+	es.objects.OrderDetails.prototype.routes = {
+		commit: { method: 'PUT', url: 'OrderDetails_Save', response: 'entity' },
+		loadByPrimaryKey: { method: 'GET', url: 'OrderDetails_LoadByPrimaryKey', response: 'entity', synchronous: true }
+	};
+
+	//#endregion
+}(window.es, window.myNS));
 
 (function (es) {
 
-    es.objects.OrderDetailsCollection = es.defineCollection('OrderDetailsCollection', 'OrderDetails');
+	es.objects.OrderDetailsCollection = es.defineCollection('OrderDetailsCollection', 'OrderDetails');
 
-    //#region Routing
+	//#region Routing
 
-    es.objects.OrderDetailsCollection.prototype.routes = {
-        create: { method: 'PUT', url: '/OrderDetailsCollection/Create' },
-        update: { method: 'POST', url: '/OrderDetailsCollection/Update' },
-        del: { method: 'DELETE', url: '/OrderDetailsCollection/Delete' }
-    };
+	es.objects.OrderDetailsCollection.prototype.routes = {
+		commit: { method: 'PUT', url: 'OrderDetailsCollection_Save', response: 'collection' },
+		loadAll: { method: 'GET', url: 'OrderDetailsCollection_LoadAll', response: 'collection', synchronous: true }
+	};
 
-    //#endregion
-} (window.es));
+	//#endregion
+}(window.es));

@@ -1,63 +1,68 @@
-﻿/* File Created: December 22, 2011 */
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
-    if (typeof (es) === undefined) {
-        throw "Please Load EntitySpaces.Core First"; 
-    }
+	if (typeof (es) === undefined) {
+		throw "Please Load EntitySpaces.Core First";
+	}
 
-    es.objects.Orders = es.defineEntity(function () {
+	es.objects.Orders = es.defineEntity(function () {
 
-        // core columns
-        this.OrderID = ko.observable();
-        this.CustomerID = ko.observable();
-        this.EmployeeID = ko.observable();
-        this.OrderDate = ko.observable();
-        this.RequiredDate = ko.observable();
-        this.ShippedDate = ko.observable();
-        this.ShipVia = ko.observable();
-        this.Freight = ko.observable();
-        this.ShipName = ko.observable();
-        this.ShipAddress = ko.observable();
-        this.ShipCity = ko.observable();
-        this.ShipRegion = ko.observable();
-        this.ShipPostalCode = ko.observable();
-        this.ShipCountry = ko.observable();
+		// core columns
+		this.OrderID = ko.observable();
+		this.CustomerID = ko.observable();
+		this.EmployeeID = ko.observable();
+		this.OrderDate = ko.observable();
+		this.RequiredDate = ko.observable();
+		this.ShippedDate = ko.observable();
+		this.ShipVia = ko.observable();
+		this.Freight = ko.observable();
+		this.ShipName = ko.observable();
+		this.ShipAddress = ko.observable();
+		this.ShipCity = ko.observable();
+		this.ShipRegion = ko.observable();
+		this.ShipPostalCode = ko.observable();
+		this.ShipCountry = ko.observable();
 
-        // extended colulmns
-        this.esExtendedData;
+		// extended colulmns
+		this.esExtendedData;
 
-        // hierarchical data
-        this.OrderDetailsCollectionByOrderID;
 
-        this.esTypeDefs = {
-            OrderDetailsCollectionByOrderID: "OrderDetailsCollection"
-        };
-    });
+		// Hierarchical Properties
+		this.UpToProductsCollection;
+		this.OrderDetailsCollectionByOrderID;
+		this.UpToCustomersByCustomerID;
+		this.UpToEmployeesByEmployeeID;
+		this.UpToShippersByShipVia;
 
-    //#region Routing
+		this.esTypeDefs = {
+			UpToProductsCollection: "ProductsCollection",
+			OrderDetailsCollectionByOrderID: "OrderDetailsCollection",
+			UpToCustomersByCustomerID: "Customers",
+			UpToEmployeesByEmployeeID: "Employees",
+			UpToShippersByShipVia: "Shippers"
+		};
+	});
 
-    es.objects.Orders.prototype.routes = {
-        create: { method: 'PUT', url: '/Orders/Create' },
-        update: { method: 'POST', url: '/Orders/Update' },
-        del: { method: 'DELETE', url: '/Orders/Delete' },
-        loadByPrimaryKey: { method: 'GET', url: '/Orders/{OrderID}' }
-    };
+	//#region Routing
 
-    //#endregion
-} (window.es, window.myNS));
+	es.objects.Orders.prototype.routes = {
+		commit: { method: 'PUT', url: 'Orders_Save', response: 'entity' },
+		loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity', synchronous: true }
+	};
+
+	//#endregion
+}(window.es, window.myNS));
 
 (function (es) {
 
-    es.objects.OrdersCollection = es.defineCollection('OrdersCollection', 'Orders');
+	es.objects.OrdersCollection = es.defineCollection('OrdersCollection', 'Orders');
 
-    //#region Routing
+	//#region Routing
 
-    es.objects.OrdersCollection.prototype.routes = {
-        create: { method: 'PUT', url: '/OrdersCollection/Create' },
-        update: { method: 'POST', url: '/OrdersCollection/Update' },
-        del: { method: 'DELETE', url: '/OrdersCollection/Delete' }
-    };
+	es.objects.OrdersCollection.prototype.routes = {
+		commit: { method: 'PUT', url: 'OrdersCollection_Save', response: 'collection' },
+		loadAll: { method: 'GET', url: 'OrdersCollection_LoadAll', response: 'collection', synchronous: true }
+	};
 
-    //#endregion
-} (window.es));
+	//#endregion
+}(window.es));
