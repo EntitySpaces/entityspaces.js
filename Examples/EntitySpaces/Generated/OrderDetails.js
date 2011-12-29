@@ -9,14 +9,14 @@
     es.objects.OrderDetails = es.defineEntity(function () {
 
         // core columns
-        this.OrderID = ko.observable(null);
-        this.ProductID = ko.observable(null);
-        this.UnitPrice = ko.observable(null);
-        this.Quantity = ko.observable(null);
-        this.Discount = ko.observable(null);
+        this.OrderID = ko.observable();
+        this.ProductID = ko.observable();
+        this.UnitPrice = ko.observable();
+        this.Quantity = ko.observable();
+        this.Discount = ko.observable();
 
         // extended colulmns
-        this.esExtendedData = null;
+        this.esExtendedData;
     });
 
     //#region Routing
