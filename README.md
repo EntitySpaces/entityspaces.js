@@ -10,7 +10,8 @@ A Knockout/Javascript ORM
 Below is an example of real working code for the entityspaces.js and is the same code demonstrated in the video above.
 
 
-**The entityspaces.js syntax**
+The entityspaces.js syntax
+============================================
 
 **Loading and Saving, Hierarchical Data, using Synchronous calls**
 
