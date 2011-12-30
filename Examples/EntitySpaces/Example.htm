@@ -15,19 +15,23 @@
     <title>EntitySpaces.js Basic Example</title>
 </head>
 <body>
-    <button onclick="doIt()"/>DoIt</button>
+    <button onclick="test1()"/>Test 1</button><br /><br />
+    <button onclick="test2()"/>Test 2</button><br /><br />
+    <button onclick="test3()"/>Test 3</button><br /><br />
+    <button onclick="test4()"/>Test 4</button><br /><br />
 </body>
 </html>
 
 <script language="javascript" type="text/javascript">
 
+
     es.dataProvider = new es.XMLHttpRequestProvider();
-//  es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
+    //es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
     es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
-    doIt = function () {
+    test1 = function () {
 
-        // Single Employee load/save
+        // Load an employee with hierarchical model and save hierarchical data back to the server
         var emp = new es.objects.Employees();
         emp.loadByPrimaryKey(2);
 
@@ -43,7 +47,10 @@
         coll.save();
     }
 
-    testCode = function () {
+    test2 = function () {
+
+        //
+        // Hodge Podge of Asyc calls
 
         var request = es.dataProvider.makeRequest("http://localhost/esService/esJson.svc/", "Employees_LoadForHierarchical", null);
 
@@ -61,8 +68,6 @@
             emp.FirstName("sync" + "!!!");
         });
 
-        //emp.FirstName("This");
-
         emp.save();
 
         var coll = new es.objects.EmployeesCollection();
@@ -75,7 +80,56 @@
         });
 
         var setbreakpointhere = 1;
+    }
 
+    test3 = function () {
+
+        // Add a single record
+        var emp = new es.objects.Employees();
+        emp.FirstName("Just");
+        emp.LastName("Added");
+        emp.save();
+
+        var employeeId = emp.EmployeeID();
+
+        // Add two new employees through a collection
+        var coll = new es.objects.EmployeesCollection();
+
+        emp = new es.objects.Employees();
+        emp.FirstName("Just1");
+        emp.LastName("Added1");
+        coll.push(emp);
+
+        emp = new es.objects.Employees();
+        emp.FirstName("Just2");
+        emp.LastName("Added2");
+        coll.push(emp);
+
+        coll.save();
+
+        var employeeId_1 = coll()[0].EmployeeID();
+        var employeeId_2 = coll()[1].EmployeeID();
+    }
+
+    test4 = function () {
+
+        // Add a single record
+        var emp = new es.objects.Employees();
+        emp.FirstName("Just");
+        emp.LastName("Added");
+        emp.save();
+
+        var employeeId = emp.EmployeeID();
+
+        emp = new es.objects.Employees();
+        emp.loadByPrimaryKey(employeeId);
+        emp.markAsDeleted();
+        emp.save();
+
+        emp = new es.objects.Employees();
+        var loaded = emp.loadByPrimaryKey(employeeId);
+
+        employeeId = emp.EmployeeID();
     }
 
 </script>
