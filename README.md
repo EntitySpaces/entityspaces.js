@@ -111,7 +111,7 @@ Below is an example of real working code for the entityspaces.js and is the same
 
 **Asychronous and or Synchronous methods**
 
-While this sample might not makes sense ansychronously it does show that you can use the API in any fashion you desire.
+While this sample might not makes sense asynchronously it does show that you can use the API in any fashion you desire.
 
 ````javascript
 <script language="javascript" type="text/javascript">
@@ -120,7 +120,7 @@ While this sample might not makes sense ansychronously it does show that you can
 	es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
 	//----------------------------------------------------------
-	// Here is a code snippet using the Synchronous approach
+	// Here is a code snippet using the synchronous approach
 	//----------------------------------------------------------
 	var emp = new es.objects.Employees();
 	emp.loadByPrimaryKey(2);
@@ -134,12 +134,13 @@ While this sample might not makes sense ansychronously it does show that you can
 	coll.save();
 
 	//-----------------------------------------------------------------
-	// Here is the same code from above using the Synchronous approach
+	// Here is the same code from above using the asynchronous approach
 	//-----------------------------------------------------------------
 	var emp = new es.objects.Employees();
 	emp.loadByPrimaryKey(2, function (data) {
 
 		emp.FirstName("sync" + "!!!");
+
 		emp.save(function (data) {
 
 			var coll = new es.objects.EmployeesCollection();
@@ -147,6 +148,7 @@ While this sample might not makes sense ansychronously it does show that you can
 			coll.loadAll(function (data) {
 
 				coll()[0].FirstName("Rocks!!");
+
 				coll.save(function (data) {
 
 					var str = "Save is complete ...";
