@@ -49,26 +49,26 @@
 
     test2 = function () {
 
-        //
+        //=========================================
         // Hodge Podge of Asyc calls
+        //=========================================
+
 
         var request = es.dataProvider.makeRequest("http://localhost/esService/esJson.svc/", "Employees_LoadForHierarchical", null);
 
         es.dataProvider.makeRequest("http://localhost/esService/esJson.svc/", "Employees_LoadForHierarchical", null,
         function (data) {
-            var ii = 0;
+            // Success ...
         },
         function (status, error) {
-            var jj = 0;
+            // Fail ...
         });
 
         var emp = new es.objects.Employees();
         emp.loadByPrimaryKey(2, function (data) {
-            var iii = 0;
             emp.FirstName("sync" + "!!!");
+            emp.save();
         });
-
-        emp.save();
 
         var coll = new es.objects.EmployeesCollection();
         coll.loadAll();
@@ -76,7 +76,8 @@
         coll()[0].FirstName("Rocks!!");
 
         coll.save(function (data) {
-            var klkl = 9;
+            // It was saved
+            var qq = 0;
         });
 
         var setbreakpointhere = 1;
@@ -90,6 +91,7 @@
         emp.LastName("Added");
         emp.save();
 
+        // It's an autoincrement column and we get it back
         var employeeId = emp.EmployeeID();
 
         // Add two new employees through a collection
@@ -107,6 +109,7 @@
 
         coll.save();
 
+        // Check to make sure we got our autoincrement primary keys
         var employeeId_1 = coll()[0].EmployeeID();
         var employeeId_2 = coll()[1].EmployeeID();
     }
@@ -121,14 +124,17 @@
 
         var employeeId = emp.EmployeeID();
 
+        // Reload the new record and delete it
         emp = new es.objects.Employees();
         emp.loadByPrimaryKey(employeeId);
         emp.markAsDeleted();
         emp.save();
 
+        // Can we reload the deleted record
         emp = new es.objects.Employees();
         var loaded = emp.loadByPrimaryKey(employeeId);
 
+        // The employeeId = undefined
         employeeId = emp.EmployeeID();
     }
 
