@@ -49,11 +49,9 @@
 
     test2 = function () {
 
-        //=========================================
-        // Hodge Podge of Asyc calls
-        //=========================================
-
-
+        //==========================================================================
+        // The XMLHttpRequestProvider allows you to make any call you desire
+        //==========================================================================
         var request = es.dataProvider.makeRequest("http://localhost/esService/esJson.svc/", "Employees_LoadForHierarchical", null);
 
         es.dataProvider.makeRequest("http://localhost/esService/esJson.svc/", "Employees_LoadForHierarchical", null,
@@ -64,23 +62,47 @@
             // Fail ...
         });
 
+        // Now let's use some entityspaces.js objects, we'll do the same code synchronously then async
+        es.dataProvider = new es.XMLHttpRequestProvider();
+        es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+
+        //----------------------------------------------------------
+        // Here is a code snippet using the synchronous approach
+        //----------------------------------------------------------
         var emp = new es.objects.Employees();
-        emp.loadByPrimaryKey(2, function (data) {
-            emp.FirstName("sync" + "!!!");
-            emp.save();
-        });
+        emp.loadByPrimaryKey(2);
+        emp.FirstName("sync" + "!!!");
+        emp.save();
 
         var coll = new es.objects.EmployeesCollection();
         coll.loadAll();
 
         coll()[0].FirstName("Rocks!!");
+        coll.save();
 
-        coll.save(function (data) {
-            // It was saved
-            var qq = 0;
+        //-----------------------------------------------------------------
+        // Here is the same code from above using the asynchronous approach
+        //-----------------------------------------------------------------
+        var emp = new es.objects.Employees();
+        emp.loadByPrimaryKey(2, function (data) {
+
+            emp.FirstName("sync" + "!!!");
+
+            emp.save(function (data) {
+
+                var coll = new es.objects.EmployeesCollection();
+
+                coll.loadAll(function (data) {
+
+                    coll()[0].FirstName("Rocks!!");
+
+                    coll.save(function (data) {
+
+                        var str = "Save is complete ...";
+                    });
+                });
+            });
         });
-
-        var setbreakpointhere = 1;
     }
 
     test3 = function () {
