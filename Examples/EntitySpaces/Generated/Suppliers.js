@@ -37,7 +37,7 @@
 
 	es.objects.Suppliers.prototype.routes = {
 		commit: { method: 'PUT', url: 'Suppliers_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Suppliers_LoadByPrimaryKey', response: 'entity', synchronous: true }
+		loadByPrimaryKey: { method: 'GET', url: 'Suppliers_LoadByPrimaryKey', response: 'entity' }
 	};
 
 	//#endregion
@@ -51,7 +51,7 @@
 
 	es.objects.SuppliersCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'SuppliersCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'SuppliersCollection_LoadAll', response: 'collection', synchronous: true }
+		loadAll: { method: 'GET', url: 'SuppliersCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion

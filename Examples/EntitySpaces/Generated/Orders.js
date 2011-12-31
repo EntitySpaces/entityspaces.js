@@ -47,7 +47,7 @@
 
 	es.objects.Orders.prototype.routes = {
 		commit: { method: 'PUT', url: 'Orders_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity', synchronous: true }
+		loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity' }
 	};
 
 	//#endregion
@@ -61,7 +61,7 @@
 
 	es.objects.OrdersCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'OrdersCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'OrdersCollection_LoadAll', response: 'collection', synchronous: true }
+		loadAll: { method: 'GET', url: 'OrdersCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion

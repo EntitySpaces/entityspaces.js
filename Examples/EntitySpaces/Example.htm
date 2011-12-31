@@ -9,6 +9,7 @@
 <script src="../../Libs/json2.js" type="text/javascript"></script>
 <script src="../../Build/entityspaces.debug.js" type="text/javascript"></script>
 <script src="Generated/Employees.js" type="text/javascript"></script>
+<script src="Custom/Employees.js" type="text/javascript"></script>
 <script src="Generated/Orders.js" type="text/javascript"></script>
 <script src="Generated/OrderDetails.js" type="text/javascript"></script>
 <head>
@@ -26,14 +27,14 @@
 
 
     es.dataProvider = new es.XMLHttpRequestProvider();
-    //es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
+  //es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
     es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     test1 = function () {
 
         // Load an employee with hierarchical model and save hierarchical data back to the server
         var emp = new es.objects.Employees();
-        emp.loadByPrimaryKey(2);
+        emp.LoadByPrimaryKeyHierarchical(2);  // <== this method is in the Custom "Employee.js" file
 
         emp.FirstName("This");
         emp.OrdersCollectionByEmployeeID()[0].ShipCity(Math.random().toString().substr(0, 4));
@@ -52,19 +53,15 @@
         //==========================================================================
         // The XMLHttpRequestProvider allows you to make any call you desire
         //==========================================================================
-        var request = es.dataProvider.makeRequest("http://localhost/esService/esJson.svc/", "Employees_LoadForHierarchical", null);
+        var request = es.dataProvider.makeRequest(es.dataProvider.baseURL, "Employees_LoadHierarchical", null);
 
-        es.dataProvider.makeRequest("http://localhost/esService/esJson.svc/", "Employees_LoadForHierarchical", null,
+        es.dataProvider.makeRequest(es.dataProvider.baseURL, "Employees_LoadHierarchical", null,
         function (data) {
             // Success ...
         },
         function (status, error) {
             // Fail ...
         });
-
-        // Now let's use some entityspaces.js objects, we'll do the same code synchronously then async
-        es.dataProvider = new es.XMLHttpRequestProvider();
-        es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
         //----------------------------------------------------------
         // Here is a code snippet using the synchronous approach

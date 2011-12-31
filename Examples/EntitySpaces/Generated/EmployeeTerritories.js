@@ -29,7 +29,7 @@
 
 	es.objects.EmployeeTerritories.prototype.routes = {
 		commit: { method: 'PUT', url: 'EmployeeTerritories_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'EmployeeTerritories_LoadByPrimaryKey', response: 'entity', synchronous: true }
+		loadByPrimaryKey: { method: 'GET', url: 'EmployeeTerritories_LoadByPrimaryKey', response: 'entity' }
 	};
 
 	//#endregion
@@ -43,7 +43,7 @@
 
 	es.objects.EmployeeTerritoriesCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'EmployeeTerritoriesCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'EmployeeTerritoriesCollection_LoadAll', response: 'collection', synchronous: true }
+		loadAll: { method: 'GET', url: 'EmployeeTerritoriesCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion

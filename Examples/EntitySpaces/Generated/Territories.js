@@ -32,7 +32,7 @@
 
 	es.objects.Territories.prototype.routes = {
 		commit: { method: 'PUT', url: 'Territories_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Territories_LoadByPrimaryKey', response: 'entity', synchronous: true }
+		loadByPrimaryKey: { method: 'GET', url: 'Territories_LoadByPrimaryKey', response: 'entity' }
 	};
 
 	//#endregion
@@ -46,7 +46,7 @@
 
 	es.objects.TerritoriesCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'TerritoriesCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'TerritoriesCollection_LoadAll', response: 'collection', synchronous: true }
+		loadAll: { method: 'GET', url: 'TerritoriesCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion

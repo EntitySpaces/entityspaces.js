@@ -41,7 +41,7 @@
 
 	es.objects.Products.prototype.routes = {
 		commit: { method: 'PUT', url: 'Products_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Products_LoadByPrimaryKey', response: 'entity', synchronous: true }
+		loadByPrimaryKey: { method: 'GET', url: 'Products_LoadByPrimaryKey', response: 'entity' }
 	};
 
 	//#endregion
@@ -55,7 +55,7 @@
 
 	es.objects.ProductsCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'ProductsCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'ProductsCollection_LoadAll', response: 'collection', synchronous: true }
+		loadAll: { method: 'GET', url: 'ProductsCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion

@@ -29,7 +29,7 @@
 
 	es.objects.CustomerDemographics.prototype.routes = {
 		commit: { method: 'PUT', url: 'CustomerDemographics_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'CustomerDemographics_LoadByPrimaryKey', response: 'entity', synchronous: true }
+		loadByPrimaryKey: { method: 'GET', url: 'CustomerDemographics_LoadByPrimaryKey', response: 'entity' }
 	};
 
 	//#endregion
@@ -43,7 +43,7 @@
 
 	es.objects.CustomerDemographicsCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'CustomerDemographicsCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'CustomerDemographicsCollection_LoadAll', response: 'collection', synchronous: true }
+		loadAll: { method: 'GET', url: 'CustomerDemographicsCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion

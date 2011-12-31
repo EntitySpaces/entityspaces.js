@@ -27,7 +27,7 @@
 
 	es.objects.Region.prototype.routes = {
 		commit: { method: 'PUT', url: 'Region_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Region_LoadByPrimaryKey', response: 'entity', synchronous: true }
+		loadByPrimaryKey: { method: 'GET', url: 'Region_LoadByPrimaryKey', response: 'entity' }
 	};
 
 	//#endregion
@@ -41,7 +41,7 @@
 
 	es.objects.RegionCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'RegionCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'RegionCollection_LoadAll', response: 'collection', synchronous: true }
+		loadAll: { method: 'GET', url: 'RegionCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion

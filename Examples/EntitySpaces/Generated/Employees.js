@@ -51,7 +51,7 @@
 
 	es.objects.Employees.prototype.routes = {
 		commit: { method: 'PUT', url: 'Employees_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity', synchronous: true }
+		loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' }
 	};
 
 	//#endregion
@@ -65,7 +65,7 @@
 
 	es.objects.EmployeesCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'EmployeesCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'EmployeesCollection_LoadAll', response: 'collection', synchronous: true }
+		loadAll: { method: 'GET', url: 'EmployeesCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion

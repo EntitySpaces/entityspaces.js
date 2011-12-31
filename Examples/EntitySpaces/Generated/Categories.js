@@ -31,7 +31,7 @@
 
 	es.objects.Categories.prototype.routes = {
 		commit: { method: 'PUT', url: 'Categories_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Categories_LoadByPrimaryKey', response: 'entity', synchronous: true }
+		loadByPrimaryKey: { method: 'GET', url: 'Categories_LoadByPrimaryKey', response: 'entity' }
 	};
 
 	//#endregion
@@ -45,7 +45,7 @@
 
 	es.objects.CategoriesCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'CategoriesCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'CategoriesCollection_LoadAll', response: 'collection', synchronous: true }
+		loadAll: { method: 'GET', url: 'CategoriesCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
