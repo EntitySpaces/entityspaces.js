@@ -1,12 +1,13 @@
 A Knockout/Javascript ORM
 ============================================
 
-**Watch an Incredible Video of entityspaces.js in action**
-
 <table border="0">
 	<tr>
 		<td>
 			<a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png"></a>
+		</td>
+		<td>
+			**Watch an Incredible Video of entityspaces.js in action**
 		</td>
 	</tr>
 <table>
