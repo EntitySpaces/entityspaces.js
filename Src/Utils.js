@@ -75,9 +75,8 @@ var utils = {
                 entity.__ko_mapping__.mappedProperties["ModifiedColumns"] = true;
             }
         } else {
-            if (!ko.isObservable(entity.ModifiedColumns)) {
-                entity.ModifiedColumns = ko.observable(entity.ModifiedColumns);
-            }
+            // Overwrite existing data
+            entity.ModifiedColumns = ko.observableArray();
         }
 
         for (propertyName in entity) {
