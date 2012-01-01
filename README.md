@@ -3,15 +3,13 @@ A Knockout/Javascript ORM
 
 **Watch an Incredible Video of entityspaces.js in action**
 
-<table>
+<table border="0">
 	<tr>
 		<td>
 			<a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png"></a>
 		</td>
 	</tr>
 <table>
-
-![Video](http://www.entityspaces.net/downloads/video.png)  [Watch Video - Click Here](http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html)
 
 The entityspaces.js syntax
 ============================================
