@@ -196,9 +196,8 @@ var utils = {
                 entity.__ko_mapping__.mappedProperties["ModifiedColumns"] = true;
             }
         } else {
-            if (!ko.isObservable(entity.ModifiedColumns)) {
-                entity.ModifiedColumns = ko.observable(entity.ModifiedColumns);
-            }
+            // Overwrite existing data
+            entity.ModifiedColumns = ko.observableArray();
         }
 
         for (propertyName in entity) {
@@ -835,6 +834,18 @@ es.EsEntity = function () { //empty constructor
                             }
 
                             this[prop] = entityProp; //then set the property back to the new Entity Object
+                        } else {
+                            // NOTE: We have a hierarchical property but the .js file for that entity wasn't included
+                            //       so we need to make these regular ol' javascript objects
+                            if (es.isArray(data[prop])) {
+                                this[prop] = data[prop];
+                                ko.utils.arrayForEach(this[prop], function (data) {
+                                    // TODO : CONTINUE WALKING, TALK WITH ERIC
+                                });
+                            } else {
+                                this[prop] = data[prop];
+                                // TODO : CONTINUE WALKING, TALK WITH ERIC
+                            }
                         }
                     }
                 }
@@ -844,6 +855,7 @@ es.EsEntity = function () { //empty constructor
             self.ignorePropertyChanged = false;
         }
     };
+
     //#endregion
 
     this.applyDefaults = function () {
