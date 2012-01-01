@@ -3,7 +3,7 @@ A Knockout/Javascript ORM
 
 **Watch an Incredible Video of entityspaces.js in action**
 
-[Video ==>](http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html)
+[WATCH VIDEO - CLICK HERE](http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html)
 
 
 The entityspaces.js syntax
