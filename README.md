@@ -10,7 +10,7 @@ A Knockout/Javascript ORM
 			**Watch a video of entityspaces.js in action**
 		</td>
 	</tr>
-<table>
+</table>
 
 The entityspaces.js syntax
 ============================================
