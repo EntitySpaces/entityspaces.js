@@ -7,7 +7,7 @@ A Knockout/Javascript ORM
 			<a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png"></a>
 		</td>
 		<td>
-			**Watch a video of entityspaces.js in action**
+			Watch a video of entityspaces.js in action
 		</td>
 	</tr>
 </table>
