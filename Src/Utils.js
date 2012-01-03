@@ -192,6 +192,7 @@ var utils = {
                         case '___esEntity___':
                         case 'esTypeDefs':
                         case 'routes':
+                        case 'ignorePropertyChanged':
                             break;
                         default:
                             dst[key] = src[key];

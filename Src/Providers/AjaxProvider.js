@@ -51,6 +51,9 @@ es.AjaxProvider = function () {
 
         //parameterize the Url
         options.url = parameterizeUrl(options.url, options.data);
+        if (options.data) {
+            options.data = ko.toJSON(options.data);
+        }
 
         $.ajax(options);
     };
