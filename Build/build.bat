@@ -21,6 +21,9 @@ ECHO Building... %%A
 DEL %OutPutFile%
 
 @REM Wrap the final output in an IIFE
+@ECHO /*********************************************** >> %OutPutFile%
+@ECHO * Built on %Date% at %Time%      * >> %OutPutFile% 
+@ECHO ***********************************************/ >> %OutPutFile%
 @ECHO (function(window, undefined){ >> %OutPutFile%
 @TYPE %OutPutFile%.temp >> %OutPutFile%
 @ECHO }(window)); >> %OutPutFile%
