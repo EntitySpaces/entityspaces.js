@@ -44,9 +44,12 @@ es.AjaxProvider = function () {
         };
 
         // override the passed in errorHandler so we can add global processing if needed
-        options.error = function (jqXHR, textStatus, errorThrown) {
-            origError(jqXHR, textStatus, errorThrown);
-            es.onError({ code: textStatus, message: errorThrown });
+        options.error = function (xhr, textStatus, errorThrown) {
+           	if (origError) {
+           		origError(xhr.status, xhr.responseText);
+           	} else {
+           		es.onError({ code: xhr.status, message: xhr.responseText });
+           	}
         };
 
         //parameterize the Url
