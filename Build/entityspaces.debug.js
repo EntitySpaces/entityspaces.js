@@ -313,6 +313,7 @@ var utils = {
                         case '___esEntity___':
                         case 'esTypeDefs':
                         case 'routes':
+                        case 'ignorePropertyChanged':
                             break;
                         default:
                             dst[key] = src[key];
@@ -609,6 +610,9 @@ es.AjaxProvider = function () {
 
         //parameterize the Url
         options.url = parameterizeUrl(options.url, options.data);
+        if (options.data) {
+            options.data = ko.toJSON(options.data);
+        }
 
         $.ajax(options);
     };
