@@ -8,7 +8,6 @@
     es.objects.Employees = es.defineEntity(function () {
 
         this.onPropertyChanged = function (originalValue, proposedValue, propertyName) {
-
             if (originalValue !== proposedValue) {
 
                 this.ModifiedColumns.push(propertyName);
