@@ -126,284 +126,298 @@ es.isEsCollection = function (array) {
 
 var utils = {
 
-    extendObservable: function (target, source) {
-        var prop;
+	extendObservable: function (target, source) {
+		var prop;
 
-        if (!target || !source) {
-            return;
-        }
+		if (!target || !source) {
+			return;
+		}
 
-        for (prop in target) {
+		for (prop in target) {
 
-            if (source.hasOwnProperty(prop)) {
+			if (source.hasOwnProperty(prop)) {
 
-                if (ko.isObservable(target[prop])) { //set the observable property
+				if (ko.isObservable(target[prop])) { //set the observable property
 
-                    target[prop](source[prop]); // set the observable
-                } else {
+					target[prop](source[prop]); // set the observable
+				} else {
 
-                    target[prop] = source[prop];
-                }
-            }
-        }
+					target[prop] = source[prop];
+				}
+			}
+		}
 
-        return target;
-    },
+		return target;
+	},
 
-    addPropertyChangedHandlers: function (obj, propertyName) {
+	extend: function (target, source) {
+		var prop;
 
-        var property = obj[propertyName];
-        if (ko.isObservable(property) && !(property instanceof Array)) {
+		if (!target || !source) {
+			return;
+		}
 
-            // This is the actual PropertyChanged event
-            property.subscribe(function () {
+		for (prop in source) {
+			target[prop] = source[prop];
+		}
 
-                if (obj.ignorePropertyChanged === false) {
+		return target;
+	},
 
-                    if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
+	addPropertyChangedHandlers: function (obj, propertyName) {
 
-                        if (propertyName !== "RowState") {
-                            obj.ModifiedColumns.push(propertyName);
+		var property = obj[propertyName];
+		if (ko.isObservable(property) && !(property instanceof Array)) {
 
-                            if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
-                                obj.RowState(es.RowState.MODIFIED);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    },
+			// This is the actual PropertyChanged event
+			property.subscribe(function () {
 
-    startTracking: function (entity) {
+				if (obj.ignorePropertyChanged === false) {
 
-        var propertyName;
+					if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
 
-        if (!entity.hasOwnProperty("RowState")) {
-            entity.RowState = ko.observable(es.RowState.ADDED);
-            if (entity.hasOwnProperty("__ko_mapping__")) {
-                entity.__ko_mapping__.mappedProperties["RowState"] = true;
-            }
-        } else {
-            if (!ko.isObservable(entity.RowState)) {
-                entity.RowState = ko.observable(entity.RowState);
-            }
-        }
+						if (propertyName !== "RowState") {
+							obj.ModifiedColumns.push(propertyName);
 
-        if (!entity.hasOwnProperty("ModifiedColumns")) {
-            entity.ModifiedColumns = ko.observableArray();
-            if (entity.hasOwnProperty("__ko_mapping__")) {
-                entity.__ko_mapping__.mappedProperties["ModifiedColumns"] = true;
-            }
-        } else {
-            // Overwrite existing data
-            entity.ModifiedColumns = ko.observableArray();
-        }
+							if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
+								obj.RowState(es.RowState.MODIFIED);
+							}
+						}
+					}
+				}
+			});
+		}
+	},
 
-        for (propertyName in entity) {
-            if (propertyName !== 'RowState' && propertyName !== "ModifiedColumns" && propertyName !== '__type' && propertyName !== 'esExtendedData') {
+	startTracking: function (entity) {
 
-                var property = entity[propertyName];
+		var propertyName;
 
-                if (property instanceof Array) {
-                    continue;
-                }
+		if (!entity.hasOwnProperty("RowState")) {
+			entity.RowState = ko.observable(es.RowState.ADDED);
+			if (entity.hasOwnProperty("__ko_mapping__")) {
+				entity.__ko_mapping__.mappedProperties["RowState"] = true;
+			}
+		} else {
+			if (!ko.isObservable(entity.RowState)) {
+				entity.RowState = ko.observable(entity.RowState);
+			}
+		}
 
-                if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
-                    utils.addPropertyChangedHandlers(entity, propertyName);
-                }
-            }
-        }
+		if (!entity.hasOwnProperty("ModifiedColumns")) {
+			entity.ModifiedColumns = ko.observableArray();
+			if (entity.hasOwnProperty("__ko_mapping__")) {
+				entity.__ko_mapping__.mappedProperties["ModifiedColumns"] = true;
+			}
+		} else {
+			// Overwrite existing data
+			entity.ModifiedColumns = ko.observableArray();
+		}
 
-        return entity;
-    },
+		for (propertyName in entity) {
+			if (propertyName !== 'RowState' && propertyName !== "ModifiedColumns" && propertyName !== '__type' && propertyName !== 'esExtendedData') {
 
-    expandExtraColumns: function (entity, shouldMakeObservable) {
-        var data, i, ext,
+				var property = entity[propertyName];
+
+				if (property instanceof Array) {
+					continue;
+				}
+
+				if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
+					utils.addPropertyChangedHandlers(entity, propertyName);
+				}
+			}
+		}
+
+		return entity;
+	},
+
+	expandExtraColumns: function (entity, shouldMakeObservable) {
+		var data, i, ext,
                 makeObservable = arguments[1] || false;
 
-        if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
+		if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
 
-            data = ko.utils.unwrapObservable(entity.esExtendedData);
+			data = ko.utils.unwrapObservable(entity.esExtendedData);
 
-            for (i = 0; i < data.length; i++) {
+			for (i = 0; i < data.length; i++) {
 
-                if (makeObservable) {
-                    entity[ko.utils.unwrapObservable(data[i].Key)] = ko.observable(ko.utils.unwrapObservable(data[i].Value));
-                } else {
-                    entity[ko.utils.unwrapObservable(data[i].Key)] = ko.utils.unwrapObservable(data[i].Value);
-                }
+				if (makeObservable) {
+					entity[ko.utils.unwrapObservable(data[i].Key)] = ko.observable(ko.utils.unwrapObservable(data[i].Value));
+				} else {
+					entity[ko.utils.unwrapObservable(data[i].Key)] = ko.utils.unwrapObservable(data[i].Value);
+				}
 
-                if (entity.hasOwnProperty("__ko_mapping__")) {
-                    if (entity.__ko_mapping__.hasOwnProperty("mappedProperties")) {
-                        entity.__ko_mapping__.mappedProperties[ko.utils.unwrapObservable(data[i].Key)] = true;
-                    }
-                }
-            }
+				if (entity.hasOwnProperty("__ko_mapping__")) {
+					if (entity.__ko_mapping__.hasOwnProperty("mappedProperties")) {
+						entity.__ko_mapping__.mappedProperties[ko.utils.unwrapObservable(data[i].Key)] = true;
+					}
+				}
+			}
 
-            ext = ko.utils.unwrapObservable(entity.esExtendedData);
-            delete entity.esExtendedData;
-        }
+			ext = ko.utils.unwrapObservable(entity.esExtendedData);
+			delete entity.esExtendedData;
+		}
 
-        if (data !== undefined) {
+		if (data !== undefined) {
 
-            entity["esExtendedData"] = [];
+			entity["esExtendedData"] = [];
 
-            for (i = 0; i < data.length; i++) {
-                entity.esExtendedData.push(ko.utils.unwrapObservable(data[i].Key));
-            }
-        }
+			for (i = 0; i < data.length; i++) {
+				entity.esExtendedData.push(ko.utils.unwrapObservable(data[i].Key));
+			}
+		}
 
-        return entity;
-    },
+		return entity;
+	},
 
-    removeExtraColumns: function (entity) {
-        var i;
+	removeExtraColumns: function (entity) {
+		var i;
 
-        if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
+		if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
 
-            var data = ko.utils.unwrapObservable(entity.esExtendedData);
+			var data = ko.utils.unwrapObservable(entity.esExtendedData);
 
-            for (i = 0; i < data.length; i++) {
-                delete entity[data[i]];
-            }
-            delete entity.esExtendedData;
-        }
+			for (i = 0; i < data.length; i++) {
+				delete entity[data[i]];
+			}
+			delete entity.esExtendedData;
+		}
 
-        return entity;
-    },
+		return entity;
+	},
 
-    // Private function used by 'getDirtyEntities' below
-    // NOTE: This strips out unwanted properties, this method is only to
-    //       be used to by getDirtyEntities
-    shallowCopy: function (src) {
-        if (typeof src === 'object' && src !== null) {
-            var dst;
+	// Private function used by 'getDirtyEntities' below
+	// NOTE: This strips out unwanted properties, this method is only to
+	//       be used to by getDirtyEntities
+	shallowCopy: function (src) {
+		if (typeof src === 'object' && src !== null) {
+			var dst;
 
-            if (es.isArray(src)) {
-                dst = [];
-            }
-            else if (src instanceof Date) {
-                dst = new Date(src);
-            }
-            else if (src instanceof Boolean) {
-                dst = new Boolean(src);
-            }
-            else if (src instanceof Number) {
-                dst = new Number(src);
-            }
-            else if (src instanceof String) {
-                dst = new String(src);
-            }
-            else if (Object.create && Object.getPrototypeOf) {
-                dst = Object.create(Object.getPrototypeOf(src));
-            }
-            else if (src.__proto__ || src.constructor.prototype) {
-                var proto = src.__proto__ || src.constructor.prototype || {};
-                var T = function () { };
-                T.prototype = proto;
-                dst = new T;
-                if (!dst.__proto__) { dst.__proto__ = proto; }
-            }
+			if (es.isArray(src)) {
+				dst = [];
+			}
+			else if (src instanceof Date) {
+				dst = new Date(src);
+			}
+			else if (src instanceof Boolean) {
+				dst = new Boolean(src);
+			}
+			else if (src instanceof Number) {
+				dst = new Number(src);
+			}
+			else if (src instanceof String) {
+				dst = new String(src);
+			}
+			else if (Object.create && Object.getPrototypeOf) {
+				dst = Object.create(Object.getPrototypeOf(src));
+			}
+			else if (src.__proto__ || src.constructor.prototype) {
+				var proto = src.__proto__ || src.constructor.prototype || {};
+				var T = function () { };
+				T.prototype = proto;
+				dst = new T;
+				if (!dst.__proto__) { dst.__proto__ = proto; }
+			}
 
-            ko.utils.arrayForEach(es.objectKeys(src), function (key) {
-                if (!es.isEsCollection(src[key])) {
+			ko.utils.arrayForEach(es.objectKeys(src), function (key) {
+				if (!es.isEsCollection(src[key])) {
 
-                    switch (key) {
-                        case '___esEntity___':
-                        case 'esTypeDefs':
-                        case 'routes':
-                        case 'ignorePropertyChanged':
-                            break;
-                        default:
-                            dst[key] = src[key];
-                            break;
-                    }
-                }
-            });
-            return dst;
-        } else {
-            return src;
-        }
-    },
+					switch (key) {
+						case '___esEntity___':
+						case 'esTypeDefs':
+						case 'routes':
+						case 'ignorePropertyChanged':
+							break;
+						default:
+							dst[key] = src[key];
+							break;
+					}
+				}
+			});
+			return dst;
+		} else {
+			return src;
+		}
+	},
 
-    getDirtyGraph: function (obj) {
+	getDirtyGraph: function (obj) {
 
-        var i, k, dirty, paths = [], root = null;
+		var i, k, dirty, paths = [], root = null;
 
-        es.Visit(obj).forEach(function (theObj) {
+		es.Visit(obj).forEach(function (theObj) {
 
-            if (this.key === "esExtendedData") {
-                this.block();
-            } else {
+			if (this.key === "esExtendedData") {
+				this.block();
+			} else {
 
-                if (this.isLeaf === false) {
+				if (this.isLeaf === false) {
 
-                    if (theObj instanceof Array) { return theObj; }
+					if (theObj instanceof Array) { return theObj; }
 
-                    if (theObj.hasOwnProperty("RowState")) {
+					if (theObj.hasOwnProperty("RowState")) {
 
-                        switch (theObj.RowState) {
+						switch (theObj.RowState) {
 
-                            case es.RowState.ADDED:
-                            case es.RowState.DELETED:
-                            case es.RowState.MODIFIED:
+							case es.RowState.ADDED:
+							case es.RowState.DELETED:
+							case es.RowState.MODIFIED:
 
-                                paths.push(this.path);
-                                break;
-                        }
-                    }
-                }
-            }
+								paths.push(this.path);
+								break;
+						}
+					}
+				}
+			}
 
-            return theObj;
-        });
+			return theObj;
+		});
 
-        //#region Rebuild tree of dirty objects from "paths[]"
-        if (paths.length > 0) {
+		//#region Rebuild tree of dirty objects from "paths[]"
+		if (paths.length > 0) {
 
-            if (es.isArray(obj)) {
-                dirty = [];
-            } else {
-                dirty = utils.shallowCopy(utils.removeExtraColumns(obj));
-            }
+			if (es.isArray(obj)) {
+				dirty = [];
+			} else {
+				dirty = utils.shallowCopy(utils.removeExtraColumns(obj));
+			}
 
-            root = dirty;
+			root = dirty;
 
-            for (i = 0; i < paths.length; i++) {
+			for (i = 0; i < paths.length; i++) {
 
-                var thePath = paths[i];
-                var data = obj;
-                dirty = root;
+				var thePath = paths[i];
+				var data = obj;
+				dirty = root;
 
-                for (k = 0; k < thePath.length; k++) {
+				for (k = 0; k < thePath.length; k++) {
 
-                    if (!dirty.hasOwnProperty(thePath[k])) {
+					if (!dirty.hasOwnProperty(thePath[k])) {
 
-                        if (es.isArray(data[thePath[k]])) {
-                            dirty[thePath[k]] = [];
-                            dirty = dirty[thePath[k]];
-                        }
-                    } else {
-                        dirty = dirty[thePath[k]];
-                    }
+						if (es.isArray(data[thePath[k]])) {
+							dirty[thePath[k]] = [];
+							dirty = dirty[thePath[k]];
+						}
+					} else {
+						dirty = dirty[thePath[k]];
+					}
 
-                    data = data[thePath[k]];
-                }
+					data = data[thePath[k]];
+				}
 
-                data = utils.removeExtraColumns(data);
+				data = utils.removeExtraColumns(data);
 
-                if (es.isArray(dirty)) {
-                    dirty.push(utils.shallowCopy(data));
-                } else {
-                    dirty = utils.shallowCopy(data);
-                }
-            }
-        }
-        //#endregion Save
+				if (es.isArray(dirty)) {
+					dirty.push(utils.shallowCopy(data));
+				} else {
+					dirty = utils.shallowCopy(data);
+				}
+			}
+		}
+		//#endregion Save
 
-        return root;
-    }
+		return root;
+	}
 };
 
 utils.newId = (function () {
@@ -603,9 +617,12 @@ es.AjaxProvider = function () {
         };
 
         // override the passed in errorHandler so we can add global processing if needed
-        options.error = function (jqXHR, textStatus, errorThrown) {
-            origError(jqXHR, textStatus, errorThrown);
-            es.onError({ code: textStatus, message: errorThrown });
+        options.error = function (xhr, textStatus, errorThrown) {
+           	if (origError) {
+           		origError(xhr.status, xhr.responseText);
+           	} else {
+           		es.onError({ code: xhr.status, message: xhr.responseText });
+           	}
         };
 
         //parameterize the Url
@@ -777,218 +794,230 @@ es.XMLHttpRequestProvider = function () {
 
 
 es.EsEntity = function () { //empty constructor
-    var self, //is only set when we call 'init'
+	var self, //is only set when we call 'init'
         extenders = [];
 
-    this.ignorePropertyChanged = false;
+	this.ignorePropertyChanged = false;
 
-    //#region Initialization Logic
-    this.routes = {};
+	//#region Initialization Logic
+	this.routes = {};
 
-    this.customize = function (extender) {
-        extenders.push(extender);
-        return this;
-    };
+	this.customize = function (extender) {
+		extenders.push(extender);
+		return this;
+	};
 
-    this.init = function () {
-        self = this;
+	this.init = function () {
+		self = this;
 
-        self['___esEntity___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
+		self['___esEntity___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
 
-        // before populating the data, call each extender to add the required functionality to our object        
-        ko.utils.arrayForEach(extenders, function (extender) {
+		// before populating the data, call each extender to add the required functionality to our object        
+		ko.utils.arrayForEach(extenders, function (extender) {
 
-            if (extender) {
-                //Make sure to set the 'this' properly by using 'call'
-                extender.call(self);
-            }
-        });
+			if (extender) {
+				//Make sure to set the 'this' properly by using 'call'
+				extender.call(self);
+			}
+		});
 
-        //start change tracking
-        es.utils.startTracking(self);
-    };
+		//start change tracking
+		es.utils.startTracking(self);
+	};
 
-    this.populateEntity = function (data) {
-        var prop, EntityCtor, entityProp;
+	this.populateEntity = function (data) {
+		var prop, EntityCtor, entityProp;
 
-        self.ignorePropertyChanged = true;
+		self.ignorePropertyChanged = true;
 
-        try {
-            //populate the entity with data back from the server...
-            es.utils.extendObservable(self, data);
+		try {
+			//populate the entity with data back from the server...
+			es.utils.extendObservable(self, data);
 
-            //expand the Extra Columns
-            es.utils.expandExtraColumns(self, true);
+			//expand the Extra Columns
+			es.utils.expandExtraColumns(self, true);
 
-            //start change tracking
-            es.utils.startTracking(self);
+			//start change tracking
+			es.utils.startTracking(self);
 
-            for (prop in data) {
-                if (data.hasOwnProperty(prop)) {
+			for (prop in data) {
+				if (data.hasOwnProperty(prop)) {
 
-                    if (this.esTypeDefs && this.esTypeDefs[prop]) {
-                        EntityCtor = es.getType(this.esTypeDefs[prop]);
-                        if (EntityCtor) {
+					if (this.esTypeDefs && this.esTypeDefs[prop]) {
+						EntityCtor = es.getType(this.esTypeDefs[prop]);
+						if (EntityCtor) {
 
-                            entityProp = new EntityCtor();
-                            if (entityProp.hasOwnProperty('___esCollection___')) { //if its a collection call 'populateCollection'
-                                entityProp.populateCollection(data[prop]);
-                            } else { //else call 'populateEntity'
-                                entityProp.populateEntity(data[prop]);
-                            }
+							entityProp = new EntityCtor();
+							if (entityProp.hasOwnProperty('___esCollection___')) { //if its a collection call 'populateCollection'
+								entityProp.populateCollection(data[prop]);
+							} else { //else call 'populateEntity'
+								entityProp.populateEntity(data[prop]);
+							}
 
-                            this[prop] = entityProp; //then set the property back to the new Entity Object
-                        } else {
-                            // NOTE: We have a hierarchical property but the .js file for that entity wasn't included
-                            //       so we need to make these regular ol' javascript objects
-                            if (es.isArray(data[prop])) {
-                                this[prop] = data[prop];
-                                ko.utils.arrayForEach(this[prop], function (data) {
-                                    // TODO : CONTINUE WALKING, TALK WITH ERIC
-                                });
-                            } else {
-                                this[prop] = data[prop];
-                                // TODO : CONTINUE WALKING, TALK WITH ERIC
-                            }
-                        }
-                    }
-                }
-            }
-        } finally {
-            // We need to make sure we always turn this off ...
-            self.ignorePropertyChanged = false;
-        }
-    };
+							this[prop] = entityProp; //then set the property back to the new Entity Object
+						} else {
+							// NOTE: We have a hierarchical property but the .js file for that entity wasn't included
+							//       so we need to make these regular ol' javascript objects
+							if (es.isArray(data[prop])) {
+								this[prop] = data[prop];
+								ko.utils.arrayForEach(this[prop], function (data) {
+									// TODO : CONTINUE WALKING, TALK WITH ERIC
+								});
+							} else {
+								this[prop] = data[prop];
+								// TODO : CONTINUE WALKING, TALK WITH ERIC
+							}
+						}
+					}
+				}
+			}
+		} finally {
+			// We need to make sure we always turn this off ...
+			self.ignorePropertyChanged = false;
+		}
+	};
 
-    //#endregion
+	//#endregion
 
-    this.applyDefaults = function () {
-        //here to be overridden higher up the prototype chain
-    };
+	this.applyDefaults = function () {
+		//here to be overridden higher up the prototype chain
+	};
 
-    this.markAsDeleted = function () {
-        var entity = this;
+	this.markAsDeleted = function () {
+		var entity = this;
 
-        if (!entity.hasOwnProperty("RowState")) {
-            entity.RowState = ko.observable(es.RowState.DELETED);
-        } else if (entity.RowState() !== es.RowState.DELETED) {
-            entity.RowState(es.RowState.DELETED);
-        }
+		if (!entity.hasOwnProperty("RowState")) {
+			entity.RowState = ko.observable(es.RowState.DELETED);
+		} else if (entity.RowState() !== es.RowState.DELETED) {
+			entity.RowState(es.RowState.DELETED);
+		}
 
-        if (entity.hasOwnProperty("ModifiedColumns")) {
-            entity.ModifiedColumns.removeAll();
-        }
-    };
+		if (entity.hasOwnProperty("ModifiedColumns")) {
+			entity.ModifiedColumns.removeAll();
+		}
+	};
 
-    //#region Loads
-    this.load = function (options) {
-        self = this;
+	//#region Loads
+	this.load = function (options) {
+		self = this;
 
-        if (options.success !== undefined || options.error !== undefined) {
-            options.async = true;
-        } else {
-            options.async = false;
-        }
+		if (options.success !== undefined || options.error !== undefined) {
+			options.async = true;
+		} else {
+			options.async = false;
+		}
 
-        //if a route was passed in, use that route to pull the ajax options url & type
-        if (options.route) {
-            options.url = options.route.url || this.routes[options.route].url;
-            options.type = options.route.method || this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
-        }
+		//if a route was passed in, use that route to pull the ajax options url & type
+		if (options.route) {
+			options.url = options.route.url || this.routes[options.route].url;
+			options.type = options.route.method || this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
+		}
 
-        // ensure that the data is flattened
-        if (options.data && options.data['toJS']) {
-            options.data = options.data.toJS();
-        }
+		// ensure that the data is flattened
+		if (options.data && options.data['toJS']) {
+			options.data = options.data.toJS();
+		}
 
-        //sprinkle in our own success handler, but make sure the original still gets called
-        var origSuccessHandler = options.success;
+		//sprinkle in our own success handler, but make sure the original still gets called
+		var origSuccessHandler = options.success;
 
-        //wrap the passed in success handler so that we can populate the Entity
-        options.success = function (data) {
+		//wrap the passed in success handler so that we can populate the Entity
+		options.success = function (data) {
 
-            //populate the entity with the returned data;
-            self.populateEntity(data);
+			//populate the entity with the returned data;
+			self.populateEntity(data);
 
-            //fire the passed in success handler
-            if (origSuccessHandler) { origSuccessHandler.call(self, data); }
-        };
+			//fire the passed in success handler
+			if (origSuccessHandler) { origSuccessHandler.call(self, data); }
+		};
 
-        es.dataProvider.execute(options);
-    };
+		es.dataProvider.execute(options);
+	};
 
-    this.loadByPrimaryKey = function (primaryKey, success) {
+	this.loadByPrimaryKey = function (primaryKey, success, error) { // or single argument of options
 
-        this.load({
-            route: this.routes['loadByPrimaryKey'],
-            data: primaryKey,
-            success: success
-        });
+		// Check for first argument as object, if so assume it is options
+		var options = {
+			route: this.routes['loadByPrimaryKey']
+		};
 
-    };
-    //#endregion Save
+		if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
+			es.utils.extend(options, arguments[0]);
+		} else {
+			options.data = primaryKey;
+			options.success = success;
+			options.error = error;
+		}
 
-    //#region Save
-    this.save = function (success, error) {
-        self = this;
+		this.load(options);
 
-        var route, options = {};
+	};
+	//#endregion Save
 
-        if (success !== undefined || error !== undefined) {
-            options.async = true;
-        } else {
-            options.async = false;
-        }
+	//#region Save
+	this.save = function (success, error) {
+		self = this;
 
-        // The default unless overriden
-        route = self.routes['commit'];
+		var route,
+			options = { success: success, error: error };
 
-        switch (self.RowState()) {
-            case es.RowState.ADDED:
-                route = self.routes['create'] || route;
-                break;
-            case es.RowState.MODIFIED:
-                route = self.routes['update'] || route;
-                break;
-            case es.RowState.DELETED:
-                route = self.routes['del'] || route;
-                break;
-        }
+		if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
+			es.utils.extend(options, arguments[0]);
+		}
 
-        options.route = route;
+		if (options.success !== undefined || options.error !== undefined) {
+			options.async = true;
+		} else {
+			options.async = false;
+		}
 
-        //TODO: potentially the most inefficient call in the whole lib
-        options.data = es.utils.getDirtyGraph(ko.toJS(self));
+		// The default unless overriden
+		route = self.routes['commit'];
 
-        if (route) {
-            options.url = route.url;
-            options.type = route.method;
-        }
+		switch (self.RowState()) {
+			case es.RowState.ADDED:
+				route = self.routes['create'] || route;
+				break;
+			case es.RowState.MODIFIED:
+				route = self.routes['update'] || route;
+				break;
+			case es.RowState.DELETED:
+				route = self.routes['del'] || route;
+				break;
+		}
 
-        options.success = function (data) {
-            self.populateEntity(data);
-            if (success) { success.call(self, data); }
-        };
+		options.route = route;
 
-        options.error = function (xhr, textStatus, errorThrown) {
-            if (error) { error.call(self, { code: textStatus, message: errorThrown }); }
-        };
+		//TODO: potentially the most inefficient call in the whole lib
+		options.data = es.utils.getDirtyGraph(ko.toJS(self));
 
-        es.dataProvider.execute(options);
-    };
-    //#endregion
+		if (route) {
+			options.url = route.url;
+			options.type = route.method;
+		}
 
-    // TODO : THIS CAUSE A RECURSIVE STACK OVERFLOW
+		var setSuccessHandler = options.success;
 
-    //#region Serialization
-    //    this.toJS = function () {
-    //        return ko.toJS(this);
-    //    };
+		options.success = function (data) {
+			self.populateEntity(data);
+			if (setSuccessHandler) { setSuccessHandler.call(self, data); }
+		};
 
-    //    this.toJSON = function () {
-    //        return ko.toJSON(this);
-    //    };
-    //#endregion
+		es.dataProvider.execute(options);
+	};
+	//#endregion
+
+	// TODO : THIS CAUSE A RECURSIVE STACK OVERFLOW
+
+	//#region Serialization
+	//    this.toJS = function () {
+	//        return ko.toJS(this);
+	//    };
+
+	//    this.toJSON = function () {
+	//        return ko.toJSON(this);
+	//    };
+	//#endregion
 
 }; 
  
