@@ -46,13 +46,10 @@ es.EsEntity = function () { //empty constructor
 
 		try {
 			//populate the entity with data back from the server...
-			es.utils.extendObservable(self, data);
+		    es.utils.copyDataIntoEntity(self, data);
 
 			//expand the Extra Columns
 			es.utils.expandExtraColumns(self, true);
-
-			//start change tracking
-			es.utils.startTracking(self);
 
 			for (prop in data) {
 				if (data.hasOwnProperty(prop)) {

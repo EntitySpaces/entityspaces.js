@@ -1,5 +1,5 @@
 /*********************************************** 
-* Built on Wed 01/04/2012 at 19:57:28.34      *  
+* Built on Wed 01/04/2012 at 20:14:07.37      *  
 ***********************************************/ 
 (function(window, undefined){ 
  
@@ -129,7 +129,7 @@ es.isEsCollection = function (array) {
 
 var utils = {
 
-	extendObservable: function (target, source) {
+	copyDataIntoEntity: function (target, source) {
 		var prop;
 
 		if (!target || !source) {
@@ -835,13 +835,10 @@ es.EsEntity = function () { //empty constructor
 
 		try {
 			//populate the entity with data back from the server...
-			es.utils.extendObservable(self, data);
+		    es.utils.copyDataIntoEntity(self, data);
 
 			//expand the Extra Columns
 			es.utils.expandExtraColumns(self, true);
-
-			//start change tracking
-			es.utils.startTracking(self);
 
 			for (prop in data) {
 				if (data.hasOwnProperty(prop)) {

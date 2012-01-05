@@ -5,7 +5,7 @@
 
 var utils = {
 
-	extendObservable: function (target, source) {
+	copyDataIntoEntity: function (target, source) {
 		var prop;
 
 		if (!target || !source) {
