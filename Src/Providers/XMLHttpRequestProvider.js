@@ -47,10 +47,10 @@ es.XMLHttpRequestProvider = function () {
     // Called by the entityspaces.js framework when working with entities
     this.execute = function (options) {
 
-        var path = null, xmlHttp, success, failure;
+        var path = null, xmlHttp, success, error;
 
         success = options.success || noop;
-        failure = options.error || noop;
+        error = options.error || noop;
 
         // Create HTTP request
         xmlHttp = createRequest();
@@ -81,6 +81,8 @@ es.XMLHttpRequestProvider = function () {
                 if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
                     success(executeCompleted(xmlHttp.responseText, options.route));
                 }
+            } else {
+                error(xmlHttp.status, xmlHttp.responseText);
             }
         }
     };

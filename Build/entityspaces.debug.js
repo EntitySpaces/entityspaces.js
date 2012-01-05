@@ -1,5 +1,5 @@
 /*********************************************** 
-* Built on Wed 01/04/2012 at 16:51:40.85        *  
+* Built on Wed 01/04/2012 at 19:57:28.34      *  
 ***********************************************/ 
 (function(window, undefined){ 
  
@@ -141,10 +141,8 @@ var utils = {
 			if (source.hasOwnProperty(prop)) {
 
 				if (ko.isObservable(target[prop])) { //set the observable property
-
 					target[prop](source[prop]); // set the observable
 				} else {
-
 					target[prop] = source[prop];
 				}
 			}
@@ -694,10 +692,10 @@ es.XMLHttpRequestProvider = function () {
     // Called by the entityspaces.js framework when working with entities
     this.execute = function (options) {
 
-        var path = null, xmlHttp, success, failure;
+        var path = null, xmlHttp, success, error;
 
         success = options.success || noop;
-        failure = options.error || noop;
+        error = options.error || noop;
 
         // Create HTTP request
         xmlHttp = createRequest();
@@ -728,6 +726,8 @@ es.XMLHttpRequestProvider = function () {
                 if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
                     success(executeCompleted(xmlHttp.responseText, options.route));
                 }
+            } else {
+                error(xmlHttp.status, xmlHttp.responseText);
             }
         }
     };
@@ -939,7 +939,6 @@ es.EsEntity = function () { //empty constructor
 
 	this.loadByPrimaryKey = function (primaryKey, success, error) { // or single argument of options
 
-		// Check for first argument as object, if so assume it is options
 		var options = {
 			route: this.routes['loadByPrimaryKey']
 		};
@@ -953,7 +952,6 @@ es.EsEntity = function () { //empty constructor
 		}
 
 		this.load(options);
-
 	};
 	//#endregion Save
 
@@ -1009,19 +1007,6 @@ es.EsEntity = function () { //empty constructor
 		es.dataProvider.execute(options);
 	};
 	//#endregion
-
-	// TODO : THIS CAUSE A RECURSIVE STACK OVERFLOW
-
-	//#region Serialization
-	//    this.toJS = function () {
-	//        return ko.toJS(this);
-	//    };
-
-	//    this.toJSON = function () {
-	//        return ko.toJSON(this);
-	//    };
-	//#endregion
-
 }; 
  
  
@@ -1153,28 +1138,39 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     },
     //#endregion Save
 
-    loadAll: function (success) {
+    loadAll: function (success, error) {
 
-        this.load({
-            route: this.routes['loadAll'],
-            data: null,
-            success: success
-        });
+        var options = {
+            route: this.routes['loadAll']
+        };
+
+        if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
+            es.utils.extend(options, arguments[0]);
+        } else {
+            options.success = success;
+            options.error = error;
+        }
+
+        this.load(options);
     },
 
     //#region Save
     save: function (success, error) {
         var self = this;
 
-        var options = {};
+        var route,
+			options = { success: success, error: error };
 
-        if (success !== undefined || error !== undefined) {
+        if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
+            es.utils.extend(options, arguments[0]);
+        }
+
+        if (options.success !== undefined || options.error !== undefined) {
             options.async = true;
         } else {
             options.async = false;
         }
 
-        // The default unless overriden
         options.route = self.routes['commit'];
 
         //TODO: potentially the most inefficient call in the whole lib
@@ -1185,27 +1181,16 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             options.type = options.route.method;
         }
 
+        var setSuccessHandler = options.success;
+
         options.success = function (data) {
             self.populateCollection(data);
-            if (success) { success.call(self, data); }
-        };
-
-        options.error = function (xhr, textStatus, errorThrown) {
-            if (error) { error.call(self, { code: textStatus, message: errorThrown }); }
+            if (setSuccessHandler) { setSuccessHandler.call(self, data); }
         };
 
         es.dataProvider.execute(options);
     }
     //#endregion
-
-    //#region Serialization
-//    toJS: function () {
-//        return ko.toJS(this()); //use this() to pull the array out
-//    },
-
-//    toJSON: function () {
-//        return ko.toJSON(this()); //use this() to pull the array out
-//    }
 }; 
  
  

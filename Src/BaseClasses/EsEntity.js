@@ -150,7 +150,6 @@ es.EsEntity = function () { //empty constructor
 
 	this.loadByPrimaryKey = function (primaryKey, success, error) { // or single argument of options
 
-		// Check for first argument as object, if so assume it is options
 		var options = {
 			route: this.routes['loadByPrimaryKey']
 		};
@@ -164,7 +163,6 @@ es.EsEntity = function () { //empty constructor
 		}
 
 		this.load(options);
-
 	};
 	//#endregion Save
 
@@ -220,17 +218,4 @@ es.EsEntity = function () { //empty constructor
 		es.dataProvider.execute(options);
 	};
 	//#endregion
-
-	// TODO : THIS CAUSE A RECURSIVE STACK OVERFLOW
-
-	//#region Serialization
-	//    this.toJS = function () {
-	//        return ko.toJS(this);
-	//    };
-
-	//    this.toJSON = function () {
-	//        return ko.toJSON(this);
-	//    };
-	//#endregion
-
 };

@@ -123,28 +123,39 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     },
     //#endregion Save
 
-    loadAll: function (success) {
+    loadAll: function (success, error) {
 
-        this.load({
-            route: this.routes['loadAll'],
-            data: null,
-            success: success
-        });
+        var options = {
+            route: this.routes['loadAll']
+        };
+
+        if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
+            es.utils.extend(options, arguments[0]);
+        } else {
+            options.success = success;
+            options.error = error;
+        }
+
+        this.load(options);
     },
 
     //#region Save
     save: function (success, error) {
         var self = this;
 
-        var options = {};
+        var route,
+			options = { success: success, error: error };
 
-        if (success !== undefined || error !== undefined) {
+        if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
+            es.utils.extend(options, arguments[0]);
+        }
+
+        if (options.success !== undefined || options.error !== undefined) {
             options.async = true;
         } else {
             options.async = false;
         }
 
-        // The default unless overriden
         options.route = self.routes['commit'];
 
         //TODO: potentially the most inefficient call in the whole lib
@@ -155,25 +166,14 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             options.type = options.route.method;
         }
 
+        var setSuccessHandler = options.success;
+
         options.success = function (data) {
             self.populateCollection(data);
-            if (success) { success.call(self, data); }
-        };
-
-        options.error = function (xhr, textStatus, errorThrown) {
-            if (error) { error.call(self, { code: textStatus, message: errorThrown }); }
+            if (setSuccessHandler) { setSuccessHandler.call(self, data); }
         };
 
         es.dataProvider.execute(options);
     }
     //#endregion
-
-    //#region Serialization
-//    toJS: function () {
-//        return ko.toJS(this()); //use this() to pull the array out
-//    },
-
-//    toJSON: function () {
-//        return ko.toJSON(this()); //use this() to pull the array out
-//    }
 };
