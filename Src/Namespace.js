@@ -5,10 +5,23 @@ window['es'] = {}; //define root namespace
 
 var config = window.esConfig || {};
 
-config = $.extend(config, {
+var extend = function (target, source) {
+    var prop;
+
+    if (!target || !source) {
+        return;
+    }
+
+    for (prop in source) {
+        target[prop] = source[prop];
+    }
+
+    return target;
+};
+
+config = extend(config, {
     //defines the namespace where the Business Objects will be stored
     namespace: 'es.objects'
-
 });
 
 //ensure the namespace is built out...
@@ -29,7 +42,6 @@ config = $.extend(config, {
 }());
 
 
-es.getGeneratedNamespaceObj = function(){
-        
+es.getGeneratedNamespaceObj = function() {
     return es.generatedNamespace;
 };

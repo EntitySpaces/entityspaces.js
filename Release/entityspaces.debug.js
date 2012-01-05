@@ -1,5 +1,5 @@
 /*********************************************** 
-* Built on Wed 01/04/2012 at 20:14:07.37      *  
+* Built on Thu 01/05/2012 at 16:57:30.71      *  
 ***********************************************/ 
 (function(window, undefined){ 
  
@@ -14,10 +14,23 @@ window['es'] = {}; //define root namespace
 
 var config = window.esConfig || {};
 
-config = $.extend(config, {
+var extend = function (target, source) {
+    var prop;
+
+    if (!target || !source) {
+        return;
+    }
+
+    for (prop in source) {
+        target[prop] = source[prop];
+    }
+
+    return target;
+};
+
+config = extend(config, {
     //defines the namespace where the Business Objects will be stored
     namespace: 'es.objects'
-
 });
 
 //ensure the namespace is built out...
@@ -38,8 +51,7 @@ config = $.extend(config, {
 }());
 
 
-es.getGeneratedNamespaceObj = function(){
-        
+es.getGeneratedNamespaceObj = function() {
     return es.generatedNamespace;
 };
  
@@ -567,221 +579,6 @@ var walk = function(root, cb, immutable) {
 
 
  
- 
- 
-/*********************************************** 
-* FILE: ..\Src\Providers\ajaxProvider.js 
-***********************************************/ 
-﻿/*globals es*/
-/// <reference path="../Libs/jquery-1.7.1.js" />
-/// <reference path="../Libs/json2.js" />
-
-//set this up so we match jQuery's api style... if we want to rip it out later, we can...
-es.AjaxProvider = function () {
-    var noop = function () { };
-    var parameterizeUrl = function (url, data) {
-        var rurlDataExpr = /\{([^\}]+)\}/g;
-        var newUrl;
-
-        if (typeof data === "string") {
-            return;
-        }
-
-        //thanks AmplifyJS for this little tidbit
-        // url = "/Product/{id}" => "/Product/57966910-C5EF-400A-8FC4-615159D95C2D
-        newUrl = url.replace(rurlDataExpr, function (m, key) {
-            if (key in data) {
-                return ko.utils.unwrapObservable(data[key]);
-            }
-        });
-
-        return newUrl;
-    };
-
-
-    this.execute = function (options) {
-        var origSuccess = options.success || noop,
-            origError = options.error || noop,
-            defaults = {
-                cache: false,
-                contentType: 'application/json; charset=utf-8;',
-                dataType: 'json',
-                type: 'GET'
-            };
-
-        //extend the defaults with our options
-        options = $.extend(defaults, options);
-
-        // override the passed in successHandler so we can add global processing if needed
-        options.success = function (data) {
-            origSuccess(data);
-        };
-
-        // override the passed in errorHandler so we can add global processing if needed
-        options.error = function (xhr, textStatus, errorThrown) {
-           	if (origError) {
-           		origError(xhr.status, xhr.responseText);
-           	} else {
-           		es.onError({ code: xhr.status, message: xhr.responseText });
-           	}
-        };
-
-        //parameterize the Url
-        options.url = parameterizeUrl(options.url, options.data);
-        if (options.data) {
-            options.data = ko.toJSON(options.data);
-        }
-
-        $.ajax(options);
-    };
-};
-    
-
-es.dataProvider = new es.AjaxProvider(); //assign default data provider 
- 
- 
-/*********************************************** 
-* FILE: ..\Src\Providers\XMLHttpRequestProvider.js 
-***********************************************/ 
-﻿/* File Created: December 23, 2011 */
-
-es.XMLHttpRequestProvider = function () {
-
-    var createRequest, executeCompleted, noop = function () { };
-    this.baseURL = "http://localhost";
-
-    createRequest = function () {
-
-        var xmlHttp;
-
-        // Create HTTP request
-        try {
-            xmlHttp = new XMLHttpRequest();
-        } catch (e1) {
-            try {
-                xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e2) {
-                try {
-                    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-                } catch (e3) {
-                    alert("This sample only works in browsers with AJAX support");
-                    return false;
-                }
-            }
-        }
-
-        return xmlHttp;
-    };
-
-    executeCompleted = function (responseText, route) {
-
-        var theData = JSON.parse(responseText);
-
-        if (route.response !== undefined) {
-            switch (route.response) {
-                case 'entity':
-                    return theData[route.response];
-                case 'collection':
-                    return theData[route.response];
-            }
-        }
-
-        return theData;
-    };
-
-    // Called by the entityspaces.js framework when working with entities
-    this.execute = function (options) {
-
-        var path = null, xmlHttp, success, error;
-
-        success = options.success || noop;
-        error = options.error || noop;
-
-        // Create HTTP request
-        xmlHttp = createRequest();
-
-        // Build the operation URL
-        path = this.baseURL + options.url;
-
-        // Make the HTTP request
-        xmlHttp.open("POST", path, options.synchronous || false);
-        xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
-
-        if (options.async === true) {
-            xmlHttp.onreadystatechange = function () {
-                if (xmlHttp.readyState === 4) {
-                    if (xmlHttp.status === 200) {
-                        success(executeCompleted(xmlHttp.responseText, options.route));
-                    } else {
-                        failure(xmlHttp.status, xmlHttp.statusText);
-                    }
-                }
-            };
-        }
-
-        xmlHttp.send(ko.toJSON(options.data));
-
-        if (options.async === false) {
-            if (xmlHttp.status === 200) {
-                if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
-                    success(executeCompleted(xmlHttp.responseText, options.route));
-                }
-            } else {
-                error(xmlHttp.status, xmlHttp.responseText);
-            }
-        }
-    };
-
-    // So developers can make their own requests, synchronous or aynchronous
-    this.makeRequest = function (url, methodName, params, successCallback, failureCallback) {
-
-        var theData = null, path = null, async = false, xmlHttp, success, failure;
-
-        if (successCallback !== undefined || failureCallback !== undefined) {
-            async = true;
-            success = successCallback || noop;
-            failure = failureCallback || noop;
-        }
-
-        // Create HTTP request
-        xmlHttp = createRequest();
-
-        // Build the operation URL
-        path = url + methodName;
-
-        // Make the HTTP request
-        xmlHttp.open("POST", path, async);
-        xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
-
-        if (async === true) {
-            xmlHttp.onreadystatechange = function () {
-                if (xmlHttp.readyState === 4) {
-                    if (xmlHttp.status === 200) {
-                        success(JSON.parse(xmlHttp.responseText));
-                    } else {
-                        failure(xmlHttp.status, xmlHttp.statusText);
-                    }
-                }
-            };
-        }
-
-        xmlHttp.send(params);
-
-        if (async === false) {
-            if (xmlHttp.status === 200) {
-                if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
-                    theData = JSON.parse(xmlHttp.responseText);
-                }
-            } else {
-                es.makeRequstError = xmlHttp.statusText;
-            }
-        }
-
-        return theData;
-    };
-};
-
-// es.dataProvider = new es.XMLHttpRequestProvider(); //assign default data provider 
  
  
 /*********************************************** 

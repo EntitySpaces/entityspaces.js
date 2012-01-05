@@ -1,7 +1,7 @@
 @ECHO OFF
 
 SET CurrentDir=%CD%
-SET OutPutFile=%CurrentDir%\entityspaces.debug.js
+SET OutPutFile=%CurrentDir%\..\Release\entityspaces.debug.js
 SET BuildOrder=%CurrentDir%\build-order.txt
 
 ECHO JSBuild Starting...
@@ -19,6 +19,10 @@ ECHO Building... %%A
 
 @REM Remove the OutputFile if it exists
 DEL %OutPutFile%
+
+@ECHO Copying Providers
+COPY %CurrentDir%\..\Src\Providers\AjaxProvider.js %CurrentDir%\..\Release\AjaxProvider.js
+COPY %CurrentDir%\..\Src\Providers\XMLHttpRequestProvider.js %CurrentDir%\..\Release\XMLHttpRequestProvider.js
 
 @REM Wrap the final output in an IIFE
 @ECHO /*********************************************** >> %OutPutFile%
