@@ -7,4 +7,3 @@
 ..\Src\BaseClasses\EsEntityCollection.js
 ..\Src\BaseClasses\DefineEntity.js
 ..\Src\BaseClasses\DefineCollection.js
-ko_exports.txt
