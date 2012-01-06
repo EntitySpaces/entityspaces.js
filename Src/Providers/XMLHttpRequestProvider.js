@@ -136,4 +136,4 @@ es.XMLHttpRequestProvider = function () {
     };
 };
 
-// es.dataProvider = new es.XMLHttpRequestProvider(); //assign default data provider
+es.dataProvider = new es.XMLHttpRequestProvider(); //assign default data provider
