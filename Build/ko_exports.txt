@@ -1,0 +1,65 @@
+﻿/*
+ko.exportSymbol('ko.observable', ko.observable);
+ko.exportSymbol('ko.isObservable', ko.isObservable);
+ko.exportSymbol('ko.utils.arrayIndexOf', ko.exportSymbol); // not exported from ko
+ko.exportSymbol('ko.utils.arrayForEach', ko.arrayForEach); // not exported from ko
+ko.exportSymbol('ko.observableArray', ko.observableArray);
+ko.exportSymbol('ko.toJS', ko.toJS);
+ko.exportSymbol('ko.utils.arrayFilter', ko.utils.arrayFilter);
+
+
+ko.exportSymbol('ko.utils', ko.utils);
+ko.exportSymbol('ko.utils.' + item[0], item[1]);
+ko.exportSymbol('ko.utils.domData', ko.utils.domData);
+ko.exportSymbol('ko.utils.domData.clear', ko.utils.domData.clear); 
+ko.exportSymbol('ko.cleanNode', ko.cleanNode); 
+ko.exportSymbol('ko.removeNode', ko.removeNode);
+ko.exportSymbol('ko.utils.domNodeDisposal', ko.utils.domNodeDisposal);
+ko.exportSymbol('ko.utils.domNodeDisposal.addDisposeCallback', ko.utils.domNodeDisposal.addDisposeCallback);
+ko.exportSymbol('ko.utils.domNodeDisposal.removeDisposeCallback', ko.utils.domNodeDisposal.removeDisposeCallback);
+ko.exportSymbol('ko.utils.parseHtmlFragment', ko.utils.parseHtmlFragment);
+ko.exportSymbol('ko.utils.setHtml', ko.utils.setHtml);
+ko.exportSymbol('ko.memoization', ko.memoization);
+ko.exportSymbol('ko.memoization.memoize', ko.memoization.memoize);
+ko.exportSymbol('ko.memoization.unmemoize', ko.memoization.unmemoize);
+ko.exportSymbol('ko.memoization.parseMemoText', ko.memoization.parseMemoText);
+ko.exportSymbol('ko.memoization.unmemoizeDomNodeAndDescendants', ko.memoization.unmemoizeDomNodeAndDescendants);
+ko.exportSymbol('ko.extenders', ko.extenders);
+ko.exportSymbol('ko.subscribable', ko.subscribable);
+ko.exportSymbol('ko.isSubscribable', ko.isSubscribable);
+ko.exportSymbol('ko.observable', ko.observable);
+ko.exportSymbol('ko.isObservable', ko.isObservable);
+ko.exportSymbol('ko.isWriteableObservable', ko.isWriteableObservable);
+ko.exportSymbol('ko.observableArray', ko.observableArray);
+ko.exportSymbol('ko.dependentObservable', ko.dependentObservable);
+ko.exportSymbol('ko.computed', ko.dependentObservable);
+ko.exportSymbol('ko.toJS', ko.toJS);
+ko.exportSymbol('ko.toJSON', ko.toJSON);
+ko.exportSymbol('ko.selectExtensions', ko.selectExtensions);
+ko.exportSymbol('ko.selectExtensions.readValue', ko.selectExtensions.readValue);
+ko.exportSymbol('ko.selectExtensions.writeValue', ko.selectExtensions.writeValue);
+ko.exportSymbol('ko.jsonExpressionRewriting', ko.jsonExpressionRewriting);
+ko.exportSymbol('ko.jsonExpressionRewriting.bindingRewriteValidators', ko.jsonExpressionRewriting.bindingRewriteValidators);
+ko.exportSymbol('ko.jsonExpressionRewriting.parseObjectLiteral', ko.jsonExpressionRewriting.parseObjectLiteral);
+ko.exportSymbol('ko.jsonExpressionRewriting.insertPropertyAccessorsIntoJson', ko.jsonExpressionRewriting.insertPropertyAccessorsIntoJson);
+ko.exportSymbol('ko.bindingProvider', ko.bindingProvider);
+ko.exportSymbol('ko.bindingHandlers', ko.bindingHandlers);
+ko.exportSymbol('ko.applyBindings', ko.applyBindings);
+ko.exportSymbol('ko.applyBindingsToDescendants', ko.applyBindingsToDescendants);
+ko.exportSymbol('ko.applyBindingsToNode', ko.applyBindingsToNode);
+ko.exportSymbol('ko.contextFor', ko.contextFor);
+ko.exportSymbol('ko.dataFor', ko.dataFor);
+ko.exportSymbol('ko.allowedVirtualElementBindings', ko.virtualElements.allowedBindings);
+ko.exportSymbol('ko.templateEngine', ko.templateEngine);
+ko.exportSymbol('ko.templateRewriting', ko.templateRewriting);
+ko.exportSymbol('ko.templateRewriting.applyMemoizedBindingsToNextSibling', ko.templateRewriting.applyMemoizedBindingsToNextSibling);
+ko.exportSymbol('ko.templateSources', ko.templateSources);
+ko.exportSymbol('ko.templateSources.domElement', ko.templateSources.domElement);
+ko.exportSymbol('ko.templateSources.anonymousTemplate', ko.templateSources.anonymousTemplate);
+ko.exportSymbol('ko.setTemplateEngine', ko.setTemplateEngine);
+ko.exportSymbol('ko.renderTemplate', ko.renderTemplate);
+ko.exportSymbol('ko.utils.compareArrays', ko.utils.compareArrays);
+ko.exportSymbol('ko.utils.setDomNodeChildrenFromArrayMapping', ko.utils.setDomNodeChildrenFromArrayMapping);
+ko.exportSymbol('ko.nativeTemplateEngine', ko.nativeTemplateEngine);
+ko.exportSymbol('ko.jqueryTmplTemplateEngine', ko.jqueryTmplTemplateEngine);
+*/

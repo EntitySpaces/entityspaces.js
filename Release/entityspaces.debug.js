@@ -1,7 +1,7 @@
 /*********************************************** 
-* Built on Thu 01/05/2012 at 16:57:30.71      *  
+* Built on Thu 01/05/2012 at 22:23:54.79      *  
 ***********************************************/ 
-(function(window, undefined){ 
+(function(window, undefined) { 
  
  
 /*********************************************** 
@@ -9,6 +9,15 @@
 ***********************************************/ 
 ﻿
 window['es'] = {}; //define root namespace
+
+// Google Closure Compiler helpers (used only to make the minified file smaller)
+es.exportSymbol = function (publicPath, object) {
+    var tokens = publicPath.split(".");
+    var target = window;
+    for (var i = 0; i < tokens.length - 1; i++)
+        target = target[tokens[i]];
+    target[tokens[tokens.length - 1]] = object;
+};
 
 "use-strict";
 
@@ -54,6 +63,8 @@ config = extend(config, {
 es.getGeneratedNamespaceObj = function() {
     return es.generatedNamespace;
 };
+
+es.exportSymbol('es', es);
  
  
  
@@ -67,7 +78,9 @@ es.RowState = {
     ADDED: 4,
     DELETED: 8,
     MODIFIED: 16
-}; 
+};
+
+es.exportSymbol('es.RowState', es.RowState); 
  
  
 /*********************************************** 
@@ -128,6 +141,9 @@ es.isEsCollection = function (array) {
 };
 
 //#endregion
+
+es.exportSymbol('es.isEsCollection', es.isEsCollection);
+
  
  
  
@@ -208,9 +224,6 @@ var utils = {
 
 		if (!entity.hasOwnProperty("RowState")) {
 			entity.RowState = ko.observable(es.RowState.ADDED);
-			if (entity.hasOwnProperty("__ko_mapping__")) {
-				entity.__ko_mapping__.mappedProperties["RowState"] = true;
-			}
 		} else {
 			if (!ko.isObservable(entity.RowState)) {
 				entity.RowState = ko.observable(entity.RowState);
@@ -219,9 +232,6 @@ var utils = {
 
 		if (!entity.hasOwnProperty("ModifiedColumns")) {
 			entity.ModifiedColumns = ko.observableArray();
-			if (entity.hasOwnProperty("__ko_mapping__")) {
-				entity.__ko_mapping__.mappedProperties["ModifiedColumns"] = true;
-			}
 		} else {
 			// Overwrite existing data
 			entity.ModifiedColumns = ko.observableArray();
@@ -245,30 +255,23 @@ var utils = {
 		return entity;
 	},
 
-	expandExtraColumns: function (entity, shouldMakeObservable) {
-		var data, i, ext,
-                makeObservable = arguments[1] || false;
+    expandExtraColumns: function (entity, shouldMakeObservable) {
+
+		var data, i, ext, makeObservable = arguments[1] || false;
 
 		if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
 
-			data = ko.utils.unwrapObservable(entity.esExtendedData);
+            data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
 
 			for (i = 0; i < data.length; i++) {
 
 				if (makeObservable) {
-					entity[ko.utils.unwrapObservable(data[i].Key)] = ko.observable(ko.utils.unwrapObservable(data[i].Value));
+					entity[data[i].Key] = ko.observable(data[i].Value);
 				} else {
-					entity[ko.utils.unwrapObservable(data[i].Key)] = ko.utils.unwrapObservable(data[i].Value);
+					entity[data[i].Key] = data[i].Value;
 				}
+            }
 
-				if (entity.hasOwnProperty("__ko_mapping__")) {
-					if (entity.__ko_mapping__.hasOwnProperty("mappedProperties")) {
-						entity.__ko_mapping__.mappedProperties[ko.utils.unwrapObservable(data[i].Key)] = true;
-					}
-				}
-			}
-
-			ext = ko.utils.unwrapObservable(entity.esExtendedData);
 			delete entity.esExtendedData;
 		}
 
@@ -277,7 +280,7 @@ var utils = {
 			entity["esExtendedData"] = [];
 
 			for (i = 0; i < data.length; i++) {
-				entity.esExtendedData.push(ko.utils.unwrapObservable(data[i].Key));
+			    entity.esExtendedData.push(ko.isObservable(data[i].Key) ? data[i].Key() : data[i].Key);
 			}
 		}
 
@@ -285,11 +288,11 @@ var utils = {
 	},
 
 	removeExtraColumns: function (entity) {
-		var i;
+		var i, data;
 
 		if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
 
-			var data = ko.utils.unwrapObservable(entity.esExtendedData);
+		    data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
 
 			for (i = 0; i < data.length; i++) {
 				delete entity[data[i]];
@@ -443,7 +446,10 @@ utils.newId = (function () {
 } ());
 
 es.utils = utils;
- 
+
+es.exportSymbol('es.extend', es.extend);
+es.exportSymbol('es.startTracking', es.startTracking);
+es.exportSymbol('es.getDirtyGraph', es.getDirtyGraph); 
  
  
 /*********************************************** 
@@ -801,7 +807,15 @@ es.EsEntity = function () { //empty constructor
 		es.dataProvider.execute(options);
 	};
 	//#endregion
-}; 
+};
+
+es.exportSymbol('es.EsEntity', es.EsEntity);
+es.exportSymbol('es.EsEntity.populateEntity', es.EsEntity.populateEntity);
+es.exportSymbol('es.EsEntity.markAsDeleted', es.EsEntity.markAsDeleted);
+es.exportSymbol('es.EsEntity.load', es.EsEntity.load);
+es.exportSymbol('es.EsEntity.loadByPrimaryKey', es.EsEntity.loadByPrimaryKey);
+es.exportSymbol('es.EsEntity.save', es.EsEntity.save);
+ 
  
  
 /*********************************************** 
@@ -985,7 +999,13 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         es.dataProvider.execute(options);
     }
     //#endregion
-}; 
+};
+
+es.exportSymbol('es.EsEntityCollection', es.EsEntityCollection);
+es.exportSymbol('es.EsEntityCollection.markAllAsDeleted', es.EsEntityCollection.markAllAsDeleted);
+es.exportSymbol('es.EsEntityCollection.loadAll', es.EsEntityCollection.loadAll);
+es.exportSymbol('es.EsEntityCollection.load', es.EsEntityCollection.load);
+es.exportSymbol('es.EsEntityCollection.save', es.EsEntityCollection.save); 
  
  
 /*********************************************** 
@@ -1017,7 +1037,9 @@ es.defineEntity = function (typeName, constrctor) {
     }
 
     return EsCtor;
-}; 
+};
+
+es.exportSymbol('es.defineEntity', es.defineEntity); 
  
  
 /*********************************************** 
@@ -1081,5 +1103,79 @@ es.defineCollection = function (typeName, entityName) {
     }
 
     return EsCollCtor;
-}; 
+};
+
+es.exportSymbol('es.defineCollection', es.defineCollection);
+
+ 
+ 
+ 
+/*********************************************** 
+* FILE: ko_exports.txt 
+***********************************************/ 
+﻿/*
+ko.exportSymbol('ko.observable', ko.observable);
+ko.exportSymbol('ko.isObservable', ko.isObservable);
+ko.exportSymbol('ko.utils.arrayIndexOf', ko.exportSymbol); // not exported from ko
+ko.exportSymbol('ko.utils.arrayForEach', ko.arrayForEach); // not exported from ko
+ko.exportSymbol('ko.observableArray', ko.observableArray);
+ko.exportSymbol('ko.toJS', ko.toJS);
+ko.exportSymbol('ko.utils.arrayFilter', ko.utils.arrayFilter);
+
+
+ko.exportSymbol('ko.utils', ko.utils);
+ko.exportSymbol('ko.utils.' + item[0], item[1]);
+ko.exportSymbol('ko.utils.domData', ko.utils.domData);
+ko.exportSymbol('ko.utils.domData.clear', ko.utils.domData.clear); 
+ko.exportSymbol('ko.cleanNode', ko.cleanNode); 
+ko.exportSymbol('ko.removeNode', ko.removeNode);
+ko.exportSymbol('ko.utils.domNodeDisposal', ko.utils.domNodeDisposal);
+ko.exportSymbol('ko.utils.domNodeDisposal.addDisposeCallback', ko.utils.domNodeDisposal.addDisposeCallback);
+ko.exportSymbol('ko.utils.domNodeDisposal.removeDisposeCallback', ko.utils.domNodeDisposal.removeDisposeCallback);
+ko.exportSymbol('ko.utils.parseHtmlFragment', ko.utils.parseHtmlFragment);
+ko.exportSymbol('ko.utils.setHtml', ko.utils.setHtml);
+ko.exportSymbol('ko.memoization', ko.memoization);
+ko.exportSymbol('ko.memoization.memoize', ko.memoization.memoize);
+ko.exportSymbol('ko.memoization.unmemoize', ko.memoization.unmemoize);
+ko.exportSymbol('ko.memoization.parseMemoText', ko.memoization.parseMemoText);
+ko.exportSymbol('ko.memoization.unmemoizeDomNodeAndDescendants', ko.memoization.unmemoizeDomNodeAndDescendants);
+ko.exportSymbol('ko.extenders', ko.extenders);
+ko.exportSymbol('ko.subscribable', ko.subscribable);
+ko.exportSymbol('ko.isSubscribable', ko.isSubscribable);
+ko.exportSymbol('ko.observable', ko.observable);
+ko.exportSymbol('ko.isObservable', ko.isObservable);
+ko.exportSymbol('ko.isWriteableObservable', ko.isWriteableObservable);
+ko.exportSymbol('ko.observableArray', ko.observableArray);
+ko.exportSymbol('ko.dependentObservable', ko.dependentObservable);
+ko.exportSymbol('ko.computed', ko.dependentObservable);
+ko.exportSymbol('ko.toJS', ko.toJS);
+ko.exportSymbol('ko.toJSON', ko.toJSON);
+ko.exportSymbol('ko.selectExtensions', ko.selectExtensions);
+ko.exportSymbol('ko.selectExtensions.readValue', ko.selectExtensions.readValue);
+ko.exportSymbol('ko.selectExtensions.writeValue', ko.selectExtensions.writeValue);
+ko.exportSymbol('ko.jsonExpressionRewriting', ko.jsonExpressionRewriting);
+ko.exportSymbol('ko.jsonExpressionRewriting.bindingRewriteValidators', ko.jsonExpressionRewriting.bindingRewriteValidators);
+ko.exportSymbol('ko.jsonExpressionRewriting.parseObjectLiteral', ko.jsonExpressionRewriting.parseObjectLiteral);
+ko.exportSymbol('ko.jsonExpressionRewriting.insertPropertyAccessorsIntoJson', ko.jsonExpressionRewriting.insertPropertyAccessorsIntoJson);
+ko.exportSymbol('ko.bindingProvider', ko.bindingProvider);
+ko.exportSymbol('ko.bindingHandlers', ko.bindingHandlers);
+ko.exportSymbol('ko.applyBindings', ko.applyBindings);
+ko.exportSymbol('ko.applyBindingsToDescendants', ko.applyBindingsToDescendants);
+ko.exportSymbol('ko.applyBindingsToNode', ko.applyBindingsToNode);
+ko.exportSymbol('ko.contextFor', ko.contextFor);
+ko.exportSymbol('ko.dataFor', ko.dataFor);
+ko.exportSymbol('ko.allowedVirtualElementBindings', ko.virtualElements.allowedBindings);
+ko.exportSymbol('ko.templateEngine', ko.templateEngine);
+ko.exportSymbol('ko.templateRewriting', ko.templateRewriting);
+ko.exportSymbol('ko.templateRewriting.applyMemoizedBindingsToNextSibling', ko.templateRewriting.applyMemoizedBindingsToNextSibling);
+ko.exportSymbol('ko.templateSources', ko.templateSources);
+ko.exportSymbol('ko.templateSources.domElement', ko.templateSources.domElement);
+ko.exportSymbol('ko.templateSources.anonymousTemplate', ko.templateSources.anonymousTemplate);
+ko.exportSymbol('ko.setTemplateEngine', ko.setTemplateEngine);
+ko.exportSymbol('ko.renderTemplate', ko.renderTemplate);
+ko.exportSymbol('ko.utils.compareArrays', ko.utils.compareArrays);
+ko.exportSymbol('ko.utils.setDomNodeChildrenFromArrayMapping', ko.utils.setDomNodeChildrenFromArrayMapping);
+ko.exportSymbol('ko.nativeTemplateEngine', ko.nativeTemplateEngine);
+ko.exportSymbol('ko.jqueryTmplTemplateEngine', ko.jqueryTmplTemplateEngine);
+*/ 
 }(window)); 

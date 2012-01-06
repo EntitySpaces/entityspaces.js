@@ -72,9 +72,6 @@ var utils = {
 
 		if (!entity.hasOwnProperty("RowState")) {
 			entity.RowState = ko.observable(es.RowState.ADDED);
-			if (entity.hasOwnProperty("__ko_mapping__")) {
-				entity.__ko_mapping__.mappedProperties["RowState"] = true;
-			}
 		} else {
 			if (!ko.isObservable(entity.RowState)) {
 				entity.RowState = ko.observable(entity.RowState);
@@ -83,9 +80,6 @@ var utils = {
 
 		if (!entity.hasOwnProperty("ModifiedColumns")) {
 			entity.ModifiedColumns = ko.observableArray();
-			if (entity.hasOwnProperty("__ko_mapping__")) {
-				entity.__ko_mapping__.mappedProperties["ModifiedColumns"] = true;
-			}
 		} else {
 			// Overwrite existing data
 			entity.ModifiedColumns = ko.observableArray();
@@ -109,30 +103,23 @@ var utils = {
 		return entity;
 	},
 
-	expandExtraColumns: function (entity, shouldMakeObservable) {
-		var data, i, ext,
-                makeObservable = arguments[1] || false;
+    expandExtraColumns: function (entity, shouldMakeObservable) {
+
+		var data, i, ext, makeObservable = arguments[1] || false;
 
 		if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
 
-			data = ko.utils.unwrapObservable(entity.esExtendedData);
+            data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
 
 			for (i = 0; i < data.length; i++) {
 
 				if (makeObservable) {
-					entity[ko.utils.unwrapObservable(data[i].Key)] = ko.observable(ko.utils.unwrapObservable(data[i].Value));
+					entity[data[i].Key] = ko.observable(data[i].Value);
 				} else {
-					entity[ko.utils.unwrapObservable(data[i].Key)] = ko.utils.unwrapObservable(data[i].Value);
+					entity[data[i].Key] = data[i].Value;
 				}
+            }
 
-				if (entity.hasOwnProperty("__ko_mapping__")) {
-					if (entity.__ko_mapping__.hasOwnProperty("mappedProperties")) {
-						entity.__ko_mapping__.mappedProperties[ko.utils.unwrapObservable(data[i].Key)] = true;
-					}
-				}
-			}
-
-			ext = ko.utils.unwrapObservable(entity.esExtendedData);
 			delete entity.esExtendedData;
 		}
 
@@ -141,7 +128,7 @@ var utils = {
 			entity["esExtendedData"] = [];
 
 			for (i = 0; i < data.length; i++) {
-				entity.esExtendedData.push(ko.utils.unwrapObservable(data[i].Key));
+			    entity.esExtendedData.push(ko.isObservable(data[i].Key) ? data[i].Key() : data[i].Key);
 			}
 		}
 
@@ -149,11 +136,11 @@ var utils = {
 	},
 
 	removeExtraColumns: function (entity) {
-		var i;
+		var i, data;
 
 		if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
 
-			var data = ko.utils.unwrapObservable(entity.esExtendedData);
+		    data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
 
 			for (i = 0; i < data.length; i++) {
 				delete entity[data[i]];
@@ -307,3 +294,7 @@ utils.newId = (function () {
 } ());
 
 es.utils = utils;
+
+es.exportSymbol('es.extend', es.extend);
+es.exportSymbol('es.startTracking', es.startTracking);
+es.exportSymbol('es.getDirtyGraph', es.getDirtyGraph);

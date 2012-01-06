@@ -57,3 +57,6 @@ es.defineCollection = function (typeName, entityName) {
 
     return EsCollCtor;
 };
+
+es.exportSymbol('es.defineCollection', es.defineCollection);
+

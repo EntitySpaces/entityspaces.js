@@ -25,3 +25,5 @@ es.defineEntity = function (typeName, constrctor) {
 
     return EsCtor;
 };
+
+es.exportSymbol('es.defineEntity', es.defineEntity);

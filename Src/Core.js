@@ -53,3 +53,6 @@ es.isEsCollection = function (array) {
 };
 
 //#endregion
+
+es.exportSymbol('es.isEsCollection', es.isEsCollection);
+

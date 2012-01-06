@@ -6,3 +6,5 @@ es.RowState = {
     DELETED: 8,
     MODIFIED: 16
 };
+
+es.exportSymbol('es.RowState', es.RowState);

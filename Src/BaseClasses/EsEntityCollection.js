@@ -177,3 +177,9 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     }
     //#endregion
 };
+
+es.exportSymbol('es.EsEntityCollection', es.EsEntityCollection);
+es.exportSymbol('es.EsEntityCollection.markAllAsDeleted', es.EsEntityCollection.markAllAsDeleted);
+es.exportSymbol('es.EsEntityCollection.loadAll', es.EsEntityCollection.loadAll);
+es.exportSymbol('es.EsEntityCollection.load', es.EsEntityCollection.load);
+es.exportSymbol('es.EsEntityCollection.save', es.EsEntityCollection.save);

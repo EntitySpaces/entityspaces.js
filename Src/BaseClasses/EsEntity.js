@@ -216,3 +216,10 @@ es.EsEntity = function () { //empty constructor
 	};
 	//#endregion
 };
+
+es.exportSymbol('es.EsEntity', es.EsEntity);
+es.exportSymbol('es.EsEntity.populateEntity', es.EsEntity.populateEntity);
+es.exportSymbol('es.EsEntity.markAsDeleted', es.EsEntity.markAsDeleted);
+es.exportSymbol('es.EsEntity.load', es.EsEntity.load);
+es.exportSymbol('es.EsEntity.loadByPrimaryKey', es.EsEntity.loadByPrimaryKey);
+es.exportSymbol('es.EsEntity.save', es.EsEntity.save);
