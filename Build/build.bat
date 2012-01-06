@@ -2,6 +2,7 @@
 
 SET CurrentDir=%CD%
 SET OutPutFile=%CurrentDir%\..\Release\entityspaces.jqAjax.debug.js
+SET OutMinFile=%CurrentDir%\..\Release\entityspaces.jqAjax.js
 SET BuildOrder=%CurrentDir%\jqAjax-build-order.txt
 
 ECHO JSBuild Starting...
@@ -27,11 +28,16 @@ DEL %OutPutFile%
 @ECHO (function(window, undefined) { >> %OutPutFile%
 @TYPE %OutPutFile%.temp >> %OutPutFile%
 @ECHO }(window)); >> %OutPutFile%
-DEL %OutPutFile%.temp
 ECHO JSBuild Succeeded
 ENDLOCAL
 
+@rem Now call Google Closure Compiler to produce a minified version
+tools\curl -d output_info=compiled_code -d output_format=text -d compilation_level=SIMPLE_OPTIMIZATIONS  --data-urlencode js_code@%OutPutFile%.temp "http://closure-compiler.appspot.com/compile" > %OutMinFile%
+
+DEL %OutPutFile%.temp
+
 SET OutPutFile=%CurrentDir%\..\Release\entityspaces.XHR.debug.js
+SET OutMinFile=%CurrentDir%\..\Release\entityspaces.XHR.js
 SET BuildOrder=%CurrentDir%\XHR-build-order.txt
 
 ECHO JSBuild Starting...
@@ -57,9 +63,13 @@ DEL %OutPutFile%
 @ECHO (function(window, undefined) { >> %OutPutFile%
 @TYPE %OutPutFile%.temp >> %OutPutFile%
 @ECHO }(window)); >> %OutPutFile%
-DEL %OutPutFile%.temp
 ECHO JSBuild Succeeded
 ENDLOCAL
+
+@rem Now call Google Closure Compiler to produce a minified version
+tools\curl -d output_info=compiled_code -d output_format=text -d compilation_level=SIMPLE_OPTIMIZATIONS  --data-urlencode js_code@%OutPutFile%.temp "http://closure-compiler.appspot.com/compile" > %OutMinFile%
+
+DEL %OutPutFile%.temp
 
 
 GOTO :eof
