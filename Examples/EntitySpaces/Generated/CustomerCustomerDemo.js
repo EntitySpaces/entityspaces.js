@@ -12,12 +12,12 @@
 		this.CustomerTypeID = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.UpToCustomerDemographicsByCustomerTypeID;
-		this.UpToCustomersByCustomerID;
+		this.UpToCustomerDemographicsByCustomerTypeID = undefined;
+		this.UpToCustomersByCustomerID = undefined;
 
 		this.esTypeDefs = {
 			UpToCustomerDemographicsByCustomerTypeID: "CustomerDemographics",
@@ -33,6 +33,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -47,4 +48,5 @@
 	};
 
 	//#endregion
+
 }(window.es));

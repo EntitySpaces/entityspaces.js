@@ -21,13 +21,13 @@
 		this.Fax = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.UpToCustomerDemographicsCollection;
-		this.CustomerCustomerDemoCollectionByCustomerID;
-		this.OrdersCollectionByCustomerID;
+		this.UpToCustomerDemographicsCollection = undefined;
+		this.CustomerCustomerDemoCollectionByCustomerID = undefined;
+		this.OrdersCollectionByCustomerID = undefined;
 
 		this.esTypeDefs = {
 			UpToCustomerDemographicsCollection: "CustomerDemographicsCollection",
@@ -44,6 +44,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -58,4 +59,5 @@
 	};
 
 	//#endregion
+
 }(window.es));

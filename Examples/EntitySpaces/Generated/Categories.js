@@ -1,6 +1,4 @@
 
-
-
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
 	if (typeof (es) === undefined) {
@@ -16,11 +14,11 @@
 		this.Picture = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.ProductsCollectionByCategoryID;
+		this.ProductsCollectionByCategoryID = undefined;
 
 		this.esTypeDefs = {
 			ProductsCollectionByCategoryID: "ProductsCollection"
@@ -35,6 +33,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -49,4 +48,5 @@
 	};
 
 	//#endregion
+
 }(window.es));

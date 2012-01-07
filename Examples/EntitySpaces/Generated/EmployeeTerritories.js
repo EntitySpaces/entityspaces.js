@@ -12,12 +12,12 @@
 		this.TerritoryID = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.UpToEmployeesByEmployeeID;
-		this.UpToTerritoriesByTerritoryID;
+		this.UpToEmployeesByEmployeeID = undefined;
+		this.UpToTerritoriesByTerritoryID = undefined;
 
 		this.esTypeDefs = {
 			UpToEmployeesByEmployeeID: "Employees",
@@ -33,6 +33,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -47,4 +48,5 @@
 	};
 
 	//#endregion
+
 }(window.es));

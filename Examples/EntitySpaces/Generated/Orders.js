@@ -24,15 +24,15 @@
 		this.ShipCountry = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.UpToProductsCollection;
-		this.OrderDetailsCollectionByOrderID;
-		this.UpToCustomersByCustomerID;
-		this.UpToEmployeesByEmployeeID;
-		this.UpToShippersByShipVia;
+		this.UpToProductsCollection = undefined;
+		this.OrderDetailsCollectionByOrderID = undefined;
+		this.UpToCustomersByCustomerID = undefined;
+		this.UpToEmployeesByEmployeeID = undefined;
+		this.UpToShippersByShipVia = undefined;
 
 		this.esTypeDefs = {
 			UpToProductsCollection: "ProductsCollection",
@@ -51,6 +51,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -65,4 +66,5 @@
 	};
 
 	//#endregion
+
 }(window.es));

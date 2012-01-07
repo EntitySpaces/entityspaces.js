@@ -13,13 +13,13 @@
 		this.RegionID = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.UpToEmployeesCollection;
-		this.EmployeeTerritoriesCollectionByTerritoryID;
-		this.UpToRegionByRegionID;
+		this.UpToEmployeesCollection = undefined;
+		this.EmployeeTerritoriesCollectionByTerritoryID = undefined;
+		this.UpToRegionByRegionID = undefined;
 
 		this.esTypeDefs = {
 			UpToEmployeesCollection: "EmployeesCollection",
@@ -36,6 +36,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -50,4 +51,5 @@
 	};
 
 	//#endregion
+
 }(window.es));

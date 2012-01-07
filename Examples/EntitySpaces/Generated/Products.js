@@ -20,14 +20,14 @@
 		this.Discontinued = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.UpToOrdersCollection;
-		this.OrderDetailsCollectionByProductID;
-		this.UpToCategoriesByCategoryID;
-		this.UpToSuppliersBySupplierID;
+		this.UpToOrdersCollection = undefined;
+		this.OrderDetailsCollectionByProductID = undefined;
+		this.UpToCategoriesByCategoryID = undefined;
+		this.UpToSuppliersBySupplierID = undefined;
 
 		this.esTypeDefs = {
 			UpToOrdersCollection: "OrdersCollection",
@@ -45,6 +45,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -59,4 +60,5 @@
 	};
 
 	//#endregion
+
 }(window.es));

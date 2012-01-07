@@ -12,12 +12,12 @@
 		this.CustomerDesc = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.UpToCustomersCollection;
-		this.CustomerCustomerDemoCollectionByCustomerTypeID;
+		this.UpToCustomersCollection = undefined;
+		this.CustomerCustomerDemoCollectionByCustomerTypeID = undefined;
 
 		this.esTypeDefs = {
 			UpToCustomersCollection: "CustomersCollection",
@@ -33,6 +33,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -47,4 +48,5 @@
 	};
 
 	//#endregion
+
 }(window.es));

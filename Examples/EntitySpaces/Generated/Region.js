@@ -12,11 +12,11 @@
 		this.RegionDescription = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.TerritoriesCollectionByRegionID;
+		this.TerritoriesCollectionByRegionID = undefined;
 
 		this.esTypeDefs = {
 			TerritoriesCollectionByRegionID: "TerritoriesCollection"
@@ -31,6 +31,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -45,4 +46,5 @@
 	};
 
 	//#endregion
+
 }(window.es));

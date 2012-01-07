@@ -28,15 +28,15 @@
 		this.PhotoPath = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.EmployeesCollectionByReportsTo;
-		this.UpToEmployeesByReportsTo;
-		this.UpToTerritoriesCollection;
-		this.EmployeeTerritoriesCollectionByEmployeeID;
-		this.OrdersCollectionByEmployeeID;
+		this.EmployeesCollectionByReportsTo = undefined;
+		this.UpToEmployeesByReportsTo = undefined;
+		this.UpToTerritoriesCollection = undefined;
+		this.EmployeeTerritoriesCollectionByEmployeeID = undefined;
+		this.OrdersCollectionByEmployeeID = undefined;
 
 		this.esTypeDefs = {
 			EmployeesCollectionByReportsTo: "EmployeesCollection",
@@ -55,6 +55,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -69,4 +70,5 @@
 	};
 
 	//#endregion
+
 }(window.es));

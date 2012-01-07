@@ -13,11 +13,11 @@
 		this.Phone = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.OrdersCollectionByShipVia;
+		this.OrdersCollectionByShipVia = undefined;
 
 		this.esTypeDefs = {
 			OrdersCollectionByShipVia: "OrdersCollection"
@@ -32,6 +32,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -46,4 +47,5 @@
 	};
 
 	//#endregion
+
 }(window.es));

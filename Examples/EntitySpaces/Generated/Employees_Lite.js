@@ -23,8 +23,8 @@
         };
 
         // core columns
-        var _employeeID;
-        this.EmployeeID = function () { if (arguments.length === 0) { return _employeeID } else { _employeeID = arguments[0]; } };
+        var EmployeeID = 9;
+        this.EmployeeID = function () {  };
 
         var _firstName;
         this.FirstName = function () {

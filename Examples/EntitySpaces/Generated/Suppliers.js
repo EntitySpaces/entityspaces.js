@@ -22,11 +22,11 @@
 		this.HomePage = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.ProductsCollectionBySupplierID;
+		this.ProductsCollectionBySupplierID = undefined;
 
 		this.esTypeDefs = {
 			ProductsCollectionBySupplierID: "ProductsCollection"
@@ -41,6 +41,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -55,4 +56,5 @@
 	};
 
 	//#endregion
+
 }(window.es));

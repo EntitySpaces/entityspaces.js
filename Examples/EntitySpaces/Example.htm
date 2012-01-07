@@ -36,7 +36,7 @@
         var emp = new es.objects.Employees();
         emp.LoadByPrimaryKeyHierarchical(2);  // <== this method is in the Custom "Employee.js" file
 
-        emp.FirstName("This");
+        emp.FirstName("Thiss");
         emp.OrdersCollectionByEmployeeID()[0].ShipCity(Math.random().toString().substr(0, 4));
         emp.save();
 

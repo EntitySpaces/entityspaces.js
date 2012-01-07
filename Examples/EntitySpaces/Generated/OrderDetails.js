@@ -15,12 +15,12 @@
 		this.Discount = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.UpToOrdersByOrderID;
-		this.UpToProductsByProductID;
+		this.UpToOrdersByOrderID = undefined;
+		this.UpToProductsByProductID = undefined;
 
 		this.esTypeDefs = {
 			UpToOrdersByOrderID: "Orders",
@@ -36,6 +36,7 @@
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -50,4 +51,5 @@
 	};
 
 	//#endregion
+
 }(window.es));
