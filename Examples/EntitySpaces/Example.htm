@@ -112,20 +112,19 @@
             var str = context; // equals 'My Context 1'
         }, 'My Context 1'); // my context value, a string in the case
 
+        // Passing in parameters via an 'options' object
+        var onSuccess = function (data, context) {
+            var ctx = context;
+        }
 
-var onSuccess = function (data, context) {
-    var ctx = context;
-}
+        var onError = function (status, responsText, context) {
+            var ctx = context;
+        }
 
-var onError = function (status, responsText, context) {
-    var ctx = context;
-}
+        var options = { employeeId: 2, success: onSuccess, error: onError, context: 'SomeValue' }
 
-var options = { employeeId: 2, success: onSuccess, error: onError, context: 'SomeValue' }
-
-var emp1 = new es.objects.Employees();
-emp.loadByPrimaryKey(options);
-
+        var emp1 = new es.objects.Employees();
+        emp.loadByPrimaryKey(options);
     }
 
     test3 = function () {
