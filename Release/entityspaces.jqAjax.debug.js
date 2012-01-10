@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.1pre 
-// Built on Tue 01/10/2012 at 11:29:15.32    
+// Built on Tue 01/10/2012 at 11:43:42.34    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -1004,7 +1004,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         var successHandler = options.success;
         var errorHandler = options.error;
 
-        options.success = function (data, context) {
+        options.success = function (data, options) {
             self.populateCollection(data);
             if (successHandler) { successHandler.call(self, data, options.state); }
         };

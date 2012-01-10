@@ -95,36 +95,6 @@
                 });
             });
         });
-
-        // Single entity
-        var emp1 = new es.objects.Employees();
-        emp1.loadByPrimaryKey(2, function (data, context) { // success
-            var str = context; // equals 'My Context'
-        }, function (status, responsText, context) { // error
-            var str = context; // equals 'My Context'
-        }, 'My Context'); // my context value, a string in the case
-
-        // Collection	
-        var coll = new es.objects.EmployeesCollection();
-        coll.loadAll(function (data, context) { // sucess
-            var str = context; // equals 'My Context 1'
-        }, function (status, responsText, context) { // error
-            var str = context; // equals 'My Context 1'
-        }, 'My Context 1'); // my context value, a string in the case
-
-        // Passing in parameters via an 'options' object
-        var onSuccess = function (data, context) {
-            var ctx = context;
-        }
-
-        var onError = function (status, responsText, context) {
-            var ctx = context;
-        }
-
-        var options = { employeeId: 2, success: onSuccess, error: onError, context: 'SomeValue' }
-
-        var emp1 = new es.objects.Employees();
-        emp.loadByPrimaryKey(options);
     }
 
     test3 = function () {

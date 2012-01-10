@@ -170,7 +170,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         var successHandler = options.success;
         var errorHandler = options.error;
 
-        options.success = function (data, context) {
+        options.success = function (data, options) {
             self.populateCollection(data);
             if (successHandler) { successHandler.call(self, data, options.state); }
         };

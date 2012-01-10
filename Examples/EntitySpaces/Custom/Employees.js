@@ -4,14 +4,14 @@
     if (typeof (es) === undefined) { throw "Please Load EntitySpaces.Core First"; }
 
     // Custom method
-    es.objects.Employees.prototype.LoadByPrimaryKeyHierarchical = function (employeeId, success, error, context) {
+    es.objects.Employees.prototype.LoadByPrimaryKeyHierarchical = function (employeeId, success, error, state) {
 
         this.load({
             route: this.routes['LoadByPrimaryKeyHierarchical'],
             data: employeeId,
             success: success,
             error: error, 
-            context: context
+            state: state
         });
     };
 
