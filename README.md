@@ -176,7 +176,7 @@ This example shows you how to pass 'state' back to yourself in the async methods
 
 The "Generated" entityspaces.js Entity and Collection
 ======================================================
-This can be generated for you by EntitySpaces Studio. This is what we call the "Generated" class. Later down the page we show a custom class where we extend this class in another file, this way we can regenerate whenver our database schema changes.
+This can be generated for you by EntitySpaces Studio. This is what we call the "Generated" class. Later down the page we show a custom class where we extend this class in another file, this way we can regenerate whenver our database schema changes and you don't have to worry about losing custom changes.
 
 ````javascript
 
@@ -278,7 +278,7 @@ es.objects.Employees.prototype.LoadByPrimaryKeyHierarchical =
     });
 };
 
-// Custom Properties goes in the "customize" method and this is called for you automatically
+// Custom Properties go in the "customize" method which is called for you automatically
 es.objects.Employees.prototype.customize(function () {
 
     // You can add any number of extra properties of any type in here
