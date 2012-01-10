@@ -66,9 +66,9 @@ es.XMLHttpRequestProvider = function () {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState === 4) {
                     if (xmlHttp.status === 200) {
-                        success(executeCompleted(xmlHttp.responseText, options.route));
+                        success(executeCompleted(xmlHttp.responseText, options.route), options);
                     } else {
-                        failure(xmlHttp.status, xmlHttp.statusText);
+                        error(xmlHttp.status, xmlHttp.statusText, options);
                     }
                 }
             };
@@ -79,10 +79,10 @@ es.XMLHttpRequestProvider = function () {
         if (options.async === false) {
             if (xmlHttp.status === 200) {
                 if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
-                    success(executeCompleted(xmlHttp.responseText, options.route));
+                    success(executeCompleted(xmlHttp.responseText, options.route), options);
                 }
             } else {
-                error(xmlHttp.status, xmlHttp.responseText);
+                error(xmlHttp.status, xmlHttp.responseText, options);
             }
         }
     };

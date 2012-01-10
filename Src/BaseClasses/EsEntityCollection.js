@@ -106,24 +106,29 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             options.data = options.data.toJS();
         }
 
-        //sprinkle in our own success handler, but make sure the original still gets called
-        var origSuccessHandler = options.success;
+        //sprinkle in our own handlers, but make sure the original still gets called
+        var successHandler = options.success;
+        var errorHandler = options.error;
 
         //wrap the passed in success handler so that we can populate the Entity
-        options.success = function (data) {
+        options.success = function (data, options) {
 
             //populate the entity with the returned data;
             self.populateCollection(data);
 
             //fire the passed in success handler
-            if (origSuccessHandler) { origSuccessHandler.call(self, data); }
+            if (successHandler) { successHandler.call(self, data, options.context); }
+        };
+
+        options.error = function (status, responseText, options) {
+            if (errorHandler) { errorHandler.call(self, status, responseText, options.context); }
         };
 
         es.dataProvider.execute(options);
     },
     //#endregion Save
 
-    loadAll: function (success, error) {
+    loadAll: function (success, error, context) {
 
         var options = {
             route: this.routes['loadAll']
@@ -134,17 +139,18 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         } else {
             options.success = success;
             options.error = error;
+            options.context = context;
         }
 
         this.load(options);
     },
 
     //#region Save
-    save: function (success, error) {
+    save: function (success, error, context) {
         var self = this;
 
         var route,
-			options = { success: success, error: error };
+			options = { success: success, error: error, context: context };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);
@@ -166,11 +172,16 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             options.type = options.route.method;
         }
 
-        var setSuccessHandler = options.success;
+        var successHandler = options.success;
+        var errorHandler = options.error;
 
-        options.success = function (data) {
+        options.success = function (data, context) {
             self.populateCollection(data);
-            if (setSuccessHandler) { setSuccessHandler.call(self, data); }
+            if (successHandler) { successHandler.call(self, data, options.context); }
+        };
+
+        options.error = function (status, responseText, options) {
+            if (errorHandler) { errorHandler.call(self, status, responseText, options.context); }
         };
 
         es.dataProvider.execute(options);
