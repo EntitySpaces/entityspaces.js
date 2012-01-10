@@ -12,15 +12,15 @@ A Knockout/Javascript ORM
     </tr>
 </table>
 
-Still Time to Enroll in the EntitySpaces Early Adopter Program
+There's Still Time to Enroll in the Early Adopter Program
 ===============================================================
-First, if you don’t already own EntitySpaces, an extended full featured trial version will be provided to your team if you are accepted into the early adopter program. Of course, existing customers are welcome too. 
+First, if you don't already own EntitySpaces, an extended full featured trial version will be provided to your team if you are accepted into the early adopter program. Of course, existing customers are welcome too. 
 
-The entityspaces.js JavaScript library provides an excellent way to write HTML/JavaScript applications using the familiar MVVM model while leveraging EntitySpaces as the data source serving up your entities in JSON format. Our early adopters program will provide participants with free licenses for EntitySpaces once they go “live”. Each company accepted to participate in the early adopter program will receive: 
+The entityspaces.js JavaScript library provides an excellent way to write HTML/JavaScript applications using the familiar MVVM model while leveraging EntitySpaces as the data source serving up your entities in JSON format. Our early adopters program will provide participants with free licenses for EntitySpaces once they go "live". Each company accepted to participate in the early adopter program will receive: 
 
-Up to Five EntitySpaces Studio Licenses depending on your team size. 
-Up to Five EnititySpaces Profiler Licenses depending on your team size. 
-That’s a potential value of $1,992.00 dollars. Those are not trial version but real production versions. 
+Up to Five EntitySpaces Studio Licenses depending on your team size. <BR>
+Up to Five EnititySpaces Profiler Licenses depending on your team size. <BR>
+<b>That's a potential value of $1,992.00 dollars</b>. Those are not trial version but real production versions. <BR>
 
 We are looking for medium to large companies, if you are interested send an email to support@entityspaces.net with "Early Adopter" in the subject line with information about your company and how you would use entityspaces.js.
 
