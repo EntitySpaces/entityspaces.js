@@ -21,8 +21,6 @@ Below is an example of real working code for the entityspaces.js and is the same
 
 ````javascript
 
-    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
-
     // Load an employee with hierarchical model and save hierarchical data back to the server
     var emp = new es.objects.Employees();
     emp.loadByPrimaryKey(2);
@@ -42,8 +40,6 @@ Below is an example of real working code for the entityspaces.js and is the same
 **Adding New Records**
 
 ````javascript
-
-    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     // Add a single record
     var emp = new es.objects.Employees();
@@ -78,8 +74,6 @@ Below is an example of real working code for the entityspaces.js and is the same
 
 ````javascript
 
-    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
-
     // Add a single record
     var emp = new es.objects.Employees();
     emp.FirstName("Just");
@@ -107,8 +101,6 @@ Below is an example of real working code for the entityspaces.js and is the same
 While this sample might not makes sense asynchronously it does show that you can use the API in any fashion you desire.
 
 ````javascript
-
-    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     //----------------------------------------------------------
     // Here is a code snippet using the synchronous approach
@@ -150,49 +142,23 @@ While this sample might not makes sense asynchronously it does show that you can
 ````
 **Passing in a 'context' to the Async methods**
 
-This example shows how to pass in a context value which can be any value you desire.
-
-````javascript
-
-    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
-
-    // Single entity
-    var emp1 = new es.objects.Employees();
-    emp1.loadByPrimaryKey(2, function (data, context) { // success
-        var str = context; // equals 'My Context'
-    }, function (status, responsText, context) { // error
-        var str = context; // equals 'My Context'
-    }, 'My Context'); // <== my context value, a string in the case
-
-    // Collection	
-    var coll = new es.objects.EmployeesCollection();
-    coll.loadAll(function (data, context) { // sucess
-        var str = context; // equals 'My Context 1'
-    }, function (status, responsText, context) { // error
-        var str = context; // equals 'My Context 1'
-    }, 'My Context 1'); // <== my context value, a string in the case
-````
-
-**Using an options object to pass in the values**
-
 This example shows you how to pass in all of the options in as an 'options' object.
 
 ````javascript
 
-    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
-
-    var onSuccess = function (data, context) {
-        var ctx = context;
-    }
-
-    var onError = function (status, responsText, context) {
-        var ctx = context;
-    }
-
-    var options = { employeeId: 2, success: onSuccess, error: onError, context: 'SomeValue' }
-
     var emp1 = new es.objects.Employees();
-    emp.loadByPrimaryKey(options);
+    emp.loadByPrimaryKey({ 
+        employeeId: 2, 
+        success: function (data, state) {
+            var myState = state;
+            console.log(myState); // 'SomeValue'
+        }, 
+        error: function (status, responsText, state) {
+            var myState = state;
+            console.log(myState); // 'SomeValue'
+        }, 
+        state: 'SomeValue' 
+    });
 ````
 
 An entityspaces.js Entity and Collection
@@ -206,75 +172,75 @@ An entityspaces.js Entity and Collection
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
-	if (typeof (es) === undefined) {
-		throw "Please Load EntitySpaces.Core First";
-	}
+    if (typeof (es) === undefined) {
+        throw "Please Load EntitySpaces.Core First";
+    }
 
-	es.objects.Employees = es.defineEntity(function () {
+    es.objects.Employees = es.defineEntity(function () {
 
-		// core columns
-		this.EmployeeID = ko.observable();
-		this.LastName = ko.observable();
-		this.FirstName = ko.observable();
-		this.Title = ko.observable();
-		this.TitleOfCourtesy = ko.observable();
-		this.BirthDate = ko.observable();
-		this.HireDate = ko.observable();
-		this.Address = ko.observable();
-		this.City = ko.observable();
-		this.Region = ko.observable();
-		this.PostalCode = ko.observable();
-		this.Country = ko.observable();
-		this.HomePhone = ko.observable();
-		this.Extension = ko.observable();
-		this.Photo = ko.observable();
-		this.Notes = ko.observable();
-		this.ReportsTo = ko.observable();
-		this.PhotoPath = ko.observable();
+        // core columns
+        this.EmployeeID = ko.observable();
+        this.LastName = ko.observable();
+        this.FirstName = ko.observable();
+        this.Title = ko.observable();
+        this.TitleOfCourtesy = ko.observable();
+        this.BirthDate = ko.observable();
+        this.HireDate = ko.observable();
+        this.Address = ko.observable();
+        this.City = ko.observable();
+        this.Region = ko.observable();
+        this.PostalCode = ko.observable();
+        this.Country = ko.observable();
+        this.HomePhone = ko.observable();
+        this.Extension = ko.observable();
+        this.Photo = ko.observable();
+        this.Notes = ko.observable();
+        this.ReportsTo = ko.observable();
+        this.PhotoPath = ko.observable();
 
-		// extended colulmns
-		this.esExtendedData = undefined;
+        // extended colulmns
+        this.esExtendedData = undefined;
 
 
-		// Hierarchical Properties
-		this.EmployeesCollectionByReportsTo = undefined;
-		this.UpToEmployeesByReportsTo = undefined;
-		this.UpToTerritoriesCollection = undefined;
-		this.EmployeeTerritoriesCollectionByEmployeeID = undefined;
-		this.OrdersCollectionByEmployeeID = undefined;
+        // Hierarchical Properties
+        this.EmployeesCollectionByReportsTo = undefined;
+        this.UpToEmployeesByReportsTo = undefined;
+        this.UpToTerritoriesCollection = undefined;
+        this.EmployeeTerritoriesCollectionByEmployeeID = undefined;
+        this.OrdersCollectionByEmployeeID = undefined;
 
-		this.esTypeDefs = {
-			EmployeesCollectionByReportsTo: "EmployeesCollection",
-			UpToEmployeesByReportsTo: "Employees",
-			UpToTerritoriesCollection: "TerritoriesCollection",
-			EmployeeTerritoriesCollectionByEmployeeID: "EmployeeTerritoriesCollection",
-			OrdersCollectionByEmployeeID: "OrdersCollection"
-		};
-	});
+        this.esTypeDefs = {
+            EmployeesCollectionByReportsTo: "EmployeesCollection",
+            UpToEmployeesByReportsTo: "Employees",
+            UpToTerritoriesCollection: "TerritoriesCollection",
+            EmployeeTerritoriesCollectionByEmployeeID: "EmployeeTerritoriesCollection",
+            OrdersCollectionByEmployeeID: "OrdersCollection"
+        };
+    });
 
-	//#region Routing
+    //#region Routing
 
-	es.objects.Employees.prototype.routes = {
-		commit: { method: 'PUT', url: 'Employees_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' }
-	};
+    es.objects.Employees.prototype.routes = {
+        commit: { method: 'PUT', url: 'Employees_Save', response: 'entity' },
+        loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' }
+    };
 
-	//#endregion
+    //#endregion
 
 }(window.es, window.myNS));
 
 (function (es) {
 
-	es.objects.EmployeesCollection = es.defineCollection('EmployeesCollection', 'Employees');
+    es.objects.EmployeesCollection = es.defineCollection('EmployeesCollection', 'Employees');
 
-	//#region Routing
+    //#region Routing
 
-	es.objects.EmployeesCollection.prototype.routes = {
-		commit: { method: 'PUT', url: 'EmployeesCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'EmployeesCollection_LoadAll', response: 'collection' }
-	};
+    es.objects.EmployeesCollection.prototype.routes = {
+        commit: { method: 'PUT', url: 'EmployeesCollection_Save', response: 'collection' },
+        loadAll: { method: 'GET', url: 'EmployeesCollection_LoadAll', response: 'collection' }
+    };
 
-	//#endregion
+    //#endregion
 
 }(window.es));
 ````

@@ -40,13 +40,13 @@ es.AjaxProvider = function () {
 
         // override the passed in successHandler so we can add global processing if needed
         options.success = function (data) {
-            origSuccess(data);
+            origSuccess(data, options);
         };
 
         // override the passed in errorHandler so we can add global processing if needed
         options.error = function (xhr, textStatus, errorThrown) {
            	if (origError) {
-           		origError(xhr.status, xhr.responseText);
+           		origError(xhr.status, xhr.responseText, options);
            	} else {
            		es.onError({ code: xhr.status, message: xhr.responseText });
            	}

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.0pre 
-// Built on Mon 01/09/2012 at 22:56:18.50    
+// Built on Tue 01/10/2012 at 11:24:46.60    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -732,17 +732,17 @@ es.EsEntity = function () { //empty constructor
             self.populateEntity(data);
 
             //fire the passed in success handler
-            if (successHandler) { successHandler.call(self, data, options.context); }
+            if (successHandler) { successHandler.call(self, data, options.state); }
         };
 
         options.error = function (status, responseText, options) {
-            if (errorHandler) { errorHandler.call(self, status, responseText, options.context); }
+            if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
         };
 
         es.dataProvider.execute(options);
     };
 
-    this.loadByPrimaryKey = function (primaryKey, success, error, context) { // or single argument of options
+    this.loadByPrimaryKey = function (primaryKey, success, error, state) { // or single argument of options
 
         var options = {
             route: this.routes['loadByPrimaryKey']
@@ -754,7 +754,7 @@ es.EsEntity = function () { //empty constructor
             options.data = primaryKey;
             options.success = success;
             options.error = error;
-            options.context = context;
+            options.state = state;
         }
 
         this.load(options);
@@ -762,11 +762,11 @@ es.EsEntity = function () { //empty constructor
     //#endregion Save
 
     //#region Save
-    this.save = function (success, error, context) {
+    this.save = function (success, error, state) {
         self = this;
 
         var route,
-            options = { success: success, error: error, context: context };
+            options = { success: success, error: error, state: state };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);
@@ -808,11 +808,11 @@ es.EsEntity = function () { //empty constructor
 
         options.success = function (data, options) {
             self.populateEntity(data);
-            if (successHandler) { successHandler.call(self, data, options.context); }
+            if (successHandler) { successHandler.call(self, data, options.state); }
         };
 
         options.error = function (status, responseText, options) {
-            if (errorHandler) { errorHandler.call(self, status, responseText, options.context); }
+            if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
         };
 
         es.dataProvider.execute(options);
@@ -946,18 +946,18 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             self.populateCollection(data);
 
             //fire the passed in success handler
-            if (successHandler) { successHandler.call(self, data, options.context); }
+            if (successHandler) { successHandler.call(self, data, options.state); }
         };
 
         options.error = function (status, responseText, options) {
-            if (errorHandler) { errorHandler.call(self, status, responseText, options.context); }
+            if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
         };
 
         es.dataProvider.execute(options);
     },
     //#endregion Save
 
-    loadAll: function (success, error, context) {
+    loadAll: function (success, error, state) {
 
         var options = {
             route: this.routes['loadAll']
@@ -968,18 +968,18 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         } else {
             options.success = success;
             options.error = error;
-            options.context = context;
+            options.state = state;
         }
 
         this.load(options);
     },
 
     //#region Save
-    save: function (success, error, context) {
+    save: function (success, error, state) {
         var self = this;
 
         var route,
-            options = { success: success, error: error, context: context };
+            options = { success: success, error: error, state: state };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);
@@ -1006,11 +1006,11 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         options.success = function (data, context) {
             self.populateCollection(data);
-            if (successHandler) { successHandler.call(self, data, options.context); }
+            if (successHandler) { successHandler.call(self, data, options.state); }
         };
 
         options.error = function (status, responseText, options) {
-            if (errorHandler) { errorHandler.call(self, status, responseText, options.context); }
+            if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
         };
 
         es.dataProvider.execute(options);
@@ -1191,7 +1191,7 @@ es.XMLHttpRequestProvider = function () {
         path = this.baseURL + options.url;
 
         // Make the HTTP request
-        xmlHttp.open("POST", path, options.synchronous || false);
+        xmlHttp.open("POST", path, options.async || false);
         xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
 
         if (options.async === true) {

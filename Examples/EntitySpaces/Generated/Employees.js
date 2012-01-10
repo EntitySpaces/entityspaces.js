@@ -66,7 +66,7 @@
 
 	es.objects.EmployeesCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'EmployeesCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'EmployeesCollection_LoadAll', response: 'collection' }
+		loadAll: { method: 'GET', url: 'http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/EmployeesCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion

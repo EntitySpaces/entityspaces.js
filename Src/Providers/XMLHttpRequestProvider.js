@@ -59,7 +59,7 @@ es.XMLHttpRequestProvider = function () {
         path = this.baseURL + options.url;
 
         // Make the HTTP request
-        xmlHttp.open("POST", path, options.synchronous || false);
+        xmlHttp.open("POST", path, options.async || false);
         xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
 
         if (options.async === true) {

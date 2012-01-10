@@ -136,17 +136,17 @@ es.EsEntity = function () { //empty constructor
             self.populateEntity(data);
 
             //fire the passed in success handler
-            if (successHandler) { successHandler.call(self, data, options.context); }
+            if (successHandler) { successHandler.call(self, data, options.state); }
         };
 
         options.error = function (status, responseText, options) {
-            if (errorHandler) { errorHandler.call(self, status, responseText, options.context); }
+            if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
         };
 
         es.dataProvider.execute(options);
     };
 
-    this.loadByPrimaryKey = function (primaryKey, success, error, context) { // or single argument of options
+    this.loadByPrimaryKey = function (primaryKey, success, error, state) { // or single argument of options
 
         var options = {
             route: this.routes['loadByPrimaryKey']
@@ -158,7 +158,7 @@ es.EsEntity = function () { //empty constructor
             options.data = primaryKey;
             options.success = success;
             options.error = error;
-            options.context = context;
+            options.state = state;
         }
 
         this.load(options);
@@ -166,11 +166,11 @@ es.EsEntity = function () { //empty constructor
     //#endregion Save
 
     //#region Save
-    this.save = function (success, error, context) {
+    this.save = function (success, error, state) {
         self = this;
 
         var route,
-            options = { success: success, error: error, context: context };
+            options = { success: success, error: error, state: state };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);
@@ -212,11 +212,11 @@ es.EsEntity = function () { //empty constructor
 
         options.success = function (data, options) {
             self.populateEntity(data);
-            if (successHandler) { successHandler.call(self, data, options.context); }
+            if (successHandler) { successHandler.call(self, data, options.state); }
         };
 
         options.error = function (status, responseText, options) {
-            if (errorHandler) { errorHandler.call(self, status, responseText, options.context); }
+            if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
         };
 
         es.dataProvider.execute(options);
