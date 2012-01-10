@@ -174,8 +174,9 @@ This example shows you how to pass 'state' back to yourself in the async methods
     });
 ````
 
-An entityspaces.js Entity and Collection
-============================================
+The "Generated" entityspaces.js Entity and Collection
+======================================================
+This can be generated for you by EntitySpaces Studio. This is what we call the "Generated" class. Later down the page we show a custom class where we extend this class in another file, this way we can regenerate whenver our database schema changes.
 
 ````javascript
 
@@ -256,4 +257,38 @@ An entityspaces.js Entity and Collection
     //#endregion
 
 }(window.es));
+````
+
+A "Custom" entityspaces.js Entity class
+====================================================
+The custom class contains custom methods and properties. The methods are added via the JavaScript "prototype" syntax. Add any of your custom properties in the "customize" method which is called for you automatically when you instantiate a class.
+
+````javascript
+
+// Custom method
+es.objects.Employees.prototype.LoadByPrimaryKeyHierarchical = function (employeeId, success, error, state) {
+
+    this.load({
+        route: this.routes['LoadByPrimaryKeyHierarchical'],
+        data: employeeId,
+        success: success,
+        error: error,
+        state: state
+    });
+};
+
+// Custom Properties goes in the "customize" method and this is called for you automatically
+es.objects.Employees.prototype.customize(function () {
+
+    // You can add any number of extra properties of any type in here
+    this.FullName = ko.computed(function () {
+        return this.LastName() + ", " + this.FirstName();
+    }, this);
+
+});
+
+//#region Routing
+es.objects.Employees.prototype.routes['LoadByPrimaryKeyHierarchical'] = 
+    { method: 'GET', url: 'Employees_LoadByPrimaryKeyHierarchical', response: 'entity' }
+//#endregion
 ````
