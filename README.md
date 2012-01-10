@@ -21,7 +21,6 @@ Below is an example of real working code for the entityspaces.js and is the same
 
 ````javascript
 
-    es.dataProvider = new es.XMLHttpRequestProvider();
     es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     // Load an employee with hierarchical model and save hierarchical data back to the server
@@ -45,7 +44,6 @@ Below is an example of real working code for the entityspaces.js and is the same
 
 ````javascript
 
-    es.dataProvider = new es.XMLHttpRequestProvider();
     es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     // Add a single record
@@ -82,7 +80,6 @@ Below is an example of real working code for the entityspaces.js and is the same
 
 ````javascript
 
-    es.dataProvider = new es.XMLHttpRequestProvider();
     es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     // Add a single record
@@ -161,6 +158,8 @@ While this sample might not makes sense asynchronously it does show that you can
 
 ````javascript
 
+    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+
     // Single entity
     var emp1 = new es.objects.Employees();
     emp1.loadByPrimaryKey(2, function (data, context) { // success
@@ -185,18 +184,20 @@ While this sample might not makes sense asynchronously it does show that you can
 
 ````javascript
 
-var onSuccess = function (data, context) {
-    var ctx = context;
-}
+    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
-var onError = function (status, responsText, context) {
-    var ctx = context;
-}
+    var onSuccess = function (data, context) {
+        var ctx = context;
+    }
 
-var options = { employeeId: 2, success: onSuccess, error: onError, context: 'SomeValue' }
+    var onError = function (status, responsText, context) {
+        var ctx = context;
+    }
 
-var emp1 = new es.objects.Employees();
-emp.loadByPrimaryKey(options);
+    var options = { employeeId: 2, success: onSuccess, error: onError, context: 'SomeValue' }
+
+    var emp1 = new es.objects.Employees();
+    emp.loadByPrimaryKey(options);
 
 ````
 
