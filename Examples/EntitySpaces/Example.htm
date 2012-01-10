@@ -1,21 +1,21 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<script src="../../Libs/knockout-2.0.0.debug.js" type="text/javascript"></script>
-<script src="../../Libs/json2.js" type="text/javascript"></script>
-<script src="../../Release/entityspaces.XHR.debug.js" type="text/javascript"></script>
-<script src="Generated/Employees.js" type="text/javascript"></script>
-<script src="Custom/Employees.js" type="text/javascript"></script>
-<script src="Generated/Orders.js" type="text/javascript"></script>
-<script src="Generated/OrderDetails.js" type="text/javascript"></script>
 <head>
+    <script src="../../Libs/knockout-2.0.0.debug.js" type="text/javascript"></script>
+    <script src="../../Libs/json2.js" type="text/javascript"></script>
+    <script src="../../Release/entityspaces.XHR.debug.js" type="text/javascript"></script>
+    <script src="Generated/Employees.js" type="text/javascript"></script>
+    <script src="Custom/Employees.js" type="text/javascript"></script>
+    <script src="Generated/Orders.js" type="text/javascript"></script>
+    <script src="Generated/OrderDetails.js" type="text/javascript"></script>
     <title>EntitySpaces.js Basic Example</title>
 </head>
 <body>
-    <button onclick="test1()">Test 1</button><br /><br />
-    <button onclick="test2()">Test 2</button><br /><br />
-    <button onclick="test3()">Test 3</button><br /><br />
-    <button onclick="test4()">Test 4</button><br /><br />
+    <button onclick="test1();">Test 1</button><br /><br />
+    <button onclick="test2();">Test 2</button><br /><br />
+    <button onclick="test3();">Test 3</button><br /><br />
+    <button onclick="test4();">Test 4</button><br /><br />
 </body>
 </html>
 
@@ -111,6 +111,21 @@
         }, function (status, responsText, context) { // error
             var str = context; // equals 'My Context 1'
         }, 'My Context 1'); // my context value, a string in the case
+
+
+var onSuccess = function (data, context) {
+    var ctx = context;
+}
+
+var onError = function (status, responsText, context) {
+    var ctx = context;
+}
+
+var options = { employeeId: 2, success: onSuccess, error: onError, context: 'SomeValue' }
+
+var emp1 = new es.objects.Employees();
+emp.loadByPrimaryKey(options);
+
     }
 
     test3 = function () {
