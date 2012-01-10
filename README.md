@@ -15,7 +15,7 @@ A Knockout/Javascript ORM
 The entityspaces.js syntax
 ============================================
 
-Below is an example of real working code for the entityspaces.js and is the same code demonstrated in the video above. These code samples use our XMLHttpRequestProvider but we also provide an AjaxProvider for restful API's.
+Below is an example of real working code for the entityspaces.js and is the same code demonstrated in the video above. These code samples use our XMLHttpRequestProvider but we also provide an JQuery based AjaxProvider for restful API's.
 
 **Loading and Saving, Hierarchical Data, using Synchronous calls**
 
@@ -140,9 +140,9 @@ While this sample might not makes sense asynchronously it does show that you can
         });
     });
 ````
-**Passing in a 'context' to the Async methods**
+**Passing in a 'state' to the Async methods**
 
-This example shows you how to pass in all of the options in as an 'options' object.
+This example shows you how to pass 'state' back to yourself in the async methods, state can be any value, including an object.
 
 ````javascript
 
