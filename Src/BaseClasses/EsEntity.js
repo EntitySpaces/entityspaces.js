@@ -170,7 +170,7 @@ es.EsEntity = function () { //empty constructor
         self = this;
 
         var route,
-			options = { success: success, error: error, context: context };
+            options = { success: success, error: error, context: context };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);
@@ -205,11 +205,6 @@ es.EsEntity = function () { //empty constructor
         if (route) {
             options.url = route.url;
             options.type = route.method;
-        }
-
-        // ensure that the data is flattened
-        if (options.data && options.data['toJS']) {
-            options.data = options.data.toJS();
         }
 
         var successHandler = options.success;
