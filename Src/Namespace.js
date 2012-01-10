@@ -1,5 +1,4 @@
-﻿
-window['es'] = {}; //define root namespace
+﻿window['es'] = {}; //define root namespace
 
 // Google Closure Compiler helpers (used only to make the minified file smaller)
 es.exportSymbol = function (publicPath, object) {

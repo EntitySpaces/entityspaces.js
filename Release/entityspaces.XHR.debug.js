@@ -1,14 +1,18 @@
-/*********************************************** 
-* Built on Mon 01/09/2012 at 21:31:52.55      *  
-***********************************************/ 
+//-------------------------------------------------------------------- 
+// The entityspaces.js JavaScript library v1.0.0pre 
+// Built on Mon 01/09/2012 at 22:56:18.50    
+// https://github.com/EntitySpaces/entityspaces.js 
+// 
+// License: MIT (http://www.opensource.org/licenses/mit-license.php) 
+//-------------------------------------------------------------------- 
+ 
 (function(window, undefined) { 
  
  
 /*********************************************** 
 * FILE: ..\Src\Namespace.js 
 ***********************************************/ 
-﻿
-window['es'] = {}; //define root namespace
+﻿window['es'] = {}; //define root namespace
 
 // Google Closure Compiler helpers (used only to make the minified file smaller)
 es.exportSymbol = function (publicPath, object) {

@@ -22,9 +22,14 @@ ECHO Building... %%A
 DEL %OutPutFile%
 
 @REM Wrap the final output in an IIFE
-@ECHO /*********************************************** >> %OutPutFile%
-@ECHO * Built on %Date% at %Time%      * >> %OutPutFile% 
-@ECHO ***********************************************/ >> %OutPutFile%
+@ECHO //-------------------------------------------------------------------- >> %OutPutFile%
+@ECHO // The entityspaces.js JavaScript library v1.0.0pre >> %OutPutFile%
+@ECHO // Built on %Date% at %Time%  >> %OutPutFile%  
+@ECHO // https://github.com/EntitySpaces/entityspaces.js >> %OutPutFile%
+@ECHO // >> %OutPutFile%
+@ECHO // License: MIT (http://www.opensource.org/licenses/mit-license.php) >> %OutPutFile%
+@ECHO //-------------------------------------------------------------------- >> %OutPutFile%
+@ECHO. >>%OutPutFile%
 @ECHO (function(window, undefined) { >> %OutPutFile%
 @TYPE %OutPutFile%.temp >> %OutPutFile%
 @ECHO }(window)); >> %OutPutFile%
@@ -57,9 +62,14 @@ ECHO Building... %%A
 DEL %OutPutFile%
 
 @REM Wrap the final output in an IIFE
-@ECHO /*********************************************** >> %OutPutFile%
-@ECHO * Built on %Date% at %Time%      * >> %OutPutFile% 
-@ECHO ***********************************************/ >> %OutPutFile%
+@ECHO //-------------------------------------------------------------------- >> %OutPutFile%
+@ECHO // The entityspaces.js JavaScript library v1.0.0pre >> %OutPutFile%
+@ECHO // Built on %Date% at %Time%  >> %OutPutFile%  
+@ECHO // https://github.com/EntitySpaces/entityspaces.js >> %OutPutFile%
+@ECHO // >> %OutPutFile%
+@ECHO // License: MIT (http://www.opensource.org/licenses/mit-license.php) >> %OutPutFile%
+@ECHO //-------------------------------------------------------------------- >> %OutPutFile%
+@ECHO. >>%OutPutFile%
 @ECHO (function(window, undefined) { >> %OutPutFile%
 @TYPE %OutPutFile%.temp >> %OutPutFile%
 @ECHO }(window)); >> %OutPutFile%
