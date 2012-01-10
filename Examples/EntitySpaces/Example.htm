@@ -96,25 +96,21 @@
             });
         });
 
+        // Single entity
         var emp1 = new es.objects.Employees();
-        emp1.loadByPrimaryKey(2,
-            function (data, context) {
-                var kk = 0;
-            },
-            function (status, responsText, context) {
-                var kkk = 0;
-            },
-            'My Context');
+        emp1.loadByPrimaryKey(2, function (data, context) { // success
+            var str = context; // equals 'My Context'
+        }, function (status, responsText, context) { // error
+            var str = context; // equals 'My Context'
+        }, 'My Context'); // my context value, a string in the case
 
+        // Collection	
         var coll = new es.objects.EmployeesCollection();
-        coll.loadAll(
-            function (data, context) {
-                var kkg = 0;
-            },
-            function (status, responsText, context) {
-                var kkkg = 0;
-            },
-            'My Context 1');
+        coll.loadAll(function (data, context) { // sucess
+            var str = context; // equals 'My Context 1'
+        }, function (status, responsText, context) { // error
+            var str = context; // equals 'My Context 1'
+        }, 'My Context 1'); // my context value, a string in the case
     }
 
     test3 = function () {

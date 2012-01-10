@@ -2,14 +2,14 @@ A Knockout/Javascript ORM
 ============================================
 
 <table border="0">
-	<tr>
-		<td>
-			<a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png"></a>
-		</td>
-		<td>
-			Watch a video of entityspaces.js in action
-		</td>
-	</tr>
+    <tr>
+        <td>
+            <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png"></a>
+        </td>
+        <td>
+            Watch a video of entityspaces.js in action
+        </td>
+    </tr>
 </table>
 
 The entityspaces.js syntax
@@ -22,23 +22,23 @@ Below is an example of real working code for the entityspaces.js and is the same
 ````javascript
 <script language="javascript" type="text/javascript">
 
-	es.dataProvider = new es.XMLHttpRequestProvider();
-	es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+    es.dataProvider = new es.XMLHttpRequestProvider();
+    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
-	// Load an employee with hierarchical model and save hierarchical data back to the server
-	var emp = new es.objects.Employees();
-	emp.loadByPrimaryKey(2);
+    // Load an employee with hierarchical model and save hierarchical data back to the server
+    var emp = new es.objects.Employees();
+    emp.loadByPrimaryKey(2);
 
-	emp.FirstName("This");
-	emp.OrdersCollectionByEmployeeID()[0].ShipCity(Math.random().toString().substr(0, 4));
-	emp.save();
+    emp.FirstName("This");
+    emp.OrdersCollectionByEmployeeID()[0].ShipCity(Math.random().toString().substr(0, 4));
+    emp.save();
 
-	// Collection load/save
-	var coll = new es.objects.EmployeesCollection();
-	coll.loadAll();
+    // Collection load/save
+    var coll = new es.objects.EmployeesCollection();
+    coll.loadAll();
 
-	coll()[0].FirstName("Rocks!!");
-	coll.save();
+    coll()[0].FirstName("Rocks!!");
+    coll.save();
 
 </script>
 ````
@@ -48,36 +48,36 @@ Below is an example of real working code for the entityspaces.js and is the same
 ````javascript
 <script language="javascript" type="text/javascript">
 
-	es.dataProvider = new es.XMLHttpRequestProvider();
-	es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+    es.dataProvider = new es.XMLHttpRequestProvider();
+    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
-	// Add a single record
-	var emp = new es.objects.Employees();
-	emp.FirstName("Just");
-	emp.LastName("Added");
-	emp.save();
+    // Add a single record
+    var emp = new es.objects.Employees();
+    emp.FirstName("Just");
+    emp.LastName("Added");
+    emp.save();
 
-	// It's an autoincrement column and we get it back
-	var employeeId = emp.EmployeeID();
+    // It's an autoincrement column and we get it back
+    var employeeId = emp.EmployeeID();
 
-	// Add two new employees through a collection
-	var coll = new es.objects.EmployeesCollection();
+    // Add two new employees through a collection
+    var coll = new es.objects.EmployeesCollection();
 
-	emp = new es.objects.Employees();
-	emp.FirstName("Just1");
-	emp.LastName("Added1");
-	coll.push(emp);
+    emp = new es.objects.Employees();
+    emp.FirstName("Just1");
+    emp.LastName("Added1");
+    coll.push(emp);
 
-	emp = new es.objects.Employees();
-	emp.FirstName("Just2");
-	emp.LastName("Added2");
-	coll.push(emp);
+    emp = new es.objects.Employees();
+    emp.FirstName("Just2");
+    emp.LastName("Added2");
+    coll.push(emp);
 
-	coll.save();
+    coll.save();
 
-	// Check to make sure we got our autoincrement primary keys
-	var employeeId_1 = coll()[0].EmployeeID();
-	var employeeId_2 = coll()[1].EmployeeID();
+    // Check to make sure we got our autoincrement primary keys
+    var employeeId_1 = coll()[0].EmployeeID();
+    var employeeId_2 = coll()[1].EmployeeID();
 
 </script>
 ````
@@ -87,29 +87,29 @@ Below is an example of real working code for the entityspaces.js and is the same
 ````javascript
 <script language="javascript" type="text/javascript">
 
-	es.dataProvider = new es.XMLHttpRequestProvider();
-	es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+    es.dataProvider = new es.XMLHttpRequestProvider();
+    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
-	// Add a single record
-	var emp = new es.objects.Employees();
-	emp.FirstName("Just");
-	emp.LastName("Added");
-	emp.save();
+    // Add a single record
+    var emp = new es.objects.Employees();
+    emp.FirstName("Just");
+    emp.LastName("Added");
+    emp.save();
 
-	var employeeId = emp.EmployeeID();
+    var employeeId = emp.EmployeeID();
 
-	// Reload the new record and delete it
-	emp = new es.objects.Employees();
-	emp.loadByPrimaryKey(employeeId);
-	emp.markAsDeleted();
-	emp.save();
+    // Reload the new record and delete it
+    emp = new es.objects.Employees();
+    emp.loadByPrimaryKey(employeeId);
+    emp.markAsDeleted();
+    emp.save();
 
-	// Can we reload the deleted record
-	emp = new es.objects.Employees();
-	var loaded = emp.loadByPrimaryKey(employeeId);
+    // Can we reload the deleted record
+    emp = new es.objects.Employees();
+    var loaded = emp.loadByPrimaryKey(employeeId);
 
-	// The employeeId = undefined
-	employeeId = emp.EmployeeID();
+    // The employeeId = undefined
+    employeeId = emp.EmployeeID();
 
 </script>
 ````
@@ -121,46 +121,71 @@ While this sample might not makes sense asynchronously it does show that you can
 ````javascript
 <script language="javascript" type="text/javascript">
 
-	es.dataProvider = new es.XMLHttpRequestProvider();
-	es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+    es.dataProvider = new es.XMLHttpRequestProvider();
+    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
-	//----------------------------------------------------------
-	// Here is a code snippet using the synchronous approach
-	//----------------------------------------------------------
-	var emp = new es.objects.Employees();
-	emp.loadByPrimaryKey(2);
-	emp.FirstName("sync" + "!!!");
-	emp.save();
+    //----------------------------------------------------------
+    // Here is a code snippet using the synchronous approach
+    //----------------------------------------------------------
+    var emp = new es.objects.Employees();
+    emp.loadByPrimaryKey(2);
+    emp.FirstName("sync" + "!!!");
+    emp.save();
 
-	var coll = new es.objects.EmployeesCollection();
-	coll.loadAll();
+    var coll = new es.objects.EmployeesCollection();
+    coll.loadAll();
 
-	coll()[0].FirstName("Rocks!!");
-	coll.save();
+    coll()[0].FirstName("Rocks!!");
+    coll.save();
 
-	//-----------------------------------------------------------------
-	// Here is the same code from above using the asynchronous approach
-	//-----------------------------------------------------------------
-	var emp = new es.objects.Employees();
-	emp.loadByPrimaryKey(2, function (data) {
+    //-----------------------------------------------------------------
+    // Here is the same code from above using the asynchronous approach
+    //-----------------------------------------------------------------
+    var emp = new es.objects.Employees();
+    emp.loadByPrimaryKey(2, function (data) {
 
-		emp.FirstName("sync" + "!!!");
+        emp.FirstName("sync" + "!!!");
 
-		emp.save(function (data) {
+        emp.save(function (data) {
 
-			var coll = new es.objects.EmployeesCollection();
+            var coll = new es.objects.EmployeesCollection();
 
-			coll.loadAll(function (data) {
+            coll.loadAll(function (data) {
 
-				coll()[0].FirstName("Rocks!!");
+                coll()[0].FirstName("Rocks!!");
 
-				coll.save(function (data) {
+                coll.save(function (data) {
 
-					var str = "Save is complete ...";
-				});
-			});
-		});
-	});
+                    var str = "Save is complete ...";
+                });
+            });
+        });
+    });
+
+</script>
+````
+**Passing in a 'context' to the Async methods**
+
+While this sample might not makes sense asynchronously it does show that you can use the API in any fashion you desire.
+
+````javascript
+<script language="javascript" type="text/javascript">
+
+    // Single entity
+    var emp1 = new es.objects.Employees();
+    emp1.loadByPrimaryKey(2, function (data, context) { // success
+        var str = context; // equals 'My Context'
+    }, function (status, responsText, context) { // error
+        var str = context; // equals 'My Context'
+    }, 'My Context'); // <== my context value, a string in the case
+
+    // Collection	
+    var coll = new es.objects.EmployeesCollection();
+    coll.loadAll(function (data, context) { // sucess
+        var str = context; // equals 'My Context 1'
+    }, function (status, responsText, context) { // error
+        var str = context; // equals 'My Context 1'
+    }, 'My Context 1'); // <== my context value, a string in the case
 
 </script>
 ````
@@ -177,74 +202,74 @@ An entityspaces.js Entity and Collection
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
-	if (typeof (es) === undefined) {
-		throw "Please Load EntitySpaces.Core First";
-	}
+    if (typeof (es) === undefined) {
+        throw "Please Load EntitySpaces.Core First";
+    }
 
-	es.objects.Employees = es.defineEntity(function () {
+    es.objects.Employees = es.defineEntity(function () {
 
-		// core columns
-		this.EmployeeID = ko.observable();
-		this.LastName = ko.observable();
-		this.FirstName = ko.observable();
-		this.Title = ko.observable();
-		this.TitleOfCourtesy = ko.observable();
-		this.BirthDate = ko.observable();
-		this.HireDate = ko.observable();
-		this.Address = ko.observable();
-		this.City = ko.observable();
-		this.Region = ko.observable();
-		this.PostalCode = ko.observable();
-		this.Country = ko.observable();
-		this.HomePhone = ko.observable();
-		this.Extension = ko.observable();
-		this.Photo = ko.observable();
-		this.Notes = ko.observable();
-		this.ReportsTo = ko.observable();
-		this.PhotoPath = ko.observable();
+        // core columns
+        this.EmployeeID = ko.observable();
+        this.LastName = ko.observable();
+        this.FirstName = ko.observable();
+        this.Title = ko.observable();
+        this.TitleOfCourtesy = ko.observable();
+        this.BirthDate = ko.observable();
+        this.HireDate = ko.observable();
+        this.Address = ko.observable();
+        this.City = ko.observable();
+        this.Region = ko.observable();
+        this.PostalCode = ko.observable();
+        this.Country = ko.observable();
+        this.HomePhone = ko.observable();
+        this.Extension = ko.observable();
+        this.Photo = ko.observable();
+        this.Notes = ko.observable();
+        this.ReportsTo = ko.observable();
+        this.PhotoPath = ko.observable();
 
-		// extended colulmns
-		this.esExtendedData;
+        // extended colulmns
+        this.esExtendedData;
 
 
-		// Hierarchical Properties
-		this.EmployeesCollectionByReportsTo;
-		this.UpToEmployeesByReportsTo;
-		this.UpToTerritoriesCollection;
-		this.EmployeeTerritoriesCollectionByEmployeeID;
-		this.OrdersCollectionByEmployeeID;
+        // Hierarchical Properties
+        this.EmployeesCollectionByReportsTo;
+        this.UpToEmployeesByReportsTo;
+        this.UpToTerritoriesCollection;
+        this.EmployeeTerritoriesCollectionByEmployeeID;
+        this.OrdersCollectionByEmployeeID;
 
-		this.esTypeDefs = {
-			EmployeesCollectionByReportsTo: "EmployeesCollection",
-			UpToEmployeesByReportsTo: "Employees",
-			UpToTerritoriesCollection: "TerritoriesCollection",
-			EmployeeTerritoriesCollectionByEmployeeID: "EmployeeTerritoriesCollection",
-			OrdersCollectionByEmployeeID: "OrdersCollection"
-		};
-	});
+        this.esTypeDefs = {
+            EmployeesCollectionByReportsTo: "EmployeesCollection",
+            UpToEmployeesByReportsTo: "Employees",
+            UpToTerritoriesCollection: "TerritoriesCollection",
+            EmployeeTerritoriesCollectionByEmployeeID: "EmployeeTerritoriesCollection",
+            OrdersCollectionByEmployeeID: "OrdersCollection"
+        };
+    });
 
-	//#region Routing
+    //#region Routing
 
-	es.objects.Employees.prototype.routes = {
-		commit: { method: 'PUT', url: 'Employees_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' }
-	};
+    es.objects.Employees.prototype.routes = {
+        commit: { method: 'PUT', url: 'Employees_Save', response: 'entity' },
+        loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' }
+    };
 
-	//#endregion
+    //#endregion
 }(window.es, window.myNS));
 
 (function (es) {
 
-	es.objects.EmployeesCollection = es.defineCollection('EmployeesCollection', 'Employees');
+    es.objects.EmployeesCollection = es.defineCollection('EmployeesCollection', 'Employees');
 
-	//#region Routing
+    //#region Routing
 
-	es.objects.EmployeesCollection.prototype.routes = {
-		commit: { method: 'PUT', url: 'EmployeesCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'EmployeesCollection_LoadAll', response: 'collection' }
-	};
+    es.objects.EmployeesCollection.prototype.routes = {
+        commit: { method: 'PUT', url: 'EmployeesCollection_Save', response: 'collection' },
+        loadAll: { method: 'GET', url: 'EmployeesCollection_LoadAll', response: 'collection' }
+    };
 
-	//#endregion
+    //#endregion
 }(window.es));
 
 </script>
