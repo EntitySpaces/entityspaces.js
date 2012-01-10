@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.2-pre 
-// Built on Tue 01/10/2012 at 13:09:16.56    
+// The entityspaces.js JavaScript library v1.0.3-pre 
+// Built on Tue 01/10/2012 at 14:24:24.56    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -200,7 +200,7 @@ var utils = {
 	addPropertyChangedHandlers: function (obj, propertyName) {
 
 		var property = obj[propertyName];
-		if (ko.isObservable(property) && !(property instanceof Array)) {
+		if (ko.isObservable(property) && !(property instanceof Array) && property.__ko_proto__ !== ko.dependentObservable) {
 
 			// This is the actual PropertyChanged event
 			property.subscribe(function () {

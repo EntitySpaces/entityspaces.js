@@ -44,7 +44,7 @@ var utils = {
 	addPropertyChangedHandlers: function (obj, propertyName) {
 
 		var property = obj[propertyName];
-		if (ko.isObservable(property) && !(property instanceof Array)) {
+		if (ko.isObservable(property) && !(property instanceof Array) && property.__ko_proto__ !== ko.dependentObservable) {
 
 			// This is the actual PropertyChanged event
 			property.subscribe(function () {
