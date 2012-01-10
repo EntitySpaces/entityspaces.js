@@ -1,5 +1,5 @@
 /*********************************************** 
-* Built on Mon 01/09/2012 at 20:52:39.65      *  
+* Built on Mon 01/09/2012 at 21:31:52.55      *  
 ***********************************************/ 
 (function(window, undefined) { 
  
@@ -762,7 +762,7 @@ es.EsEntity = function () { //empty constructor
         self = this;
 
         var route,
-			options = { success: success, error: error, context: context };
+            options = { success: success, error: error, context: context };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);
@@ -797,11 +797,6 @@ es.EsEntity = function () { //empty constructor
         if (route) {
             options.url = route.url;
             options.type = route.method;
-        }
-
-        // ensure that the data is flattened
-        if (options.data && options.data['toJS']) {
-            options.data = options.data.toJS();
         }
 
         var successHandler = options.success;
@@ -936,11 +931,6 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             options.type = options.route.method || this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
         }
 
-        // ensure that the data is flattened
-        if (options.data && options.data['toJS']) {
-            options.data = options.data.toJS();
-        }
-
         //sprinkle in our own handlers, but make sure the original still gets called
         var successHandler = options.success;
         var errorHandler = options.error;
@@ -985,7 +975,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         var self = this;
 
         var route,
-			options = { success: success, error: error, context: context };
+            options = { success: success, error: error, context: context };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);
