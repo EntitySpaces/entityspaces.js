@@ -154,7 +154,7 @@ While this sample might not makes sense asynchronously it does show that you can
 ````
 **Passing in a 'context' to the Async methods**
 
-While this sample might not makes sense asynchronously it does show that you can use the API in any fashion you desire.
+This example shows how to pass in a context value which can be any value you desire.
 
 ````javascript
 
@@ -180,7 +180,7 @@ While this sample might not makes sense asynchronously it does show that you can
 
 **Using an options object to pass in the values**
 
-While this sample might not makes sense asynchronously it does show that you can use the API in any fashion you desire.
+This example shows you how to pass in all of the options in as an 'options' object.
 
 ````javascript
 
