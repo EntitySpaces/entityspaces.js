@@ -1,4 +1,4 @@
-A Knockout/Javascript ORM
+A Javascript ORM that uses Knockout
 ============================================
 
 <table border="0">
