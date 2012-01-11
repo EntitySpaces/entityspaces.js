@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.3-pre 
-// Built on Tue 01/10/2012 at 14:24:26.85    
+// The entityspaces.js JavaScript library v1.0.4-pre 
+// Built on Wed 01/11/2012 at  7:39:28.16    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -623,6 +623,9 @@ es.EsEntity = function () { //empty constructor
 
         self['___esEntity___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
 
+        //start change tracking
+        es.utils.startTracking(self)
+
         // before populating the data, call each extender to add the required functionality to our object        
         ko.utils.arrayForEach(extenders, function (extender) {
 
@@ -631,9 +634,6 @@ es.EsEntity = function () { //empty constructor
                 extender.call(self);
             }
         });
-
-        //start change tracking
-        es.utils.startTracking(self);
     };
 
     this.populateEntity = function (data) {

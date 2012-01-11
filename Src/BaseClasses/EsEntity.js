@@ -27,6 +27,9 @@ es.EsEntity = function () { //empty constructor
 
         self['___esEntity___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
 
+        //start change tracking
+        es.utils.startTracking(self)
+
         // before populating the data, call each extender to add the required functionality to our object        
         ko.utils.arrayForEach(extenders, function (extender) {
 
@@ -35,9 +38,6 @@ es.EsEntity = function () { //empty constructor
                 extender.call(self);
             }
         });
-
-        //start change tracking
-        es.utils.startTracking(self);
     };
 
     this.populateEntity = function (data) {
