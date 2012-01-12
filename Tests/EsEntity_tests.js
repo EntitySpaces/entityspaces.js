@@ -227,7 +227,7 @@ test('Reject Changes - Adding', function () {
 
     testP.rejectChanges();
 
-    ok(!testP.isDirty(), 'Object is not Dirty after rejecting changes');
+    ok(testP.isDirty(), 'Object is Dirty when adding');
     equals(testP.es.originalValues['ProductId'], undefined, 'Original Values is empty');
     equals(testP.RowState(), es.RowState.ADDED, 'RowState has been set back');
 });
@@ -245,7 +245,7 @@ test('Reject Changes - Deleting', function () {
 
     testP.rejectChanges();
 
-    ok(!testP.isDirty(), 'Object is not Dirty after rejecting changes');
+    ok(testP.isDirty(), 'Object is Dirty bc it was added');
     equals(testP.es.originalValues['ProductId'], undefined, 'Original Values is empty');
     equals(testP.RowState(), es.RowState.ADDED, 'RowState has been set back');
 });

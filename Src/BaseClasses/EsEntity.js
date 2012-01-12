@@ -38,6 +38,10 @@ es.EsEntity = function () { //empty constructor
                 extender.call(self);
             }
         });
+
+        this.isDirty = ko.computed(function () {
+            return (self.RowState() !== es.RowState.UNCHANGED);
+        });
     };
 
     this.populateEntity = function (data) {
@@ -49,6 +53,15 @@ es.EsEntity = function () { //empty constructor
         self.es.ignorePropertyChanged = true;
 
         try {
+            //blow away ModifiedColumns && orinalValues            
+            if (this.hasOwnProperty("ModifiedColumns")) {
+                //overwrite existing data
+                this.ModifiedColumns([]);                
+            } else {
+                this.ModifiedColumns = ko.observableArray();
+            }
+            this.es.originalValues = {};
+
             //populate the entity with data back from the server...
             es.utils.copyDataIntoEntity(self, data);
 
@@ -96,14 +109,6 @@ es.EsEntity = function () { //empty constructor
 
     this.applyDefaults = function () {
         //here to be overridden higher up the prototype chain
-    };
-
-    this.isDirty = function () {
-        if (this.ModifiedColumns) {
-            return this.ModifiedColumns().length !== 0;
-        } else {
-            return false;
-        }
     };
 
     this.acceptChanges = function () {

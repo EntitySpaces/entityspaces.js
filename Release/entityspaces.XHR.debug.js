@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.4-pre 
-// Built on Thu 01/12/2012 at 11:00:58.74    
+// Built on Thu 01/12/2012 at 11:29:40.22    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -177,11 +177,15 @@ var utils = {
             if (source.hasOwnProperty(prop)) {
 
                 srcProp = source[prop];
-                //                if( typeof srcProp === "string") {
-                //                    if (srcProp.indexOf('/Date(') === 0) {
-                //                        srcProp = utils.parseJSONDate(srcProp);
-                //                    }
-                //                }
+                
+                //deserialize weird .NET Date strings
+                /*
+                if( typeof srcProp === "string") {
+                    if (srcProp.indexOf('/Date(') === 0) {
+                        srcProp = utils.parseJSONDate(srcProp);
+                    }
+                }
+                */
 
                 if (ko.isObservable(target[prop])) { //set the observable property
                     target[prop](srcProp); // set the observable
@@ -656,6 +660,10 @@ es.EsEntity = function () { //empty constructor
                 extender.call(self);
             }
         });
+
+        this.isDirty = ko.computed(function () {
+            return (self.RowState() !== es.RowState.UNCHANGED);
+        });
     };
 
     this.populateEntity = function (data) {
@@ -667,6 +675,15 @@ es.EsEntity = function () { //empty constructor
         self.es.ignorePropertyChanged = true;
 
         try {
+            //blow away ModifiedColumns && orinalValues            
+            if (this.hasOwnProperty("ModifiedColumns")) {
+                //overwrite existing data
+                this.ModifiedColumns([]);                
+            } else {
+                this.ModifiedColumns = ko.observableArray();
+            }
+            this.es.originalValues = {};
+
             //populate the entity with data back from the server...
             es.utils.copyDataIntoEntity(self, data);
 
@@ -714,14 +731,6 @@ es.EsEntity = function () { //empty constructor
 
     this.applyDefaults = function () {
         //here to be overridden higher up the prototype chain
-    };
-
-    this.isDirty = function () {
-        if (this.ModifiedColumns) {
-            return this.ModifiedColumns().length !== 0;
-        } else {
-            return false;
-        }
     };
 
     this.acceptChanges = function () {

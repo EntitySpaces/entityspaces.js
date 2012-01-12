@@ -21,11 +21,15 @@ var utils = {
             if (source.hasOwnProperty(prop)) {
 
                 srcProp = source[prop];
-                //                if( typeof srcProp === "string") {
-                //                    if (srcProp.indexOf('/Date(') === 0) {
-                //                        srcProp = utils.parseJSONDate(srcProp);
-                //                    }
-                //                }
+                
+                //deserialize weird .NET Date strings
+                /*
+                if( typeof srcProp === "string") {
+                    if (srcProp.indexOf('/Date(') === 0) {
+                        srcProp = utils.parseJSONDate(srcProp);
+                    }
+                }
+                */
 
                 if (ko.isObservable(target[prop])) { //set the observable property
                     target[prop](srcProp); // set the observable
