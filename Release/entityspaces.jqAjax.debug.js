@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.4-pre 
-// Built on Wed 01/11/2012 at  7:39:25.04    
+// Built on Wed 01/11/2012 at 21:15:43.97    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -161,283 +161,295 @@ es.exportSymbol('es.isEsCollection', es.isEsCollection);
 
 var utils = {
 
-	copyDataIntoEntity: function (target, source) {
-		var prop;
+    parseJSONDate: function (value) {
+        return new Date(parseInt(value.substr(6)))
+    },
 
-		if (!target || !source) {
-			return;
-		}
+    copyDataIntoEntity: function (target, source) {
+        var prop, srcProp;
 
-		for (prop in target) {
+        if (!target || !source) {
+            return;
+        }
 
-			if (source.hasOwnProperty(prop)) {
+        for (prop in target) {
 
-				if (ko.isObservable(target[prop])) { //set the observable property
-					target[prop](source[prop]); // set the observable
-				} else {
-					target[prop] = source[prop];
-				}
-			}
-		}
+            if (source.hasOwnProperty(prop)) {
 
-		return target;
-	},
+                srcProp = source[prop];
 
-	extend: function (target, source) {
-		var prop;
+//                if( typeof srcProp === "string") {
+//                    if (srcProp.indexOf('/Date(') === 0) {
+//                        srcProp = utils.parseJSONDate(srcProp);
+//                    }
+//                }
 
-		if (!target || !source) {
-			return;
-		}
+                if (ko.isObservable(target[prop])) { //set the observable property
+                    target[prop](srcProp); // set the observable
+                } else {
+                    target[prop] = srcProp;
+                }
+            }
+        }
 
-		for (prop in source) {
-			target[prop] = source[prop];
-		}
+        return target;
+    },
 
-		return target;
-	},
+    extend: function (target, source) {
+        var prop;
 
-	addPropertyChangedHandlers: function (obj, propertyName) {
+        if (!target || !source) {
+            return;
+        }
 
-		var property = obj[propertyName];
-		if (ko.isObservable(property) && !(property instanceof Array) && property.__ko_proto__ !== ko.dependentObservable) {
+        for (prop in source) {
+            target[prop] = source[prop];
+        }
 
-			// This is the actual PropertyChanged event
-			property.subscribe(function () {
+        return target;
+    },
 
-				if (obj.ignorePropertyChanged === false) {
+    addPropertyChangedHandlers: function (obj, propertyName) {
 
-					if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
+        var property = obj[propertyName];
+        if (ko.isObservable(property) && !(property instanceof Array) && property.__ko_proto__ !== ko.dependentObservable) {
 
-						if (propertyName !== "RowState") {
-							obj.ModifiedColumns.push(propertyName);
+            // This is the actual PropertyChanged event
+            property.subscribe(function () {
 
-							if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
-								obj.RowState(es.RowState.MODIFIED);
-							}
-						}
-					}
-				}
-			});
-		}
-	},
+                if (obj.ignorePropertyChanged === false) {
 
-	startTracking: function (entity) {
+                    if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
 
-		var propertyName;
+                        if (propertyName !== "RowState") {
+                            obj.ModifiedColumns.push(propertyName);
 
-		if (!entity.hasOwnProperty("RowState")) {
-			entity.RowState = ko.observable(es.RowState.ADDED);
-		} else {
-			if (!ko.isObservable(entity.RowState)) {
-				entity.RowState = ko.observable(entity.RowState);
-			}
-		}
+                            if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
+                                obj.RowState(es.RowState.MODIFIED);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    },
 
-		if (!entity.hasOwnProperty("ModifiedColumns")) {
-			entity.ModifiedColumns = ko.observableArray();
-		} else {
-			// Overwrite existing data
-			entity.ModifiedColumns = ko.observableArray();
-		}
+    startTracking: function (entity) {
 
-		for (propertyName in entity) {
-			if (propertyName !== 'RowState' && propertyName !== "ModifiedColumns" && propertyName !== '__type' && propertyName !== 'esExtendedData') {
+        var propertyName;
 
-				var property = entity[propertyName];
+        if (!entity.hasOwnProperty("RowState")) {
+            entity.RowState = ko.observable(es.RowState.ADDED);
+        } else {
+            if (!ko.isObservable(entity.RowState)) {
+                entity.RowState = ko.observable(entity.RowState);
+            }
+        }
 
-				if (property instanceof Array) {
-					continue;
-				}
+        if (!entity.hasOwnProperty("ModifiedColumns")) {
+            entity.ModifiedColumns = ko.observableArray();
+        } else {
+            // Overwrite existing data
+            entity.ModifiedColumns = ko.observableArray();
+        }
 
-				if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
-					utils.addPropertyChangedHandlers(entity, propertyName);
-				}
-			}
-		}
+        for (propertyName in entity) {
+            if (propertyName !== 'RowState' && propertyName !== "ModifiedColumns" && propertyName !== '__type' && propertyName !== 'esExtendedData') {
 
-		return entity;
-	},
+                var property = entity[propertyName];
+
+                if (property instanceof Array) {
+                    continue;
+                }
+
+                if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
+                    utils.addPropertyChangedHandlers(entity, propertyName);
+                }
+            }
+        }
+
+        return entity;
+    },
 
     expandExtraColumns: function (entity, shouldMakeObservable) {
 
-		var data, i, ext, makeObservable = arguments[1] || false;
+        var data, i, ext, makeObservable = arguments[1] || false;
 
-		if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
+        if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
 
             data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
 
-			for (i = 0; i < data.length; i++) {
+            for (i = 0; i < data.length; i++) {
 
-				if (makeObservable) {
-					entity[data[i].Key] = ko.observable(data[i].Value);
-				} else {
-					entity[data[i].Key] = data[i].Value;
-				}
+                if (makeObservable) {
+                    entity[data[i].Key] = ko.observable(data[i].Value);
+                } else {
+                    entity[data[i].Key] = data[i].Value;
+                }
             }
 
-			delete entity.esExtendedData;
-		}
+            delete entity.esExtendedData;
+        }
 
-		if (data !== undefined) {
+        if (data !== undefined) {
 
-			entity["esExtendedData"] = [];
+            entity["esExtendedData"] = [];
 
-			for (i = 0; i < data.length; i++) {
-			    entity.esExtendedData.push(ko.isObservable(data[i].Key) ? data[i].Key() : data[i].Key);
-			}
-		}
+            for (i = 0; i < data.length; i++) {
+                entity.esExtendedData.push(ko.isObservable(data[i].Key) ? data[i].Key() : data[i].Key);
+            }
+        }
 
-		return entity;
-	},
+        return entity;
+    },
 
-	removeExtraColumns: function (entity) {
-		var i, data;
+    removeExtraColumns: function (entity) {
+        var i, data;
 
-		if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
+        if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
 
-		    data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
+            data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
 
-			for (i = 0; i < data.length; i++) {
-				delete entity[data[i]];
-			}
-			delete entity.esExtendedData;
-		}
+            for (i = 0; i < data.length; i++) {
+                delete entity[data[i]];
+            }
+            delete entity.esExtendedData;
+        }
 
-		return entity;
-	},
+        return entity;
+    },
 
-	// Private function used by 'getDirtyEntities' below
-	// NOTE: This strips out unwanted properties, this method is only to
-	//       be used to by getDirtyEntities
-	shallowCopy: function (src) {
-		if (typeof src === 'object' && src !== null) {
-			var dst;
+    // Private function used by 'getDirtyEntities' below
+    // NOTE: This strips out unwanted properties, this method is only to
+    //       be used to by getDirtyEntities
+    shallowCopy: function (src) {
+        if (typeof src === 'object' && src !== null) {
+            var dst;
 
-			if (es.isArray(src)) {
-				dst = [];
-			}
-			else if (src instanceof Date) {
-				dst = new Date(src);
-			}
-			else if (src instanceof Boolean) {
-				dst = new Boolean(src);
-			}
-			else if (src instanceof Number) {
-				dst = new Number(src);
-			}
-			else if (src instanceof String) {
-				dst = new String(src);
-			}
-			else if (Object.create && Object.getPrototypeOf) {
-				dst = Object.create(Object.getPrototypeOf(src));
-			}
-			else if (src.__proto__ || src.constructor.prototype) {
-				var proto = src.__proto__ || src.constructor.prototype || {};
-				var T = function () { };
-				T.prototype = proto;
-				dst = new T;
-				if (!dst.__proto__) { dst.__proto__ = proto; }
-			}
+            if (es.isArray(src)) {
+                dst = [];
+            }
+            else if (src instanceof Date) {
+                dst = new Date(src);
+            }
+            else if (src instanceof Boolean) {
+                dst = new Boolean(src);
+            }
+            else if (src instanceof Number) {
+                dst = new Number(src);
+            }
+            else if (src instanceof String) {
+                dst = new String(src);
+            }
+            else if (Object.create && Object.getPrototypeOf) {
+                dst = Object.create(Object.getPrototypeOf(src));
+            }
+            else if (src.__proto__ || src.constructor.prototype) {
+                var proto = src.__proto__ || src.constructor.prototype || {};
+                var T = function () { };
+                T.prototype = proto;
+                dst = new T;
+                if (!dst.__proto__) { dst.__proto__ = proto; }
+            }
 
-			ko.utils.arrayForEach(es.objectKeys(src), function (key) {
-				if (!es.isEsCollection(src[key])) {
+            ko.utils.arrayForEach(es.objectKeys(src), function (key) {
+                if (!es.isEsCollection(src[key])) {
 
-					switch (key) {
-						case '___esEntity___':
-						case 'esTypeDefs':
-						case 'routes':
-						case 'ignorePropertyChanged':
-							break;
-						default:
-							dst[key] = src[key];
-							break;
-					}
-				}
-			});
-			return dst;
-		} else {
-			return src;
-		}
-	},
+                    switch (key) {
+                        case '___esEntity___':
+                        case 'esTypeDefs':
+                        case 'routes':
+                        case 'ignorePropertyChanged':
+                            break;
+                        default:
+                            dst[key] = src[key];
+                            break;
+                    }
+                }
+            });
+            return dst;
+        } else {
+            return src;
+        }
+    },
 
-	getDirtyGraph: function (obj) {
+    getDirtyGraph: function (obj) {
 
-		var i, k, dirty, paths = [], root = null;
+        var i, k, dirty, paths = [], root = null;
 
-		es.Visit(obj).forEach(function (theObj) {
+        es.Visit(obj).forEach(function (theObj) {
 
-			if (this.key === "esExtendedData") {
-				this.block();
-			} else {
+            if (this.key === "esExtendedData") {
+                this.block();
+            } else {
 
-				if (this.isLeaf === false) {
+                if (this.isLeaf === false) {
 
-					if (theObj instanceof Array) { return theObj; }
+                    if (theObj instanceof Array) { return theObj; }
 
-					if (theObj.hasOwnProperty("RowState")) {
+                    if (theObj.hasOwnProperty("RowState")) {
 
-						switch (theObj.RowState) {
+                        switch (theObj.RowState) {
 
-							case es.RowState.ADDED:
-							case es.RowState.DELETED:
-							case es.RowState.MODIFIED:
+                            case es.RowState.ADDED:
+                            case es.RowState.DELETED:
+                            case es.RowState.MODIFIED:
 
-								paths.push(this.path);
-								break;
-						}
-					}
-				}
-			}
+                                paths.push(this.path);
+                                break;
+                        }
+                    }
+                }
+            }
 
-			return theObj;
-		});
+            return theObj;
+        });
 
-		//#region Rebuild tree of dirty objects from "paths[]"
-		if (paths.length > 0) {
+        //#region Rebuild tree of dirty objects from "paths[]"
+        if (paths.length > 0) {
 
-			if (es.isArray(obj)) {
-				dirty = [];
-			} else {
-				dirty = utils.shallowCopy(utils.removeExtraColumns(obj));
-			}
+            if (es.isArray(obj)) {
+                dirty = [];
+            } else {
+                dirty = utils.shallowCopy(utils.removeExtraColumns(obj));
+            }
 
-			root = dirty;
+            root = dirty;
 
-			for (i = 0; i < paths.length; i++) {
+            for (i = 0; i < paths.length; i++) {
 
-				var thePath = paths[i];
-				var data = obj;
-				dirty = root;
+                var thePath = paths[i];
+                var data = obj;
+                dirty = root;
 
-				for (k = 0; k < thePath.length; k++) {
+                for (k = 0; k < thePath.length; k++) {
 
-					if (!dirty.hasOwnProperty(thePath[k])) {
+                    if (!dirty.hasOwnProperty(thePath[k])) {
 
-						if (es.isArray(data[thePath[k]])) {
-							dirty[thePath[k]] = [];
-							dirty = dirty[thePath[k]];
-						}
-					} else {
-						dirty = dirty[thePath[k]];
-					}
+                        if (es.isArray(data[thePath[k]])) {
+                            dirty[thePath[k]] = [];
+                            dirty = dirty[thePath[k]];
+                        }
+                    } else {
+                        dirty = dirty[thePath[k]];
+                    }
 
-					data = data[thePath[k]];
-				}
+                    data = data[thePath[k]];
+                }
 
-				data = utils.removeExtraColumns(data);
+                data = utils.removeExtraColumns(data);
 
-				if (es.isArray(dirty)) {
-					dirty.push(utils.shallowCopy(data));
-				} else {
-					dirty = utils.shallowCopy(data);
-				}
-			}
-		}
-		//#endregion Save
+                if (es.isArray(dirty)) {
+                    dirty.push(utils.shallowCopy(data));
+                } else {
+                    dirty = utils.shallowCopy(data);
+                }
+            }
+        }
+        //#endregion Save
 
-		return root;
-	}
+        return root;
+    }
 };
 
 utils.newId = (function () {
