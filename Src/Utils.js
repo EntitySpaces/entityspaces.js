@@ -5,302 +5,308 @@
 
 var utils = {
 
-    parseJSONDate: function (value) {
-        return new Date(parseInt(value.substr(6)))
-    },
+	parseJSONDate: function (value) {
+		return new Date(parseInt(value.substr(6)))
+	},
 
-    copyDataIntoEntity: function (target, source) {
-        var prop, srcProp;
+	copyDataIntoEntity: function (target, source) {
+		var prop, srcProp;
 
-        if (!target || !source) {
-            return;
-        }
+		if (!target || !source) {
+			return;
+		}
 
-        for (prop in target) {
+		for (prop in target) {
 
-            if (source.hasOwnProperty(prop)) {
+			if (source.hasOwnProperty(prop)) {
 
-                srcProp = source[prop];
+				srcProp = source[prop];
 //                if( typeof srcProp === "string") {
 //                    if (srcProp.indexOf('/Date(') === 0) {
 //                        srcProp = utils.parseJSONDate(srcProp);
 //                    }
 //                }
 
-                if (ko.isObservable(target[prop])) { //set the observable property
-                    target[prop](srcProp); // set the observable
-                } else {
-                    target[prop] = srcProp;
-                }
-            }
-        }
+				if (ko.isObservable(target[prop])) { //set the observable property
+					target[prop](srcProp); // set the observable
+				} else {
+					target[prop] = srcProp;
+				}
+			}
+		}
 
-        return target;
-    },
+		return target;
+	},
 
-    extend: function (target, source) {
-        var prop;
+	extend: function (target, source) {
+		var prop;
 
-        if (!target || !source) {
-            return;
-        }
+		if (!target || !source) {
+			return;
+		}
 
-        for (prop in source) {
-            target[prop] = source[prop];
-        }
+		for (prop in source) {
+			target[prop] = source[prop];
+		}
 
-        return target;
-    },
+		return target;
+	},
 
-    addPropertyChangedHandlers: function (obj, propertyName) {
+	addPropertyChangedHandlers: function (obj, propertyName) {
 
-        var property = obj[propertyName];
-        if (ko.isObservable(property) && !(property instanceof Array) && property.__ko_proto__ !== ko.dependentObservable) {
+		var property = obj[propertyName];
+		if (ko.isObservable(property) && !(property instanceof Array) && property.__ko_proto__ !== ko.dependentObservable) {
 
-            // This is the actual PropertyChanged event
-            property.subscribe(function () {
+			// This is the actual PropertyChanged event
+			property.subscribe(function (originalValue) {
 
-                if (obj.ignorePropertyChanged === false) {
+				if (obj.ignorePropertyChanged === false) {
 
-                    if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
+					if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
 
-                        if (propertyName !== "RowState") {
-                            obj.ModifiedColumns.push(propertyName);
+						if (!obj.__OriginalValues[propertyName]) {
+							obj.__OriginalValues[propertyName] = originalValue;
+						}
+						
+						if (propertyName !== "RowState") {
+							obj.ModifiedColumns.push(propertyName);
 
-                            if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
-                                obj.RowState(es.RowState.MODIFIED);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    },
+							if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
+								obj.RowState(es.RowState.MODIFIED);
+							}
+						}
+					}
+				}
+			}, obj, "beforeChange");
+		}
+	},
 
-    startTracking: function (entity) {
+	startTracking: function (entity) {
 
-        var propertyName;
+		var propertyName;
 
-        if (!entity.hasOwnProperty("RowState")) {
-            entity.RowState = ko.observable(es.RowState.ADDED);
-        } else {
-            if (!ko.isObservable(entity.RowState)) {
-                entity.RowState = ko.observable(entity.RowState);
-            }
-        }
-
-        if (!entity.hasOwnProperty("ModifiedColumns")) {
-            entity.ModifiedColumns = ko.observableArray();
-        } else {
-            // Overwrite existing data
-            entity.ModifiedColumns = ko.observableArray();
-        }
-
-        for (propertyName in entity) {
-            if (propertyName !== 'RowState' && propertyName !== "ModifiedColumns" && propertyName !== '__type' && propertyName !== 'esExtendedData') {
-
-                var property = entity[propertyName];
-
-                if (property instanceof Array) {
-                    continue;
-                }
-
-                if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
-                    utils.addPropertyChangedHandlers(entity, propertyName);
-                }
-            }
-        }
-
-        return entity;
-    },
-
-    expandExtraColumns: function (entity, shouldMakeObservable) {
-
-        var data, i, ext, makeObservable = arguments[1] || false;
-
-        if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
-
-            data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
-
-            for (i = 0; i < data.length; i++) {
-
-                if (makeObservable) {
-                    entity[data[i].Key] = ko.observable(data[i].Value);
-                } else {
-                    entity[data[i].Key] = data[i].Value;
-                }
-            }
-
-            delete entity.esExtendedData;
-        }
-
-        if (data !== undefined) {
-
-            entity["esExtendedData"] = [];
-
-            for (i = 0; i < data.length; i++) {
-                entity.esExtendedData.push(ko.isObservable(data[i].Key) ? data[i].Key() : data[i].Key);
-            }
-        }
-
-        return entity;
-    },
-
-    removeExtraColumns: function (entity) {
-        var i, data;
-
-        if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
-
-            data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
-
-            for (i = 0; i < data.length; i++) {
-                delete entity[data[i]];
-            }
-            delete entity.esExtendedData;
-        }
-
-        return entity;
-    },
-
-    // Private function used by 'getDirtyEntities' below
-    // NOTE: This strips out unwanted properties, this method is only to
-    //       be used to by getDirtyEntities
-    shallowCopy: function (src) {
-        if (typeof src === 'object' && src !== null) {
-            var dst;
-
-            if (es.isArray(src)) {
-                dst = [];
-            }
-            else if (src instanceof Date) {
-                dst = new Date(src);
-            }
-            else if (src instanceof Boolean) {
-                dst = new Boolean(src);
-            }
-            else if (src instanceof Number) {
-                dst = new Number(src);
-            }
-            else if (src instanceof String) {
-                dst = new String(src);
-            }
-            else if (Object.create && Object.getPrototypeOf) {
-                dst = Object.create(Object.getPrototypeOf(src));
-            }
-            else if (src.__proto__ || src.constructor.prototype) {
-                var proto = src.__proto__ || src.constructor.prototype || {};
-                var T = function () { };
-                T.prototype = proto;
-                dst = new T;
-                if (!dst.__proto__) { dst.__proto__ = proto; }
-            }
-
-            ko.utils.arrayForEach(es.objectKeys(src), function (key) {
-                if (!es.isEsCollection(src[key])) {
-
-                    switch (key) {
-                        case '___esEntity___':
-                        case 'esTypeDefs':
-                        case 'routes':
-                        case 'ignorePropertyChanged':
-                            break;
-                        default:
-                            dst[key] = src[key];
-                            break;
-                    }
-                }
-            });
-            return dst;
-        } else {
-            return src;
-        }
-    },
-
-    getDirtyGraph: function (obj) {
-
-        var i, k, dirty, paths = [], root = null;
-
-        es.Visit(obj).forEach(function (theObj) {
-
-            if (this.key === "esExtendedData") {
-                this.block();
-            } else {
-
-                if (this.isLeaf === false) {
-
-                    if (theObj instanceof Array) { return theObj; }
-
-                    if (theObj.hasOwnProperty("RowState")) {
-
-                        switch (theObj.RowState) {
-
-                            case es.RowState.ADDED:
-                            case es.RowState.DELETED:
-                            case es.RowState.MODIFIED:
-
-                                paths.push(this.path);
-                                break;
-                        }
-                    }
-                }
-            }
-
-            return theObj;
-        });
-
-        //#region Rebuild tree of dirty objects from "paths[]"
-        if (paths.length > 0) {
-
-            if (es.isArray(obj)) {
-                dirty = [];
-            } else {
-                dirty = utils.shallowCopy(utils.removeExtraColumns(obj));
-            }
-
-            root = dirty;
-
-            for (i = 0; i < paths.length; i++) {
-
-                var thePath = paths[i];
-                var data = obj;
-                dirty = root;
-
-                for (k = 0; k < thePath.length; k++) {
-
-                    if (!dirty.hasOwnProperty(thePath[k])) {
-
-                        if (es.isArray(data[thePath[k]])) {
-                            dirty[thePath[k]] = [];
-                            dirty = dirty[thePath[k]];
-                        }
-                    } else {
-                        dirty = dirty[thePath[k]];
-                    }
-
-                    data = data[thePath[k]];
-                }
-
-                data = utils.removeExtraColumns(data);
-
-                if (es.isArray(dirty)) {
-                    dirty.push(utils.shallowCopy(data));
-                } else {
-                    dirty = utils.shallowCopy(data);
-                }
-            }
-        }
-        //#endregion Save
-
-        return root;
-    }
+		if (!entity.hasOwnProperty("RowState")) {
+			entity.RowState = ko.observable(es.RowState.ADDED);
+		} else {
+			if (!ko.isObservable(entity.RowState)) {
+				entity.RowState = ko.observable(entity.RowState);
+			}
+		}
+
+		if (!entity.hasOwnProperty("ModifiedColumns")) {
+			entity.ModifiedColumns = ko.observableArray();
+		} else {
+			// Overwrite existing data
+			entity.ModifiedColumns = ko.observableArray();
+		}
+
+		entity.__OriginalValues = {};
+
+		for (propertyName in entity) {
+			if (propertyName !== 'RowState' && propertyName !== "ModifiedColumns" && propertyName !== '__type' && propertyName !== 'esExtendedData') {
+
+				var property = entity[propertyName];
+
+				if (property instanceof Array) {
+					continue;
+				}
+
+				if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
+					utils.addPropertyChangedHandlers(entity, propertyName);
+				}
+			}
+		}
+
+		return entity;
+	},
+
+	expandExtraColumns: function (entity, shouldMakeObservable) {
+
+		var data, i, ext, makeObservable = arguments[1] || false;
+
+		if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
+
+			data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
+
+			for (i = 0; i < data.length; i++) {
+
+				if (makeObservable) {
+					entity[data[i].Key] = ko.observable(data[i].Value);
+				} else {
+					entity[data[i].Key] = data[i].Value;
+				}
+			}
+
+			delete entity.esExtendedData;
+		}
+
+		if (data !== undefined) {
+
+			entity["esExtendedData"] = [];
+
+			for (i = 0; i < data.length; i++) {
+				entity.esExtendedData.push(ko.isObservable(data[i].Key) ? data[i].Key() : data[i].Key);
+			}
+		}
+
+		return entity;
+	},
+
+	removeExtraColumns: function (entity) {
+		var i, data;
+
+		if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
+
+			data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
+
+			for (i = 0; i < data.length; i++) {
+				delete entity[data[i]];
+			}
+			delete entity.esExtendedData;
+		}
+
+		return entity;
+	},
+
+	// Private function used by 'getDirtyEntities' below
+	// NOTE: This strips out unwanted properties, this method is only to
+	//       be used to by getDirtyEntities
+	shallowCopy: function (src) {
+		if (typeof src === 'object' && src !== null) {
+			var dst;
+
+			if (es.isArray(src)) {
+				dst = [];
+			}
+			else if (src instanceof Date) {
+				dst = new Date(src);
+			}
+			else if (src instanceof Boolean) {
+				dst = new Boolean(src);
+			}
+			else if (src instanceof Number) {
+				dst = new Number(src);
+			}
+			else if (src instanceof String) {
+				dst = new String(src);
+			}
+			else if (Object.create && Object.getPrototypeOf) {
+				dst = Object.create(Object.getPrototypeOf(src));
+			}
+			else if (src.__proto__ || src.constructor.prototype) {
+				var proto = src.__proto__ || src.constructor.prototype || {};
+				var T = function () { };
+				T.prototype = proto;
+				dst = new T;
+				if (!dst.__proto__) { dst.__proto__ = proto; }
+			}
+
+			ko.utils.arrayForEach(es.objectKeys(src), function (key) {
+				if (!es.isEsCollection(src[key])) {
+
+					switch (key) {
+						case '___esEntity___':
+						case 'esTypeDefs':
+						case 'routes':
+						case 'ignorePropertyChanged':
+							break;
+						default:
+							dst[key] = src[key];
+							break;
+					}
+				}
+			});
+			return dst;
+		} else {
+			return src;
+		}
+	},
+
+	getDirtyGraph: function (obj) {
+
+		var i, k, dirty, paths = [], root = null;
+
+		es.Visit(obj).forEach(function (theObj) {
+
+			if (this.key === "esExtendedData") {
+				this.block();
+			} else {
+
+				if (this.isLeaf === false) {
+
+					if (theObj instanceof Array) { return theObj; }
+
+					if (theObj.hasOwnProperty("RowState")) {
+
+						switch (theObj.RowState) {
+
+							case es.RowState.ADDED:
+							case es.RowState.DELETED:
+							case es.RowState.MODIFIED:
+
+								paths.push(this.path);
+								break;
+						}
+					}
+				}
+			}
+
+			return theObj;
+		});
+
+		//#region Rebuild tree of dirty objects from "paths[]"
+		if (paths.length > 0) {
+
+			if (es.isArray(obj)) {
+				dirty = [];
+			} else {
+				dirty = utils.shallowCopy(utils.removeExtraColumns(obj));
+			}
+
+			root = dirty;
+
+			for (i = 0; i < paths.length; i++) {
+
+				var thePath = paths[i];
+				var data = obj;
+				dirty = root;
+
+				for (k = 0; k < thePath.length; k++) {
+
+					if (!dirty.hasOwnProperty(thePath[k])) {
+
+						if (es.isArray(data[thePath[k]])) {
+							dirty[thePath[k]] = [];
+							dirty = dirty[thePath[k]];
+						}
+					} else {
+						dirty = dirty[thePath[k]];
+					}
+
+					data = data[thePath[k]];
+				}
+
+				data = utils.removeExtraColumns(data);
+
+				if (es.isArray(dirty)) {
+					dirty.push(utils.shallowCopy(data));
+				} else {
+					dirty = utils.shallowCopy(data);
+				}
+			}
+		}
+		//#endregion Save
+
+		return root;
+	}
 };
 
 utils.newId = (function () {
-    var seedId = new Date().getTime();
+	var seedId = new Date().getTime();
 
-    return function () {
-        return ++seedId;
-    };
+	return function () {
+		return ++seedId;
+	};
 
 } ());
 
