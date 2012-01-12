@@ -38,7 +38,7 @@
 		this.EmployeeTerritoriesCollectionByEmployeeID = undefined;
 		this.OrdersCollectionByEmployeeID = undefined;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			EmployeesCollectionByReportsTo: "EmployeesCollection",
 			UpToEmployeesByReportsTo: "Employees",
 			UpToTerritoriesCollection: "TerritoriesCollection",
