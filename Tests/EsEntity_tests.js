@@ -109,6 +109,21 @@ test('Testing Multiple Objects prototype BASE chain', function () {
 
 });
 
+test('IsDirty Test', function () {
+
+    //define an object
+    var Product = es.defineEntity(function () {
+        this.ProductId = ko.observable('something');
+    });
+
+    var testP = new Product();
+    
+    testP.ProductId('newTestId');
+
+    equals(testP.isDirty(), true, 'isDirty returns true!');
+    equals(testP.RowState(), es.RowState.ADDED, 'RowState has changed to modified');
+});
+
 test('Ensure Change Tracking Test', function () {
 
     //define an object
@@ -144,6 +159,95 @@ test('Ensure Change Tracking Test - Modification', function () {
 
     equals(testP.ModifiedColumns().length, 1, 'Updated ProductId, and Modified Columns reflects one field');
     equals(testP.RowState(), es.RowState.MODIFIED, 'RowState has changed to modified');
+});
+
+test('Accept Changes - Modification', function () {
+
+    //define an object
+    var Product = es.defineEntity(function () {
+        this.ProductId = ko.observable('something');
+    });
+
+    var testP = new Product();
+    //set it to unchanged
+
+    testP.ProductId('newTestId');
+
+    testP.acceptChanges();
+
+    equals(testP.ModifiedColumns().length, 0, 'ModifiedColumns is Empty');
+    equals(testP.es.originalValues['ProductId'], undefined, 'Original Values is empty');
+    equals(testP.RowState(), es.RowState.UNCHANGED, 'RowState has been set back');
+});
+
+test('Accept Changes - Adding', function () {
+
+    //define an object
+    var Product = es.defineEntity(function () {
+        this.ProductId = ko.observable('something');
+    });
+
+    var testP = new Product();
+    
+    testP.acceptChanges();
+
+    equals(testP.es.originalValues['ProductId'], undefined, 'Original Values is empty');
+    equals(testP.RowState(), es.RowState.UNCHANGED, 'RowState has been set back');
+});
+
+test('Reject Changes - Modification', function () {
+
+    //define an object
+    var Product = es.defineEntity(function () {
+        this.ProductId = ko.observable('something');
+    });
+
+    var testP = new Product();
+    testP.acceptChanges(); //set everything to UNCHANGED
+
+    testP.ProductId('newTestId');
+
+    testP.rejectChanges();
+
+    ok(!testP.isDirty(), 'Object is not Dirty after rejecting changes');
+    equals(testP.es.originalValues['ProductId'], undefined, 'Original Values is empty');
+    equals(testP.RowState(), es.RowState.UNCHANGED, 'RowState has been set back');
+});
+
+test('Reject Changes - Adding', function () {
+
+    //define an object
+    var Product = es.defineEntity(function () {
+        this.ProductId = ko.observable('something');
+    });
+
+    var testP = new Product();
+    
+    testP.ProductId('newTestId');
+
+    testP.rejectChanges();
+
+    ok(!testP.isDirty(), 'Object is not Dirty after rejecting changes');
+    equals(testP.es.originalValues['ProductId'], undefined, 'Original Values is empty');
+    equals(testP.RowState(), es.RowState.ADDED, 'RowState has been set back');
+});
+
+test('Reject Changes - Deleting', function () {
+
+    //define an object
+    var Product = es.defineEntity(function () {
+        this.ProductId = ko.observable('something');
+    });
+
+    var testP = new Product();
+
+    testP.markAsDeleted();
+
+    testP.rejectChanges();
+
+    ok(!testP.isDirty(), 'Object is not Dirty after rejecting changes');
+    equals(testP.es.originalValues['ProductId'], undefined, 'Original Values is empty');
+    equals(testP.RowState(), es.RowState.ADDED, 'RowState has been set back');
 });
 
 test('Ensure "populateEntity" works and "ExtraColumns" are flattened', function () {

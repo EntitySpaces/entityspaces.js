@@ -22,7 +22,7 @@
 		this.UpToOrdersByOrderID;
 		this.UpToProductsByProductID;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			UpToOrdersByOrderID: "Orders",
 			UpToProductsByProductID: "Products"
 		};

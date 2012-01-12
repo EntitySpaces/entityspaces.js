@@ -1,9 +1,10 @@
 ﻿
 es.defineEntity = function (typeName, constrctor) {
-    var isAnonymous = (typeof(typeName) !== 'string'),
+    var isAnonymous = (typeof (typeName) !== 'string'),
         Ctor = isAnonymous ? arguments[0] : arguments[1];
 
     var EsCtor = function () {
+        this.es = {};
 
         //MUST do this here so that obj.hasOwnProperty actually returns the keys in the object!
         Ctor.call(this);

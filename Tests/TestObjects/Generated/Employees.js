@@ -38,7 +38,7 @@
 		this.EmployeeTerritoriesCollectionByEmployeeID;
 		this.OrdersCollectionByEmployeeID;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			EmployeesCollectionByReportsTo: "EmployeesCollection",
 			UpToEmployeesByReportsTo: "Employees",
 			UpToTerritoriesCollection: "TerritoriesCollection",

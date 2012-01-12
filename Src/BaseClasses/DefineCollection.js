@@ -8,7 +8,7 @@ es.defineCollection = function (typeName, entityName) {
         var coll = new es.EsEntityCollection();
 
         //add the type definition;
-        coll.entityTypeName = ctorName;
+        coll.es.entityTypeName = ctorName;
 
         this.init.call(coll); //Trickery and sorcery on the prototype
 
@@ -24,8 +24,8 @@ es.defineCollection = function (typeName, entityName) {
             var self = this;
 
             //loop through the extenders and call each one
-            ko.utils.arrayForEach(extenders, function(ext){
-                
+            ko.utils.arrayForEach(extenders, function (ext) {
+
                 //make sure to set 'this' properly
                 ext.call(self);
             });

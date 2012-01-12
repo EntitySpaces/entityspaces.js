@@ -34,7 +34,7 @@
 		this.UpToEmployeesByEmployeeID;
 		this.UpToShippersByShipVia;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			UpToProductsCollection: "ProductsCollection",
 			OrderDetailsCollectionByOrderID: "OrderDetailsCollection",
 			UpToCustomersByCustomerID: "Customers",

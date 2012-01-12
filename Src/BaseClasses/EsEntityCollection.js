@@ -7,10 +7,13 @@
 es.EsEntityCollection = function () {
     var obs = ko.observableArray([]);
 
+    //define the 'es' utility object
+    obs.es = {};
+
     //add all of our extra methods to the array
     ko.utils.extend(obs, es.EsEntityCollection.fn);
 
-    obs['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
+    obs.es['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
 
     return obs;
 };
@@ -38,7 +41,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     //call this when walking the returned server data to populate collection
     populateCollection: function (dataArray) {
-        var entityTypeName = this.entityTypeName, // this should be set in the 'DefineCollection' call, unless it was an anonymous definition
+        var entityTypeName = this.es.entityTypeName, // this should be set in the 'DefineCollection' call, unless it was an anonymous definition
             EntityCtor,
             finalColl = [],
             create = this.createEntity,
@@ -71,7 +74,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             entity;
 
         if (!Ctor) { //undefined Ctor was passed in
-            entityTypeName = this.entityTypeName;
+            entityTypeName = this.es.entityTypeName;
             EntityCtor = es.getType(entityTypeName); //could return undefined
         }
 

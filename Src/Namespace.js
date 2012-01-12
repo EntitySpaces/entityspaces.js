@@ -1,5 +1,7 @@
 ﻿window['es'] = {}; //define root namespace
 
+"use-strict";
+
 // Google Closure Compiler helpers (used only to make the minified file smaller)
 es.exportSymbol = function (publicPath, object) {
     var tokens = publicPath.split(".");
@@ -8,8 +10,6 @@ es.exportSymbol = function (publicPath, object) {
         target = target[tokens[i]];
     target[tokens[tokens.length - 1]] = object;
 };
-
-"use-strict";
 
 var config = window.esConfig || {};
 
