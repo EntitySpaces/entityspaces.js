@@ -112,7 +112,6 @@ es.EsEntity = function () { //empty constructor
     };
 
     this.acceptChanges = function () {
-        var rowState;
 
         //clear out originalValues so it thinks all values are original
         this.es.originalValues = {};
@@ -121,14 +120,8 @@ es.EsEntity = function () { //empty constructor
         this.ModifiedColumns([]);
 
         //finally set RowState back
-        rowState = this.RowState();
-
         this.es.ignorePropertyChanged = true;
-
-        if (rowState === es.RowState.MODIFIED || rowState === es.RowState.ADDED) {
-            this.RowState(es.RowState.UNCHANGED);
-        }
-
+        this.RowState(es.RowState.UNCHANGED);
         this.es.ignorePropertyChanged = false;
     };
 
@@ -150,7 +143,7 @@ es.EsEntity = function () { //empty constructor
             this.ModifiedColumns([]);
             this.es.originalValues = {};
 
-            this.ignorePropertyChanged = false;
+            this.es.ignorePropertyChanged = false;
         }
     };
 

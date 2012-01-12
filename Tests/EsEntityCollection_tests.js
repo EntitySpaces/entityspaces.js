@@ -43,4 +43,32 @@ test('Basic Populate Collection Test', function () {
     equals(myProdCollection()[1].ProductId(), 'testId2', 'First item has correct property value');
 });
 
+test('Collection IsDirty Test', function () {
+    var Product = es.defineEntity("Product", function () {
+        this.ProductId = ko.observable(null);
+    });
+
+    var ProductCollection = es.defineCollection('ProductCollection', 'Product');
+    var myProdCollection = new ProductCollection();
+
+    var Product = es.defineEntity(function () {
+        this.ProductId = ko.observable('something');
+    });
+
+    var prd = new Product();
+    prd.ProductId('testId');
+
+    myProdCollection.push(prd);
+    equals(myProdCollection.isDirty(), true, 'isDirty returns true!');
+
+    prd.acceptChanges();
+    equals(!myProdCollection.isDirty(), true, 'isDirty returns true!');
+
+    prd.ProductId('testId'); // set it to the same value shouldn't make it dirty
+    equals(!myProdCollection.isDirty(), true, 'isDirty returns true!');
+
+    prd.ProductId('newTestId'); // now really change it
+    equals(myProdCollection.isDirty(), true, 'isDirty returns true!');
+});
+
 

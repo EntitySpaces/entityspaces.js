@@ -39,6 +39,25 @@ es.defineCollection = function (typeName, entityName) {
                 }
             }
 
+            this.isDirty = ko.computed(function () {
+
+                var i,
+                    entity,
+                    arr = self(), 
+                    isDirty = false;
+
+                for (i = 0; i < arr.length; i++) {
+
+                    entity = arr[i];
+
+                    if (entity.RowState() !== es.RowState.UNCHANGED) {
+                        isDirty = true;
+                        break;
+                    }
+                }
+
+                return isDirty;
+            });
         };
 
         this.customize = function (customizer) {

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.5-pre 
-// Built on Thu 01/12/2012 at 11:55:24.51    
+// The entityspaces.js JavaScript library v1.0.6-pre 
+// Built on Thu 01/12/2012 at 14:43:26.26    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -734,7 +734,6 @@ es.EsEntity = function () { //empty constructor
     };
 
     this.acceptChanges = function () {
-        var rowState;
 
         //clear out originalValues so it thinks all values are original
         this.es.originalValues = {};
@@ -743,14 +742,8 @@ es.EsEntity = function () { //empty constructor
         this.ModifiedColumns([]);
 
         //finally set RowState back
-        rowState = this.RowState();
-
         this.es.ignorePropertyChanged = true;
-
-        if (rowState === es.RowState.MODIFIED || rowState === es.RowState.ADDED) {
-            this.RowState(es.RowState.UNCHANGED);
-        }
-
+        this.RowState(es.RowState.UNCHANGED);
         this.es.ignorePropertyChanged = false;
     };
 
@@ -772,7 +765,7 @@ es.EsEntity = function () { //empty constructor
             this.ModifiedColumns([]);
             this.es.originalValues = {};
 
-            this.ignorePropertyChanged = false;
+            this.es.ignorePropertyChanged = false;
         }
     };
 
@@ -1192,6 +1185,25 @@ es.defineCollection = function (typeName, entityName) {
                 }
             }
 
+            this.isDirty = ko.computed(function () {
+
+                var i,
+                    entity,
+                    arr = self(), 
+                    isDirty = false;
+
+                for (i = 0; i < arr.length; i++) {
+
+                    entity = arr[i];
+
+                    if (entity.RowState() !== es.RowState.UNCHANGED) {
+                        isDirty = true;
+                        break;
+                    }
+                }
+
+                return isDirty;
+            });
         };
 
         this.customize = function (customizer) {
