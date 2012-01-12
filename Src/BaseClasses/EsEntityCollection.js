@@ -26,6 +26,35 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         return ko.utils.arrayFilter(array, predicate);
     },
 
+    acceptChanges: function () {
+
+//        var i, entity,
+//            coll = this(),
+//            len = coll.length;
+
+//        for (i = 0; i < len; i += 1) {
+//            entity = coll[i];
+
+//            if (entity.isDirty()) {
+//                entity.acceptChanges();
+//            }
+//        }
+    },
+
+    rejectChanges: function () {
+//        var i, entity,
+//            coll = this(),
+//            len = coll.length;
+
+//        for (i = 0; i < len; i += 1) {
+//            entity = coll[i];
+
+//            if (entity.isDirty()) {
+//                entity.rejectChanges();
+//            }
+//        }
+    },
+
     markAllAsDeleted: function () {
         var i, entity,
             coll = this(),
@@ -33,9 +62,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         for (i = 0; i < len; i += 1) {
             entity = coll[i];
-            if (entity['markAsDeleted']) {
-                entity.markAsDeleted();
-            }
+            entity.markAsDeleted();
         }
     },
 
@@ -124,7 +151,6 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         es.dataProvider.execute(options);
     },
-    //#endregion Save
 
     loadAll: function (success, error, state) {
 
@@ -142,6 +168,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         this.load(options);
     },
+    //#endregion Loads
 
     //#region Save
     save: function (success, error, state) {

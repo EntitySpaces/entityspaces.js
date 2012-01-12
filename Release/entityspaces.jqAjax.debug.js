@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.6-pre 
-// Built on Thu 01/12/2012 at 14:43:23.93    
+// Built on Thu 01/12/2012 at 15:55:51.28    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -938,6 +938,35 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         return ko.utils.arrayFilter(array, predicate);
     },
 
+    acceptChanges: function () {
+
+//        var i, entity,
+//            coll = this(),
+//            len = coll.length;
+
+//        for (i = 0; i < len; i += 1) {
+//            entity = coll[i];
+
+//            if (entity.isDirty()) {
+//                entity.acceptChanges();
+//            }
+//        }
+    },
+
+    rejectChanges: function () {
+//        var i, entity,
+//            coll = this(),
+//            len = coll.length;
+
+//        for (i = 0; i < len; i += 1) {
+//            entity = coll[i];
+
+//            if (entity.isDirty()) {
+//                entity.rejectChanges();
+//            }
+//        }
+    },
+
     markAllAsDeleted: function () {
         var i, entity,
             coll = this(),
@@ -945,9 +974,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         for (i = 0; i < len; i += 1) {
             entity = coll[i];
-            if (entity['markAsDeleted']) {
-                entity.markAsDeleted();
-            }
+            entity.markAsDeleted();
         }
     },
 
