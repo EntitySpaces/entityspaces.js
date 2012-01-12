@@ -1,3 +1,7 @@
+License
+============================================
+License: MIT [http://www.opensource.org/licenses/mit-license.php](http://www.opensource.org/licenses/mit-license.php)
+
 A Javascript ORM that uses Knockout
 ============================================
 
