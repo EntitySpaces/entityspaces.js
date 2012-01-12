@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.4-pre 
-// Built on Wed 01/11/2012 at 21:15:47.14    
+// Built on Wed 01/11/2012 at 21:19:20.74    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -177,7 +177,6 @@ var utils = {
             if (source.hasOwnProperty(prop)) {
 
                 srcProp = source[prop];
-
 //                if( typeof srcProp === "string") {
 //                    if (srcProp.indexOf('/Date(') === 0) {
 //                        srcProp = utils.parseJSONDate(srcProp);
