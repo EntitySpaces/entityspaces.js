@@ -5,9 +5,7 @@
 
 var utils = {
 
-    parseJSONDate: function (value) {
-        return new Date(parseInt(value.substr(6)))
-    },
+    DateParser: new es.DateParser(),
 
     copyDataIntoEntity: function (target, source) {
         var prop, srcProp;
@@ -21,15 +19,10 @@ var utils = {
             if (source.hasOwnProperty(prop)) {
 
                 srcProp = source[prop];
-                
-                //deserialize weird .NET Date strings
-                /*
-                if( typeof srcProp === "string") {
-                    if (srcProp.indexOf('/Date(') === 0) {
-                        srcProp = utils.parseJSONDate(srcProp);
-                    }
+
+                if (typeof srcProp === "string") {
+                    srcProp = utils.DateParser.deserialize(srcProp);
                 }
-                */
 
                 if (ko.isObservable(target[prop])) { //set the observable property
                     target[prop](srcProp); // set the observable
@@ -213,14 +206,25 @@ var utils = {
             }
 
             ko.utils.arrayForEach(es.objectKeys(src), function (key) {
+
+                var srcValue;
+
                 if (!es.isEsCollection(src[key])) {
 
                     switch (key) {
                         case 'es':
                         case 'routes':
                             break;
+
                         default:
-                            dst[key] = src[key];
+
+                            srcValue = src[key];
+
+                            if (srcValue instanceof Date) {
+                                dst[key] = utils.DateParser.serialize(srcValue);
+                            } else {
+                                dst[key] = srcValue;
+                            }
                             break;
                     }
                 }

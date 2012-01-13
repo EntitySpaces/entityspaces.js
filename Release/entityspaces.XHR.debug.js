@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.6-pre 
-// Built on Thu 01/12/2012 at 15:55:53.58    
+// Built on Thu 01/12/2012 at 22:05:58.14    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -88,6 +88,37 @@ es.exportSymbol('es.RowState', es.RowState);
  
  
 /*********************************************** 
+* FILE: ..\Src\DateParser.js 
+***********************************************/ 
+﻿
+
+es.DateParser = function () {
+
+    // From the Server
+    this.deserialize = function (date) {
+
+        var newDate = date;
+
+        //deserialize weird .NET Date strings
+        /*
+        if (typeof newDate === "string") {
+            if (newDate.indexOf('/Date(') === 0) {
+                newDate = new Date(parseInt(newDate.substr(6)));
+            }
+        }
+        */
+
+        return newDate;
+    };
+
+    // To the Server
+    this.serialize = function (date) {
+        return date; //.format('yyyy/MM/dd HH:mm:ss');
+    };
+}; 
+ 
+ 
+/*********************************************** 
 * FILE: ..\Src\Core.js 
 ***********************************************/ 
 ﻿
@@ -161,9 +192,7 @@ es.exportSymbol('es.isEsCollection', es.isEsCollection);
 
 var utils = {
 
-    parseJSONDate: function (value) {
-        return new Date(parseInt(value.substr(6)))
-    },
+    DateParser: new es.DateParser(),
 
     copyDataIntoEntity: function (target, source) {
         var prop, srcProp;
@@ -177,15 +206,10 @@ var utils = {
             if (source.hasOwnProperty(prop)) {
 
                 srcProp = source[prop];
-                
-                //deserialize weird .NET Date strings
-                /*
-                if( typeof srcProp === "string") {
-                    if (srcProp.indexOf('/Date(') === 0) {
-                        srcProp = utils.parseJSONDate(srcProp);
-                    }
+
+                if (typeof srcProp === "string") {
+                    srcProp = utils.DateParser.deserialize(srcProp);
                 }
-                */
 
                 if (ko.isObservable(target[prop])) { //set the observable property
                     target[prop](srcProp); // set the observable
@@ -369,14 +393,25 @@ var utils = {
             }
 
             ko.utils.arrayForEach(es.objectKeys(src), function (key) {
+
+                var srcValue;
+
                 if (!es.isEsCollection(src[key])) {
 
                     switch (key) {
                         case 'es':
                         case 'routes':
                             break;
+
                         default:
-                            dst[key] = src[key];
+
+                            srcValue = src[key];
+
+                            if (srcValue instanceof Date) {
+                                dst[key] = utils.DateParser.serialize(srcValue);
+                            } else {
+                                dst[key] = srcValue;
+                            }
                             break;
                     }
                 }
@@ -661,9 +696,15 @@ es.EsEntity = function () { //empty constructor
             }
         });
 
+        /*
         this.isDirty = ko.computed(function () {
             return (self.RowState() !== es.RowState.UNCHANGED);
         });
+        */
+
+        this.isDirty = function () {
+            return (self.RowState() !== es.RowState.UNCHANGED);
+        };
     };
 
     this.populateEntity = function (data) {
@@ -1063,7 +1104,6 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         es.dataProvider.execute(options);
     },
-    //#endregion Save
 
     loadAll: function (success, error, state) {
 
@@ -1081,6 +1121,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         this.load(options);
     },
+    //#endregion Loads
 
     //#region Save
     save: function (success, error, state) {
@@ -1212,6 +1253,7 @@ es.defineCollection = function (typeName, entityName) {
                 }
             }
 
+            /*
             this.isDirty = ko.computed(function () {
 
                 var i,
@@ -1231,6 +1273,27 @@ es.defineCollection = function (typeName, entityName) {
 
                 return isDirty;
             });
+            */
+
+            this.isDirty = function () {
+
+                var i,
+                    entity,
+                    arr = self(),
+                    isDirty = false;
+
+                for (i = 0; i < arr.length; i++) {
+
+                    entity = arr[i];
+
+                    if (entity.RowState() !== es.RowState.UNCHANGED) {
+                        isDirty = true;
+                        break;
+                    }
+                }
+
+                return isDirty;
+            };
         };
 
         this.customize = function (customizer) {
