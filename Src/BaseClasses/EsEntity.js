@@ -251,7 +251,7 @@ es.EsEntity = function () { //empty constructor
                 route = self.routes['update'] || route;
                 break;
             case es.RowState.DELETED:
-                route = self.routes['del'] || route;
+                route = self.routes['delete'] || route;
                 break;
         }
 

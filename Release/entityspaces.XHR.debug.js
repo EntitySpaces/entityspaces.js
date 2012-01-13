@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.7-pre 
-// Built on Fri 01/13/2012 at 14:18:38.14    
+// Built on Fri 01/13/2012 at 16:20:10.00    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -911,7 +911,7 @@ es.EsEntity = function () { //empty constructor
                 route = self.routes['update'] || route;
                 break;
             case es.RowState.DELETED:
-                route = self.routes['del'] || route;
+                route = self.routes['delete'] || route;
                 break;
         }
 
