@@ -19,7 +19,7 @@
 		this.UpToEmployeesByEmployeeID = undefined;
 		this.UpToTerritoriesByTerritoryID = undefined;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			UpToEmployeesByEmployeeID: "Employees",
 			UpToTerritoriesByTerritoryID: "Territories"
 		};

@@ -29,7 +29,7 @@
 		this.UpToCategoriesByCategoryID = undefined;
 		this.UpToSuppliersBySupplierID = undefined;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			UpToOrdersCollection: "OrdersCollection",
 			OrderDetailsCollectionByProductID: "OrderDetailsCollection",
 			UpToCategoriesByCategoryID: "Categories",

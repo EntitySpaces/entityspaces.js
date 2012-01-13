@@ -19,7 +19,7 @@
 		this.UpToCustomerDemographicsByCustomerTypeID = undefined;
 		this.UpToCustomersByCustomerID = undefined;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			UpToCustomerDemographicsByCustomerTypeID: "CustomerDemographics",
 			UpToCustomersByCustomerID: "Customers"
 		};

@@ -19,7 +19,7 @@
 		this.UpToCustomersCollection = undefined;
 		this.CustomerCustomerDemoCollectionByCustomerTypeID = undefined;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			UpToCustomersCollection: "CustomersCollection",
 			CustomerCustomerDemoCollectionByCustomerTypeID: "CustomerCustomerDemoCollection"
 		};

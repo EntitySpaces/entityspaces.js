@@ -18,7 +18,7 @@
 		// Hierarchical Properties
 		this.TerritoriesCollectionByRegionID = undefined;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			TerritoriesCollectionByRegionID: "TerritoriesCollection"
 		};
 	});

@@ -21,7 +21,7 @@
 		this.EmployeeTerritoriesCollectionByTerritoryID = undefined;
 		this.UpToRegionByRegionID = undefined;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			UpToEmployeesCollection: "EmployeesCollection",
 			EmployeeTerritoriesCollectionByTerritoryID: "EmployeeTerritoriesCollection",
 			UpToRegionByRegionID: "Region"

@@ -20,7 +20,7 @@
 		// Hierarchical Properties
 		this.ProductsCollectionByCategoryID = undefined;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			ProductsCollectionByCategoryID: "ProductsCollection"
 		};
 	});

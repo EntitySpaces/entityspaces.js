@@ -29,7 +29,7 @@
 		this.CustomerCustomerDemoCollectionByCustomerID = undefined;
 		this.OrdersCollectionByCustomerID = undefined;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			UpToCustomerDemographicsCollection: "CustomerDemographicsCollection",
 			CustomerCustomerDemoCollectionByCustomerID: "CustomerCustomerDemoCollection",
 			OrdersCollectionByCustomerID: "OrdersCollection"

@@ -19,7 +19,7 @@
 		// Hierarchical Properties
 		this.OrdersCollectionByShipVia = undefined;
 
-		this.esTypeDefs = {
+		this.es.esTypeDefs = {
 			OrdersCollectionByShipVia: "OrdersCollection"
 		};
 	});
