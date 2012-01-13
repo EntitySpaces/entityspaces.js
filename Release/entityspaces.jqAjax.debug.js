@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.6-pre 
-// Built on Thu 01/12/2012 at 22:05:55.05    
+// The entityspaces.js JavaScript library v1.0.7-pre 
+// Built on Fri 01/13/2012 at 14:18:34.97    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -100,20 +100,18 @@ es.DateParser = function () {
         var newDate = date;
 
         //deserialize weird .NET Date strings
-        /*
         if (typeof newDate === "string") {
             if (newDate.indexOf('/Date(') === 0) {
                 newDate = new Date(parseInt(newDate.substr(6)));
             }
         }
-        */
 
         return newDate;
     };
 
     // To the Server
-    this.serialize = function (date) {
-        return date; //.format('yyyy/MM/dd HH:mm:ss');
+    this.serialize = function (date, format) {
+        return "\/Date(" + Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), 0)  + ")\/";
     };
 }; 
  
@@ -192,7 +190,7 @@ es.exportSymbol('es.isEsCollection', es.isEsCollection);
 
 var utils = {
 
-    DateParser: new es.DateParser(),
+    dateParser: new es.DateParser(),
 
     copyDataIntoEntity: function (target, source) {
         var prop, srcProp;
@@ -208,7 +206,7 @@ var utils = {
                 srcProp = source[prop];
 
                 if (typeof srcProp === "string") {
-                    srcProp = utils.DateParser.deserialize(srcProp);
+                    srcProp = utils.dateParser.deserialize(srcProp);
                 }
 
                 if (ko.isObservable(target[prop])) { //set the observable property
@@ -321,10 +319,14 @@ var utils = {
 
             for (i = 0; i < data.length; i++) {
 
-                if (makeObservable) {
-                    entity[data[i].Key] = ko.observable(data[i].Value);
+                if (ko.isObservable(entity[data[i].Key])) { //set the observable property
+                    entity[data[i].Key](data[i].Value); // set the observable
                 } else {
-                    entity[data[i].Key] = data[i].Value;
+                    if (makeObservable) {
+                        entity[data[i].Key] = ko.observable(data[i].Value);
+                    } else {
+                        entity[data[i].Key] = data[i].Value;
+                    }
                 }
             }
 
@@ -342,6 +344,7 @@ var utils = {
 
         return entity;
     },
+
 
     removeExtraColumns: function (entity) {
         var i, data;
@@ -408,7 +411,7 @@ var utils = {
                             srcValue = src[key];
 
                             if (srcValue instanceof Date) {
-                                dst[key] = utils.DateParser.serialize(srcValue);
+                                dst[key] = utils.dateParser.serialize(srcValue);
                             } else {
                                 dst[key] = srcValue;
                             }

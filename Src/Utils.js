@@ -5,7 +5,7 @@
 
 var utils = {
 
-    DateParser: new es.DateParser(),
+    dateParser: new es.DateParser(),
 
     copyDataIntoEntity: function (target, source) {
         var prop, srcProp;
@@ -21,7 +21,7 @@ var utils = {
                 srcProp = source[prop];
 
                 if (typeof srcProp === "string") {
-                    srcProp = utils.DateParser.deserialize(srcProp);
+                    srcProp = utils.dateParser.deserialize(srcProp);
                 }
 
                 if (ko.isObservable(target[prop])) { //set the observable property
@@ -134,10 +134,14 @@ var utils = {
 
             for (i = 0; i < data.length; i++) {
 
-                if (makeObservable) {
-                    entity[data[i].Key] = ko.observable(data[i].Value);
+                if (ko.isObservable(entity[data[i].Key])) { //set the observable property
+                    entity[data[i].Key](data[i].Value); // set the observable
                 } else {
-                    entity[data[i].Key] = data[i].Value;
+                    if (makeObservable) {
+                        entity[data[i].Key] = ko.observable(data[i].Value);
+                    } else {
+                        entity[data[i].Key] = data[i].Value;
+                    }
                 }
             }
 
@@ -155,6 +159,7 @@ var utils = {
 
         return entity;
     },
+
 
     removeExtraColumns: function (entity) {
         var i, data;
@@ -221,7 +226,7 @@ var utils = {
                             srcValue = src[key];
 
                             if (srcValue instanceof Date) {
-                                dst[key] = utils.DateParser.serialize(srcValue);
+                                dst[key] = utils.dateParser.serialize(srcValue);
                             } else {
                                 dst[key] = srcValue;
                             }
