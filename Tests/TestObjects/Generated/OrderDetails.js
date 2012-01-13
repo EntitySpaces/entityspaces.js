@@ -15,16 +15,14 @@
 		this.Discount = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.UpToOrdersByOrderID;
-		this.UpToProductsByProductID;
+		this.UpToOrdersByOrderID = undefined;
 
 		this.es.esTypeDefs = {
-			UpToOrdersByOrderID: "Orders",
-			UpToProductsByProductID: "Products"
+			UpToOrdersByOrderID: "Orders"
 		};
 	});
 
@@ -32,10 +30,11 @@
 
 	es.objects.OrderDetails.prototype.routes = {
 		commit: { method: 'PUT', url: 'OrderDetails_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'OrderDetails_LoadByPrimaryKey', response: 'entity', synchronous: true }
+		loadByPrimaryKey: { method: 'GET', url: 'OrderDetails_LoadByPrimaryKey', response: 'entity' }
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -46,8 +45,9 @@
 
 	es.objects.OrderDetailsCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'OrderDetailsCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'OrderDetailsCollection_LoadAll', response: 'collection', synchronous: true }
+		loadAll: { method: 'GET', url: 'OrderDetailsCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
+
 }(window.es));

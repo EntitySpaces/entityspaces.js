@@ -28,21 +28,17 @@
 		this.PhotoPath = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.EmployeesCollectionByReportsTo;
-		this.UpToEmployeesByReportsTo;
-		this.UpToTerritoriesCollection;
-		this.EmployeeTerritoriesCollectionByEmployeeID;
-		this.OrdersCollectionByEmployeeID;
+		this.EmployeesCollectionByReportsTo = undefined;
+		this.UpToEmployeesByReportsTo = undefined;
+		this.OrdersCollectionByEmployeeID = undefined;
 
 		this.es.esTypeDefs = {
 			EmployeesCollectionByReportsTo: "EmployeesCollection",
 			UpToEmployeesByReportsTo: "Employees",
-			UpToTerritoriesCollection: "TerritoriesCollection",
-			EmployeeTerritoriesCollectionByEmployeeID: "EmployeeTerritoriesCollection",
 			OrdersCollectionByEmployeeID: "OrdersCollection"
 		};
 	});
@@ -51,10 +47,11 @@
 
 	es.objects.Employees.prototype.routes = {
 		commit: { method: 'PUT', url: 'Employees_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity', synchronous: true }
+		loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' }
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -65,8 +62,9 @@
 
 	es.objects.EmployeesCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'EmployeesCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'EmployeesCollection_LoadAll', response: 'collection', synchronous: true }
+		loadAll: { method: 'GET', url: 'EmployeesCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
+
 }(window.es));

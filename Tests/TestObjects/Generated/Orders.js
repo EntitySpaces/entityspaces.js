@@ -24,22 +24,16 @@
 		this.ShipCountry = ko.observable();
 
 		// extended colulmns
-		this.esExtendedData;
+		this.esExtendedData = undefined;
 
 
 		// Hierarchical Properties
-		this.UpToProductsCollection;
-		this.OrderDetailsCollectionByOrderID;
-		this.UpToCustomersByCustomerID;
-		this.UpToEmployeesByEmployeeID;
-		this.UpToShippersByShipVia;
+		this.OrderDetailsCollectionByOrderID = undefined;
+		this.UpToEmployeesByEmployeeID = undefined;
 
 		this.es.esTypeDefs = {
-			UpToProductsCollection: "ProductsCollection",
 			OrderDetailsCollectionByOrderID: "OrderDetailsCollection",
-			UpToCustomersByCustomerID: "Customers",
-			UpToEmployeesByEmployeeID: "Employees",
-			UpToShippersByShipVia: "Shippers"
+			UpToEmployeesByEmployeeID: "Employees"
 		};
 	});
 
@@ -47,10 +41,11 @@
 
 	es.objects.Orders.prototype.routes = {
 		commit: { method: 'PUT', url: 'Orders_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity', synchronous: true }
+		loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity' }
 	};
 
 	//#endregion
+
 }(window.es, window.myNS));
 
 (function (es) {
@@ -61,8 +56,9 @@
 
 	es.objects.OrdersCollection.prototype.routes = {
 		commit: { method: 'PUT', url: 'OrdersCollection_Save', response: 'collection' },
-		loadAll: { method: 'GET', url: 'OrdersCollection_LoadAll', response: 'collection', synchronous: true }
+		loadAll: { method: 'GET', url: 'OrdersCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
+
 }(window.es));
