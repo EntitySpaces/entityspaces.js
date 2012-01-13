@@ -227,7 +227,7 @@ This can be generated for you by EntitySpaces Studio. This is what we call the "
         this.EmployeeTerritoriesCollectionByEmployeeID = undefined;
         this.OrdersCollectionByEmployeeID = undefined;
 
-        this.esTypeDefs = {
+        this.es.esTypeDefs = {
             EmployeesCollectionByReportsTo: "EmployeesCollection",
             UpToEmployeesByReportsTo: "Employees",
             UpToTerritoriesCollection: "TerritoriesCollection",
