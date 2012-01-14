@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.7-pre 
-// Built on Fri 01/13/2012 at 16:20:10.00    
+// Built on Fri 01/13/2012 at 21:03:37.53    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -431,7 +431,7 @@ var utils = {
 
         es.Visit(obj).forEach(function (theObj) {
 
-            if (this.key === "esExtendedData") {
+            if (this.key === "esExtendedData" || this.key === "es") {
                 this.block();
             } else {
 
@@ -722,7 +722,7 @@ es.EsEntity = function () { //empty constructor
             //blow away ModifiedColumns && orinalValues            
             if (this.hasOwnProperty("ModifiedColumns")) {
                 //overwrite existing data
-                this.ModifiedColumns([]);                
+                this.ModifiedColumns([]);
             } else {
                 this.ModifiedColumns = ko.observableArray();
             }
@@ -970,6 +970,7 @@ es.EsEntityCollection = function () {
     ko.utils.extend(obs, es.EsEntityCollection.fn);
 
     obs.es['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
+    obs.es.deletedEntities = [];
 
     return obs;
 };
@@ -984,41 +985,60 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     acceptChanges: function () {
 
-//        var i, entity,
-//            coll = this(),
-//            len = coll.length;
+        //        var i, entity,
+        //            coll = this(),
+        //            len = coll.length;
 
-//        for (i = 0; i < len; i += 1) {
-//            entity = coll[i];
+        //        for (i = 0; i < len; i += 1) {
+        //            entity = coll[i];
 
-//            if (entity.isDirty()) {
-//                entity.acceptChanges();
-//            }
-//        }
+        //            if (entity.isDirty()) {
+        //                entity.acceptChanges();
+        //            }
+        //        }
     },
 
     rejectChanges: function () {
-//        var i, entity,
-//            coll = this(),
-//            len = coll.length;
 
-//        for (i = 0; i < len; i += 1) {
-//            entity = coll[i];
+        var addedEntities = [],
+            slot = 0,
+            index = 0;
 
-//            if (entity.isDirty()) {
-//                entity.rejectChanges();
-//            }
-//        }
+        ko.utils.arrayForEach(this.es.deletedEntities, function (entity) {
+            if (entity.RowState() === es.RowState.ADDED) {
+                addedEntities[slot] = index;
+                slot += 1;
+            } else {
+                entity.rejectChanges();
+            }
+            index += 1;
+        });
+
+        if (addedEntities.length > 0) {
+            for (index = addedEntities.length - 1; index >= 0; index--) {
+                this.es.deletedEntities.splice(addedEntities[index], 1);
+            }
+        }
+
+        this(this.es.deletedEntities.splice(0, this.es.deletedEntities.length));
     },
 
     markAllAsDeleted: function () {
-        var i, entity,
-            coll = this(),
-            len = coll.length;
 
+        var i, entity, coll, len;
+
+        this.es.deletedEntities = this.splice(0, this().length);
+
+        coll = this.es.deletedEntities;
+        len = coll.length;
+
+        // NOTE: Added ones are moved into the es.deletedEntities area incase reject changes is called
+        //       in which case they are restored, however, during a save they are simply discarded.
         for (i = 0; i < len; i += 1) {
             entity = coll[i];
-            entity.markAsDeleted();
+            if (entity.RowState() !== es.RowState.ADDED) {
+                entity.markAsDeleted();
+            }
         }
     },
 
@@ -1040,6 +1060,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
                 //call 'createEntity' for each item in the data array
                 entity = create(data, EntityCtor); //ok to pass an undefined Ctor
+              //entity.es.collection = this;
 
                 if (entity !== undefined && entity !== null) { //could be zeros or empty strings legitimately
                     finalColl.push(entity);
@@ -1277,6 +1298,7 @@ es.defineCollection = function (typeName, entityName) {
                 return isDirty;
             });
             */
+
 
             this.isDirty = function () {
 

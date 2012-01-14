@@ -62,7 +62,7 @@ es.EsEntity = function () { //empty constructor
             //blow away ModifiedColumns && orinalValues            
             if (this.hasOwnProperty("ModifiedColumns")) {
                 //overwrite existing data
-                this.ModifiedColumns([]);                
+                this.ModifiedColumns([]);
             } else {
                 this.ModifiedColumns = ko.observableArray();
             }

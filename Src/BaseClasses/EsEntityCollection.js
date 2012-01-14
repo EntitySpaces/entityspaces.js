@@ -14,6 +14,7 @@ es.EsEntityCollection = function () {
     ko.utils.extend(obs, es.EsEntityCollection.fn);
 
     obs.es['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
+    obs.es.deletedEntities = [];
 
     return obs;
 };
@@ -28,41 +29,60 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     acceptChanges: function () {
 
-//        var i, entity,
-//            coll = this(),
-//            len = coll.length;
+        //        var i, entity,
+        //            coll = this(),
+        //            len = coll.length;
 
-//        for (i = 0; i < len; i += 1) {
-//            entity = coll[i];
+        //        for (i = 0; i < len; i += 1) {
+        //            entity = coll[i];
 
-//            if (entity.isDirty()) {
-//                entity.acceptChanges();
-//            }
-//        }
+        //            if (entity.isDirty()) {
+        //                entity.acceptChanges();
+        //            }
+        //        }
     },
 
     rejectChanges: function () {
-//        var i, entity,
-//            coll = this(),
-//            len = coll.length;
 
-//        for (i = 0; i < len; i += 1) {
-//            entity = coll[i];
+        var addedEntities = [],
+            slot = 0,
+            index = 0;
 
-//            if (entity.isDirty()) {
-//                entity.rejectChanges();
-//            }
-//        }
+        ko.utils.arrayForEach(this.es.deletedEntities, function (entity) {
+            if (entity.RowState() === es.RowState.ADDED) {
+                addedEntities[slot] = index;
+                slot += 1;
+            } else {
+                entity.rejectChanges();
+            }
+            index += 1;
+        });
+
+        if (addedEntities.length > 0) {
+            for (index = addedEntities.length - 1; index >= 0; index--) {
+                this.es.deletedEntities.splice(addedEntities[index], 1);
+            }
+        }
+
+        this(this.es.deletedEntities.splice(0, this.es.deletedEntities.length));
     },
 
     markAllAsDeleted: function () {
-        var i, entity,
-            coll = this(),
-            len = coll.length;
 
+        var i, entity, coll, len;
+
+        this.es.deletedEntities = this.splice(0, this().length);
+
+        coll = this.es.deletedEntities;
+        len = coll.length;
+
+        // NOTE: Added ones are moved into the es.deletedEntities area incase reject changes is called
+        //       in which case they are restored, however, during a save they are simply discarded.
         for (i = 0; i < len; i += 1) {
             entity = coll[i];
-            entity.markAsDeleted();
+            if (entity.RowState() !== es.RowState.ADDED) {
+                entity.markAsDeleted();
+            }
         }
     },
 
@@ -84,6 +104,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
                 //call 'createEntity' for each item in the data array
                 entity = create(data, EntityCtor); //ok to pass an undefined Ctor
+              //entity.es.collection = this;
 
                 if (entity !== undefined && entity !== null) { //could be zeros or empty strings legitimately
                     finalColl.push(entity);

@@ -246,7 +246,7 @@ var utils = {
 
         es.Visit(obj).forEach(function (theObj) {
 
-            if (this.key === "esExtendedData") {
+            if (this.key === "esExtendedData" || this.key === "es") {
                 this.block();
             } else {
 

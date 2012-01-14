@@ -61,6 +61,7 @@ es.defineCollection = function (typeName, entityName) {
             });
             */
 
+
             this.isDirty = function () {
 
                 var i,
