@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.7-pre 
-// Built on Sat 01/14/2012 at 17:52:41.43    
+// Built on Sat 01/14/2012 at 18:53:14.02    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -123,14 +123,11 @@ es.DateParser = function () {
 //#region TypeCache Methods
 es.getType = function (typeName) {
     var ns = es.getGeneratedNamespaceObj();
-
     return ns[typeName];
 };
 
 es.clearTypes = function () {
-
     es.generatedNamespace = {};
-
 };
 
 //#endregion
@@ -158,19 +155,20 @@ es.objectKeys = Object.keys || function(obj) {
     return res;
 };
 
-es.isEsCollection = function (array) {
-    var isEsArray = false;
-
-    if (es.isArray(array)) {
-
-        if (array.length > 0) {
-            if (array[0].hasOwnProperty("RowState")) {
-                isEsArray = true;
-            }
-        }
-
+es.isEsCollection = function (coll) {
+    var isEsColl = false;
+    if (coll !== undefined && coll.es !== undefined && coll.es.___esCollection___ !== undefined) {
+        isEsColl = true;
     }
-    return isEsArray;
+    return isEsColl;
+};
+
+es.isEsEntity = function (entity) {
+    var isEsEnt = false;
+    if (entity !== undefined && entity.es !== undefined && entity.es.___esEntity___ !== undefined) {
+        isEsEnt = true;
+    }
+    return isEsEnt;
 };
 
 //#endregion
@@ -397,18 +395,19 @@ var utils = {
 
             ko.utils.arrayForEach(es.objectKeys(src), function (key) {
 
-                var srcValue;
+                var srcValue = src[key];
 
-                if (!es.isEsCollection(src[key])) {
+                if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
 
                     switch (key) {
                         case 'es':
                         case 'routes':
+                        case 'esTypeDefs':
+                        case 'esRoutes':
+                        case 'esColumnMap':
                             break;
 
                         default:
-
-                            srcValue = src[key];
 
                             if (srcValue instanceof Date) {
                                 dst[key] = utils.dateParser.serialize(srcValue);
@@ -431,31 +430,41 @@ var utils = {
 
         es.Visit(obj).forEach(function (theObj) {
 
-            if (this.key === "esExtendedData" || this.key === "es") {
-                this.block();
-            } else {
+            switch (this.key) {
 
-                if (this.isLeaf === false) {
+                case 'es':
+                case 'routes':
+                case 'esTypeDefs':
+                case 'esRoutes':
+                case 'esColumnMap':
+                case 'esExtendedData':
+                    this.block();
+                    break;
 
-                    if (theObj instanceof Array) { return theObj; }
+                default:
 
-                    if (theObj.hasOwnProperty("RowState")) {
+                    if (this.isLeaf === false) {
 
-                        switch (theObj.RowState) {
+                        if (theObj instanceof Array) { return theObj; }
 
-                            case es.RowState.ADDED:
-                            case es.RowState.DELETED:
-                            case es.RowState.MODIFIED:
+                        if (theObj.hasOwnProperty("RowState")) {
 
-                                paths.push(this.path);
-                                break;
+                            switch (theObj.RowState) {
+
+                                case es.RowState.ADDED:
+                                case es.RowState.DELETED:
+                                case es.RowState.MODIFIED:
+
+                                    paths.push(this.path);
+                                    break;
+                            }
                         }
                     }
+                    break;
                 }
-            }
 
             return theObj;
-        });
+        })
 
         //#region Rebuild tree of dirty objects from "paths[]"
         if (paths.length > 0) {
@@ -767,8 +776,6 @@ es.EsEntity = function () { //empty constructor
             self.es.ignorePropertyChanged = false;
         }
     };
-
-    //#endregion
 
     this.applyDefaults = function () {
         //here to be overridden higher up the prototype chain

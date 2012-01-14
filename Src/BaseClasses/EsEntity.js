@@ -108,8 +108,6 @@ es.EsEntity = function () { //empty constructor
         }
     };
 
-    //#endregion
-
     this.applyDefaults = function () {
         //here to be overridden higher up the prototype chain
     };

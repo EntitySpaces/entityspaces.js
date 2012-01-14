@@ -2,14 +2,11 @@
 //#region TypeCache Methods
 es.getType = function (typeName) {
     var ns = es.getGeneratedNamespaceObj();
-
     return ns[typeName];
 };
 
 es.clearTypes = function () {
-
     es.generatedNamespace = {};
-
 };
 
 //#endregion
@@ -37,19 +34,20 @@ es.objectKeys = Object.keys || function(obj) {
     return res;
 };
 
-es.isEsCollection = function (array) {
-    var isEsArray = false;
-
-    if (es.isArray(array)) {
-
-        if (array.length > 0) {
-            if (array[0].hasOwnProperty("RowState")) {
-                isEsArray = true;
-            }
-        }
-
+es.isEsCollection = function (coll) {
+    var isEsColl = false;
+    if (coll !== undefined && coll.es !== undefined && coll.es.___esCollection___ !== undefined) {
+        isEsColl = true;
     }
-    return isEsArray;
+    return isEsColl;
+};
+
+es.isEsEntity = function (entity) {
+    var isEsEnt = false;
+    if (entity !== undefined && entity.es !== undefined && entity.es.___esEntity___ !== undefined) {
+        isEsEnt = true;
+    }
+    return isEsEnt;
 };
 
 //#endregion

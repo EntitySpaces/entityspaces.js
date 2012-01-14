@@ -2,7 +2,7 @@
 es.objects.Employees.prototype.LoadByPrimaryKeyHierarchical = function (employeeId, success, error, state) {
 
     this.load({
-        route: this.routes['LoadByPrimaryKeyHierarchical'],
+        route: this.esRoutes['LoadByPrimaryKeyHierarchical'],
         data: employeeId,
         success: success,
         error: error,

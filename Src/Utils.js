@@ -212,18 +212,19 @@ var utils = {
 
             ko.utils.arrayForEach(es.objectKeys(src), function (key) {
 
-                var srcValue;
+                var srcValue = src[key];
 
-                if (!es.isEsCollection(src[key])) {
+                if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
 
                     switch (key) {
                         case 'es':
                         case 'routes':
+                        case 'esTypeDefs':
+                        case 'esRoutes':
+                        case 'esColumnMap':
                             break;
 
                         default:
-
-                            srcValue = src[key];
 
                             if (srcValue instanceof Date) {
                                 dst[key] = utils.dateParser.serialize(srcValue);
@@ -246,31 +247,41 @@ var utils = {
 
         es.Visit(obj).forEach(function (theObj) {
 
-            if (this.key === "esExtendedData" || this.key === "es") {
-                this.block();
-            } else {
+            switch (this.key) {
 
-                if (this.isLeaf === false) {
+                case 'es':
+                case 'routes':
+                case 'esTypeDefs':
+                case 'esRoutes':
+                case 'esColumnMap':
+                case 'esExtendedData':
+                    this.block();
+                    break;
 
-                    if (theObj instanceof Array) { return theObj; }
+                default:
 
-                    if (theObj.hasOwnProperty("RowState")) {
+                    if (this.isLeaf === false) {
 
-                        switch (theObj.RowState) {
+                        if (theObj instanceof Array) { return theObj; }
 
-                            case es.RowState.ADDED:
-                            case es.RowState.DELETED:
-                            case es.RowState.MODIFIED:
+                        if (theObj.hasOwnProperty("RowState")) {
 
-                                paths.push(this.path);
-                                break;
+                            switch (theObj.RowState) {
+
+                                case es.RowState.ADDED:
+                                case es.RowState.DELETED:
+                                case es.RowState.MODIFIED:
+
+                                    paths.push(this.path);
+                                    break;
+                            }
                         }
                     }
+                    break;
                 }
-            }
 
             return theObj;
-        });
+        })
 
         //#region Rebuild tree of dirty objects from "paths[]"
         if (paths.length > 0) {
