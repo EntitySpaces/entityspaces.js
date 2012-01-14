@@ -146,6 +146,21 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         return entity;
     },
 
+    addNew: function () {
+
+        var entity = null,
+            EntityCtor,
+            entityTypeName = this.es.entityTypeName; // this should be set in the 'DefineCollection' call, unless it was an anonymous definition
+
+        if (entityTypeName) {
+            EntityCtor = es.getType(entityTypeName);
+            entity = new EntityCtor();
+            this.push(entity);
+        }
+
+        return entity;
+    },
+
     //#region Loads
     load: function (options) {
         var self = this;

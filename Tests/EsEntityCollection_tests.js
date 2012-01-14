@@ -15,6 +15,18 @@ test('Basic Collection Smoke Test', function () {
     equals(coll.myMethod(), 2, 'Extra method was correctly added to Collection');
 });
 
+test('addNew Test', function () {
+
+    var coll = new es.objects.EmployeesCollection();
+    var emp = coll.addNew();
+    emp.EmployeeID(44);
+
+    ok(coll, 'Collection Initialized');
+    ok(emp, 'Employee Initialized');
+    equals(coll().length, 1, 'Initialized as an Empty Array');
+    equals(coll()[0].EmployeeID(), 44, 'First item has correct property value');
+});
+
 test('Basic Populate Collection Test', function () {
 
     var coll = new es.objects.EmployeesCollection();

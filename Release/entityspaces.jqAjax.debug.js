@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.7-pre 
-// Built on Sat 01/14/2012 at 11:33:04.81    
+// Built on Sat 01/14/2012 at 16:32:55.79    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -1097,6 +1097,21 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             entity.populateEntity(entityData);
         } else { //else just set the entity to the passed in data
             entity = entityData;
+        }
+
+        return entity;
+    },
+
+    addNew: function () {
+
+        var entity = null,
+            EntityCtor,
+            entityTypeName = this.es.entityTypeName; // this should be set in the 'DefineCollection' call, unless it was an anonymous definition
+
+        if (entityTypeName) {
+            EntityCtor = es.getType(entityTypeName);
+            entity = new EntityCtor();
+            this.push(entity);
         }
 
         return entity;
