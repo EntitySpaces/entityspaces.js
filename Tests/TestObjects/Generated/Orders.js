@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 11:34:40 AM
+// Date Generated       : 1/14/2012 5:52:04 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -31,15 +31,21 @@
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
+		this.UpToProductsCollection = undefined;
 		this.OrderDetailsCollectionByOrderID = undefined;
+		this.UpToCustomersByCustomerID = undefined;
 		this.UpToEmployeesByEmployeeID = undefined;
+		this.UpToShippersByShipVia = undefined;
 	});
 
 	//#region Prototype Level Information
 
 	es.objects.Orders.prototype.esTypeDefs = {
+		UpToProductsCollection: "ProductsCollection",
 		OrderDetailsCollectionByOrderID: "OrderDetailsCollection",
-		UpToEmployeesByEmployeeID: "Employees"
+		UpToCustomersByCustomerID: "Customers",
+		UpToEmployeesByEmployeeID: "Employees",
+		UpToShippersByShipVia: "Shippers"
 	};
 	
 	es.objects.Orders.prototype.esRoutes = {

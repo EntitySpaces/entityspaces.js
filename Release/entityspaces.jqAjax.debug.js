@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.7-pre 
-// Built on Sat 01/14/2012 at 16:32:55.79    
+// Built on Sat 01/14/2012 at 17:52:41.43    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -668,11 +668,7 @@ var walk = function(root, cb, immutable) {
 
 
 es.EsEntity = function () { //empty constructor
-    var noop = function () { },
-		extenders = [];
-
-    //#region Initialization Logic
-    //this.routes = {};
+    var extenders = [];
 
     this.customize = function (extender) {
         extenders.push(extender);
@@ -686,6 +682,7 @@ es.EsEntity = function () { //empty constructor
         self.es.___esEntity___ = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
         self.es.ignorePropertyChanged = false;
         self.es.originalValues = {};
+        self.es.collection = undefined;
 
         //start change tracking
         es.utils.startTracking(self);
@@ -701,7 +698,7 @@ es.EsEntity = function () { //empty constructor
 
         /*
         this.isDirty = ko.computed(function () {
-            return (self.RowState() !== es.RowState.UNCHANGED);
+        return (self.RowState() !== es.RowState.UNCHANGED);
         });
         */
 
@@ -1058,7 +1055,8 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             EntityCtor,
             finalColl = [],
             create = this.createEntity,
-            entity;
+            entity,
+            self = this;
 
         if (entityTypeName) {
             EntityCtor = es.getType(entityTypeName); //might return undefined
@@ -1070,7 +1068,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
                 //call 'createEntity' for each item in the data array
                 entity = create(data, EntityCtor); //ok to pass an undefined Ctor
-                //entity.es.collection = this;
+                entity.es.collection = self;
 
                 if (entity !== undefined && entity !== null) { //could be zeros or empty strings legitimately
                     finalColl.push(entity);

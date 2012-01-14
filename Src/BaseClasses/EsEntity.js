@@ -8,11 +8,7 @@
 
 
 es.EsEntity = function () { //empty constructor
-    var noop = function () { },
-		extenders = [];
-
-    //#region Initialization Logic
-    //this.routes = {};
+    var extenders = [];
 
     this.customize = function (extender) {
         extenders.push(extender);
@@ -26,6 +22,7 @@ es.EsEntity = function () { //empty constructor
         self.es.___esEntity___ = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
         self.es.ignorePropertyChanged = false;
         self.es.originalValues = {};
+        self.es.collection = undefined;
 
         //start change tracking
         es.utils.startTracking(self);
@@ -41,7 +38,7 @@ es.EsEntity = function () { //empty constructor
 
         /*
         this.isDirty = ko.computed(function () {
-            return (self.RowState() !== es.RowState.UNCHANGED);
+        return (self.RowState() !== es.RowState.UNCHANGED);
         });
         */
 

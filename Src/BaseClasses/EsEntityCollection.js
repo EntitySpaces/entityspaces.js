@@ -102,7 +102,8 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             EntityCtor,
             finalColl = [],
             create = this.createEntity,
-            entity;
+            entity,
+            self = this;
 
         if (entityTypeName) {
             EntityCtor = es.getType(entityTypeName); //might return undefined
@@ -114,7 +115,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
                 //call 'createEntity' for each item in the data array
                 entity = create(data, EntityCtor); //ok to pass an undefined Ctor
-                //entity.es.collection = this;
+                entity.es.collection = self;
 
                 if (entity !== undefined && entity !== null) { //could be zeros or empty strings legitimately
                     finalColl.push(entity);

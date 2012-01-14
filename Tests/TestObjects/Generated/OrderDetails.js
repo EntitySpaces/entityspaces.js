@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 11:34:40 AM
+// Date Generated       : 1/14/2012 5:52:04 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -23,12 +23,14 @@
 
 		// Hierarchical Properties
 		this.UpToOrdersByOrderID = undefined;
+		this.UpToProductsByProductID = undefined;
 	});
 
 	//#region Prototype Level Information
 
 	es.objects.OrderDetails.prototype.esTypeDefs = {
-		UpToOrdersByOrderID: "Orders"
+		UpToOrdersByOrderID: "Orders",
+		UpToProductsByProductID: "Products"
 	};
 	
 	es.objects.OrderDetails.prototype.esRoutes = {
