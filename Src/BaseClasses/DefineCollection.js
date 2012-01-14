@@ -20,6 +20,8 @@ es.defineCollection = function (typeName, entityName) {
         var base = this,
             extenders = [];
 
+
+
         this.init = function () {
             var self = this;
 
@@ -39,21 +41,31 @@ es.defineCollection = function (typeName, entityName) {
                 }
             }
 
+            //#region Private Methods
+
+            //#endregion Private Methods
+
             /*
             this.isDirty = ko.computed(function () {
 
                 var i,
                     entity,
-                    arr = self(), 
+                    arr = self(),
                     isDirty = false;
 
-                for (i = 0; i < arr.length; i++) {
-
-                    entity = arr[i];
-
-                    if (entity.RowState() !== es.RowState.UNCHANGED) {
+                if (this.es.deletedEntities.length > 0) {
+                    isDirty = true;
+                } else if (this.length > 0 && this()[this.length - 1].isDirty()) {
                         isDirty = true;
-                        break;
+                } else {
+                    for (i = 0; i < arr.length; i++) {
+
+                        entity = arr[i];
+
+                        if (entity.RowState() !== es.RowState.UNCHANGED) {
+                            isDirty = true;
+                            break;
+                        }
                     }
                 }
 
@@ -69,13 +81,19 @@ es.defineCollection = function (typeName, entityName) {
                     arr = self(),
                     isDirty = false;
 
-                for (i = 0; i < arr.length; i++) {
-
-                    entity = arr[i];
-
-                    if (entity.RowState() !== es.RowState.UNCHANGED) {
+                if (this.es.deletedEntities.length > 0) {
+                    isDirty = true;
+                } else if (this.length > 0 && this()[this.length - 1].isDirty()) {
                         isDirty = true;
-                        break;
+                } else {
+                    for (i = 0; i < arr.length; i++) {
+
+                        entity = arr[i];
+
+                        if (entity.RowState() !== es.RowState.UNCHANGED) {
+                            isDirty = true;
+                            break;
+                        }
                     }
                 }
 

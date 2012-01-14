@@ -29,20 +29,19 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     acceptChanges: function () {
 
-        //        var i, entity,
-        //            coll = this(),
-        //            len = coll.length;
+        var self = this;
 
-        //        for (i = 0; i < len; i += 1) {
-        //            entity = coll[i];
+        ko.utils.arrayForEach(this(), function (entity) {
+            if (entity.RowState() !== es.RowState.UNCHANGED) {
+                entity.acceptChanges();
+            }
+        });
 
-        //            if (entity.isDirty()) {
-        //                entity.acceptChanges();
-        //            }
-        //        }
+        this.es.deletedEntities = [];
     },
 
     rejectChanges: function () {
+        var self = this;
 
         var addedEntities = [],
             slot = 0,
@@ -58,13 +57,24 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             index += 1;
         });
 
+
         if (addedEntities.length > 0) {
             for (index = addedEntities.length - 1; index >= 0; index--) {
                 this.es.deletedEntities.splice(addedEntities[index], 1);
             }
         }
 
-        this(this.es.deletedEntities.splice(0, this.es.deletedEntities.length));
+        ko.utils.arrayForEach(this(), function (entity) {
+            if (entity.RowState() === es.RowState.MODIFIED) {
+                entity.rejectChanges();
+            }
+        });
+
+        ko.utils.arrayForEach(this.es.deletedEntities, function (entity) {
+            self.push(entity);
+        });
+
+        this.es.deletedEntities = [];
     },
 
     markAllAsDeleted: function () {
@@ -80,7 +90,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         //       in which case they are restored, however, during a save they are simply discarded.
         for (i = 0; i < len; i += 1) {
             entity = coll[i];
-            if (entity.RowState() !== es.RowState.ADDED) {
+            if (entity.RowState() === es.RowState.UNCHANGED) {
                 entity.markAsDeleted();
             }
         }
@@ -104,7 +114,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
                 //call 'createEntity' for each item in the data array
                 entity = create(data, EntityCtor); //ok to pass an undefined Ctor
-              //entity.es.collection = this;
+                //entity.es.collection = this;
 
                 if (entity !== undefined && entity !== null) { //could be zeros or empty strings legitimately
                     finalColl.push(entity);
