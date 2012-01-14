@@ -1,3 +1,7 @@
+//===============================================================================		
+// EntitySpaces Version : 2012.1.0000.0
+// Date Generated       : 1/14/2012 11:29:15 AM
+//===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
@@ -20,28 +24,29 @@
 		this.Phone = ko.observable();
 		this.Fax = ko.observable();
 
-		// extended colulmns
+		// extended columns
 		this.esExtendedData = undefined;
-
 
 		// Hierarchical Properties
 		this.UpToCustomerDemographicsCollection = undefined;
 		this.CustomerCustomerDemoCollectionByCustomerID = undefined;
 		this.OrdersCollectionByCustomerID = undefined;
-
-		this.es.esTypeDefs = {
-			UpToCustomerDemographicsCollection: "CustomerDemographicsCollection",
-			CustomerCustomerDemoCollectionByCustomerID: "CustomerCustomerDemoCollection",
-			OrdersCollectionByCustomerID: "OrdersCollection"
-		};
 	});
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.Customers.prototype.routes = {
+	es.objects.Customers.prototype.esTypeDefs = {
+		UpToCustomerDemographicsCollection: "CustomerDemographicsCollection",
+		CustomerCustomerDemoCollectionByCustomerID: "CustomerCustomerDemoCollection",
+		OrdersCollectionByCustomerID: "OrdersCollection"
+	};
+	
+	es.objects.Customers.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Customers_Save', response: 'entity' },
 		loadByPrimaryKey: { method: 'GET', url: 'Customers_LoadByPrimaryKey', response: 'entity' }
 	};
+
+	es.objects.Customers.prototype.esColumnMap = [];
 
 	//#endregion
 
@@ -51,13 +56,13 @@
 
 	es.objects.CustomersCollection = es.defineCollection('CustomersCollection', 'Customers');
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.CustomersCollection.prototype.routes = {
+	es.objects.CustomersCollection.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'CustomersCollection_Save', response: 'collection' },
 		loadAll: { method: 'GET', url: 'CustomersCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
 
-}(window.es));
+}(window.es, window.myNS));

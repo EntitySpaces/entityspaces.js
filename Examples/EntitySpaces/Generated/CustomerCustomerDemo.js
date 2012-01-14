@@ -1,3 +1,7 @@
+//===============================================================================		
+// EntitySpaces Version : 2012.1.0000.0
+// Date Generated       : 1/14/2012 11:29:15 AM
+//===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
@@ -11,26 +15,27 @@
 		this.CustomerID = ko.observable();
 		this.CustomerTypeID = ko.observable();
 
-		// extended colulmns
+		// extended columns
 		this.esExtendedData = undefined;
-
 
 		// Hierarchical Properties
 		this.UpToCustomerDemographicsByCustomerTypeID = undefined;
 		this.UpToCustomersByCustomerID = undefined;
-
-		this.es.esTypeDefs = {
-			UpToCustomerDemographicsByCustomerTypeID: "CustomerDemographics",
-			UpToCustomersByCustomerID: "Customers"
-		};
 	});
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.CustomerCustomerDemo.prototype.routes = {
+	es.objects.CustomerCustomerDemo.prototype.esTypeDefs = {
+		UpToCustomerDemographicsByCustomerTypeID: "CustomerDemographics",
+		UpToCustomersByCustomerID: "Customers"
+	};
+	
+	es.objects.CustomerCustomerDemo.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'CustomerCustomerDemo_Save', response: 'entity' },
 		loadByPrimaryKey: { method: 'GET', url: 'CustomerCustomerDemo_LoadByPrimaryKey', response: 'entity' }
 	};
+
+	es.objects.CustomerCustomerDemo.prototype.esColumnMap = [];
 
 	//#endregion
 
@@ -40,13 +45,13 @@
 
 	es.objects.CustomerCustomerDemoCollection = es.defineCollection('CustomerCustomerDemoCollection', 'CustomerCustomerDemo');
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.CustomerCustomerDemoCollection.prototype.routes = {
+	es.objects.CustomerCustomerDemoCollection.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'CustomerCustomerDemoCollection_Save', response: 'collection' },
 		loadAll: { method: 'GET', url: 'CustomerCustomerDemoCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
 
-}(window.es));
+}(window.es, window.myNS));

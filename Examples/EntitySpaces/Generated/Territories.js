@@ -1,3 +1,7 @@
+//===============================================================================		
+// EntitySpaces Version : 2012.1.0000.0
+// Date Generated       : 1/14/2012 11:29:15 AM
+//===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
@@ -12,28 +16,29 @@
 		this.TerritoryDescription = ko.observable();
 		this.RegionID = ko.observable();
 
-		// extended colulmns
+		// extended columns
 		this.esExtendedData = undefined;
-
 
 		// Hierarchical Properties
 		this.UpToEmployeesCollection = undefined;
 		this.EmployeeTerritoriesCollectionByTerritoryID = undefined;
 		this.UpToRegionByRegionID = undefined;
-
-		this.es.esTypeDefs = {
-			UpToEmployeesCollection: "EmployeesCollection",
-			EmployeeTerritoriesCollectionByTerritoryID: "EmployeeTerritoriesCollection",
-			UpToRegionByRegionID: "Region"
-		};
 	});
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.Territories.prototype.routes = {
+	es.objects.Territories.prototype.esTypeDefs = {
+		UpToEmployeesCollection: "EmployeesCollection",
+		EmployeeTerritoriesCollectionByTerritoryID: "EmployeeTerritoriesCollection",
+		UpToRegionByRegionID: "Region"
+	};
+	
+	es.objects.Territories.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Territories_Save', response: 'entity' },
 		loadByPrimaryKey: { method: 'GET', url: 'Territories_LoadByPrimaryKey', response: 'entity' }
 	};
+
+	es.objects.Territories.prototype.esColumnMap = [];
 
 	//#endregion
 
@@ -43,13 +48,13 @@
 
 	es.objects.TerritoriesCollection = es.defineCollection('TerritoriesCollection', 'Territories');
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.TerritoriesCollection.prototype.routes = {
+	es.objects.TerritoriesCollection.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'TerritoriesCollection_Save', response: 'collection' },
 		loadAll: { method: 'GET', url: 'TerritoriesCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
 
-}(window.es));
+}(window.es, window.myNS));

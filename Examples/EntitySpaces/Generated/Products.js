@@ -1,3 +1,7 @@
+//===============================================================================		
+// EntitySpaces Version : 2012.1.0000.0
+// Date Generated       : 1/14/2012 11:29:15 AM
+//===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
@@ -19,30 +23,31 @@
 		this.ReorderLevel = ko.observable();
 		this.Discontinued = ko.observable();
 
-		// extended colulmns
+		// extended columns
 		this.esExtendedData = undefined;
-
 
 		// Hierarchical Properties
 		this.UpToOrdersCollection = undefined;
 		this.OrderDetailsCollectionByProductID = undefined;
 		this.UpToCategoriesByCategoryID = undefined;
 		this.UpToSuppliersBySupplierID = undefined;
-
-		this.es.esTypeDefs = {
-			UpToOrdersCollection: "OrdersCollection",
-			OrderDetailsCollectionByProductID: "OrderDetailsCollection",
-			UpToCategoriesByCategoryID: "Categories",
-			UpToSuppliersBySupplierID: "Suppliers"
-		};
 	});
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.Products.prototype.routes = {
+	es.objects.Products.prototype.esTypeDefs = {
+		UpToOrdersCollection: "OrdersCollection",
+		OrderDetailsCollectionByProductID: "OrderDetailsCollection",
+		UpToCategoriesByCategoryID: "Categories",
+		UpToSuppliersBySupplierID: "Suppliers"
+	};
+	
+	es.objects.Products.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Products_Save', response: 'entity' },
 		loadByPrimaryKey: { method: 'GET', url: 'Products_LoadByPrimaryKey', response: 'entity' }
 	};
+
+	es.objects.Products.prototype.esColumnMap = [];
 
 	//#endregion
 
@@ -52,13 +57,13 @@
 
 	es.objects.ProductsCollection = es.defineCollection('ProductsCollection', 'Products');
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.ProductsCollection.prototype.routes = {
+	es.objects.ProductsCollection.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'ProductsCollection_Save', response: 'collection' },
 		loadAll: { method: 'GET', url: 'ProductsCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
 
-}(window.es));
+}(window.es, window.myNS));

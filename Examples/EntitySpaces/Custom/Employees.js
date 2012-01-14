@@ -21,6 +21,6 @@ es.objects.Employees.prototype.customize(function () {
 });
 
 //#region Routing
-es.objects.Employees.prototype.routes['LoadByPrimaryKeyHierarchical'] = 
+es.objects.Employees.prototype.esRoutes['LoadByPrimaryKeyHierarchical'] = 
     { method: 'GET', url: 'Employees_LoadByPrimaryKeyHierarchical', response: 'entity' }
 //#endregion 

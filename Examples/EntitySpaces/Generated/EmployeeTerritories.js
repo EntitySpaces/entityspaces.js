@@ -1,3 +1,7 @@
+//===============================================================================		
+// EntitySpaces Version : 2012.1.0000.0
+// Date Generated       : 1/14/2012 11:29:15 AM
+//===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
@@ -11,26 +15,27 @@
 		this.EmployeeID = ko.observable();
 		this.TerritoryID = ko.observable();
 
-		// extended colulmns
+		// extended columns
 		this.esExtendedData = undefined;
-
 
 		// Hierarchical Properties
 		this.UpToEmployeesByEmployeeID = undefined;
 		this.UpToTerritoriesByTerritoryID = undefined;
-
-		this.es.esTypeDefs = {
-			UpToEmployeesByEmployeeID: "Employees",
-			UpToTerritoriesByTerritoryID: "Territories"
-		};
 	});
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.EmployeeTerritories.prototype.routes = {
+	es.objects.EmployeeTerritories.prototype.esTypeDefs = {
+		UpToEmployeesByEmployeeID: "Employees",
+		UpToTerritoriesByTerritoryID: "Territories"
+	};
+	
+	es.objects.EmployeeTerritories.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'EmployeeTerritories_Save', response: 'entity' },
 		loadByPrimaryKey: { method: 'GET', url: 'EmployeeTerritories_LoadByPrimaryKey', response: 'entity' }
 	};
+
+	es.objects.EmployeeTerritories.prototype.esColumnMap = [];
 
 	//#endregion
 
@@ -40,13 +45,13 @@
 
 	es.objects.EmployeeTerritoriesCollection = es.defineCollection('EmployeeTerritoriesCollection', 'EmployeeTerritories');
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.EmployeeTerritoriesCollection.prototype.routes = {
+	es.objects.EmployeeTerritoriesCollection.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'EmployeeTerritoriesCollection_Save', response: 'collection' },
 		loadAll: { method: 'GET', url: 'EmployeeTerritoriesCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
 
-}(window.es));
+}(window.es, window.myNS));

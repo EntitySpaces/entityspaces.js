@@ -158,8 +158,8 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
-            options.url = options.route.url || this.routes[options.route].url;
-            options.type = options.route.method || this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
+            options.url = options.route.url || this.esRoutes[options.route].url;
+            options.type = options.route.method || this.esRoutes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
         }
 
         //sprinkle in our own handlers, but make sure the original still gets called
@@ -186,7 +186,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     loadAll: function (success, error, state) {
 
         var options = {
-            route: this.routes['loadAll']
+            route: this.esRoutes['loadAll']
         };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
@@ -218,7 +218,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             options.async = false;
         }
 
-        options.route = self.routes['commit'];
+        options.route = self.esRoutes['commit'];
 
         //TODO: potentially the most inefficient call in the whole lib
         options.data = es.utils.getDirtyGraph(ko.toJS(self));

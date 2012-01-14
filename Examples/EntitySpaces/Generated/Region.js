@@ -1,3 +1,7 @@
+//===============================================================================		
+// EntitySpaces Version : 2012.1.0000.0
+// Date Generated       : 1/14/2012 11:29:15 AM
+//===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
@@ -11,24 +15,25 @@
 		this.RegionID = ko.observable();
 		this.RegionDescription = ko.observable();
 
-		// extended colulmns
+		// extended columns
 		this.esExtendedData = undefined;
-
 
 		// Hierarchical Properties
 		this.TerritoriesCollectionByRegionID = undefined;
-
-		this.es.esTypeDefs = {
-			TerritoriesCollectionByRegionID: "TerritoriesCollection"
-		};
 	});
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.Region.prototype.routes = {
+	es.objects.Region.prototype.esTypeDefs = {
+		TerritoriesCollectionByRegionID: "TerritoriesCollection"
+	};
+	
+	es.objects.Region.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Region_Save', response: 'entity' },
 		loadByPrimaryKey: { method: 'GET', url: 'Region_LoadByPrimaryKey', response: 'entity' }
 	};
+
+	es.objects.Region.prototype.esColumnMap = [];
 
 	//#endregion
 
@@ -38,13 +43,13 @@
 
 	es.objects.RegionCollection = es.defineCollection('RegionCollection', 'Region');
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.RegionCollection.prototype.routes = {
+	es.objects.RegionCollection.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'RegionCollection_Save', response: 'collection' },
 		loadAll: { method: 'GET', url: 'RegionCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
 
-}(window.es));
+}(window.es, window.myNS));

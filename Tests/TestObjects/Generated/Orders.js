@@ -1,3 +1,7 @@
+//===============================================================================		
+// EntitySpaces Version : 2012.1.0000.0
+// Date Generated       : 1/14/2012 11:34:40 AM
+//===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
@@ -23,26 +27,27 @@
 		this.ShipPostalCode = ko.observable();
 		this.ShipCountry = ko.observable();
 
-		// extended colulmns
+		// extended columns
 		this.esExtendedData = undefined;
-
 
 		// Hierarchical Properties
 		this.OrderDetailsCollectionByOrderID = undefined;
 		this.UpToEmployeesByEmployeeID = undefined;
-
-		this.es.esTypeDefs = {
-			OrderDetailsCollectionByOrderID: "OrderDetailsCollection",
-			UpToEmployeesByEmployeeID: "Employees"
-		};
 	});
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.Orders.prototype.routes = {
+	es.objects.Orders.prototype.esTypeDefs = {
+		OrderDetailsCollectionByOrderID: "OrderDetailsCollection",
+		UpToEmployeesByEmployeeID: "Employees"
+	};
+	
+	es.objects.Orders.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Orders_Save', response: 'entity' },
 		loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity' }
 	};
+
+	es.objects.Orders.prototype.esColumnMap = [];
 
 	//#endregion
 
@@ -52,13 +57,13 @@
 
 	es.objects.OrdersCollection = es.defineCollection('OrdersCollection', 'Orders');
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.OrdersCollection.prototype.routes = {
+	es.objects.OrdersCollection.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'OrdersCollection_Save', response: 'collection' },
 		loadAll: { method: 'GET', url: 'OrdersCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
 
-}(window.es));
+}(window.es, window.myNS));

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.7-pre 
-// Built on Sat 01/14/2012 at  9:14:40.70    
+// Built on Sat 01/14/2012 at 11:33:04.81    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -672,7 +672,7 @@ es.EsEntity = function () { //empty constructor
 		extenders = [];
 
     //#region Initialization Logic
-    this.routes = {};
+    //this.routes = {};
 
     this.customize = function (extender) {
         extenders.push(extender);
@@ -737,8 +737,8 @@ es.EsEntity = function () { //empty constructor
             for (prop in data) {
                 if (data.hasOwnProperty(prop)) {
 
-                    if (this.es.esTypeDefs && this.es.esTypeDefs[prop]) {
-                        EntityCtor = es.getType(this.es.esTypeDefs[prop]);
+                    if (this.esTypeDefs && this.esTypeDefs[prop]) {
+                        EntityCtor = es.getType(this.esTypeDefs[prop]);
                         if (EntityCtor) {
 
                             entityProp = new EntityCtor();
@@ -839,8 +839,8 @@ es.EsEntity = function () { //empty constructor
 
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
-            options.url = options.route.url || this.routes[options.route].url;
-            options.type = options.route.method || this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
+            options.url = options.route.url || this.esRoutes[options.route].url;
+            options.type = options.route.method || this.esRoutes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
         }
 
         //sprinkle in our own handlers, but make sure the original still gets called
@@ -867,7 +867,7 @@ es.EsEntity = function () { //empty constructor
     this.loadByPrimaryKey = function (primaryKey, success, error, state) { // or single argument of options
 
         var options = {
-            route: this.routes['loadByPrimaryKey']
+            route: this.esRoutes['loadByPrimaryKey']
         };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
@@ -901,17 +901,17 @@ es.EsEntity = function () { //empty constructor
         }
 
         // The default unless overriden
-        route = self.routes['commit'];
+        route = self.esRoutes['commit'];
 
         switch (self.RowState()) {
             case es.RowState.ADDED:
-                route = self.routes['create'] || route;
+                route = self.esRoutes['create'] || route;
                 break;
             case es.RowState.MODIFIED:
-                route = self.routes['update'] || route;
+                route = self.esRoutes['update'] || route;
                 break;
             case es.RowState.DELETED:
-                route = self.routes['delete'] || route;
+                route = self.esRoutes['delete'] || route;
                 break;
         }
 
@@ -1114,8 +1114,8 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         //if a route was passed in, use that route to pull the ajax options url & type
         if (options.route) {
-            options.url = options.route.url || this.routes[options.route].url;
-            options.type = options.route.method || this.routes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
+            options.url = options.route.url || this.esRoutes[options.route].url;
+            options.type = options.route.method || this.esRoutes[options.route].method; //in jQuery, the HttpVerb is the 'type' param
         }
 
         //sprinkle in our own handlers, but make sure the original still gets called
@@ -1142,7 +1142,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     loadAll: function (success, error, state) {
 
         var options = {
-            route: this.routes['loadAll']
+            route: this.esRoutes['loadAll']
         };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
@@ -1174,7 +1174,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             options.async = false;
         }
 
-        options.route = self.routes['commit'];
+        options.route = self.esRoutes['commit'];
 
         //TODO: potentially the most inefficient call in the whole lib
         options.data = es.utils.getDirtyGraph(ko.toJS(self));

@@ -1,3 +1,7 @@
+//===============================================================================		
+// EntitySpaces Version : 2012.1.0000.0
+// Date Generated       : 1/14/2012 11:29:15 AM
+//===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
@@ -12,24 +16,25 @@
 		this.CompanyName = ko.observable();
 		this.Phone = ko.observable();
 
-		// extended colulmns
+		// extended columns
 		this.esExtendedData = undefined;
-
 
 		// Hierarchical Properties
 		this.OrdersCollectionByShipVia = undefined;
-
-		this.es.esTypeDefs = {
-			OrdersCollectionByShipVia: "OrdersCollection"
-		};
 	});
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.Shippers.prototype.routes = {
+	es.objects.Shippers.prototype.esTypeDefs = {
+		OrdersCollectionByShipVia: "OrdersCollection"
+	};
+	
+	es.objects.Shippers.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Shippers_Save', response: 'entity' },
 		loadByPrimaryKey: { method: 'GET', url: 'Shippers_LoadByPrimaryKey', response: 'entity' }
 	};
+
+	es.objects.Shippers.prototype.esColumnMap = [];
 
 	//#endregion
 
@@ -39,13 +44,13 @@
 
 	es.objects.ShippersCollection = es.defineCollection('ShippersCollection', 'Shippers');
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.ShippersCollection.prototype.routes = {
+	es.objects.ShippersCollection.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'ShippersCollection_Save', response: 'collection' },
 		loadAll: { method: 'GET', url: 'ShippersCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
 
-}(window.es));
+}(window.es, window.myNS));

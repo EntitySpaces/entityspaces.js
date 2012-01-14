@@ -1,3 +1,7 @@
+//===============================================================================		
+// EntitySpaces Version : 2012.1.0000.0
+// Date Generated       : 1/14/2012 11:34:40 AM
+//===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
@@ -27,28 +31,29 @@
 		this.ReportsTo = ko.observable();
 		this.PhotoPath = ko.observable();
 
-		// extended colulmns
+		// extended columns
 		this.esExtendedData = undefined;
-
 
 		// Hierarchical Properties
 		this.EmployeesCollectionByReportsTo = undefined;
 		this.UpToEmployeesByReportsTo = undefined;
 		this.OrdersCollectionByEmployeeID = undefined;
-
-		this.es.esTypeDefs = {
-			EmployeesCollectionByReportsTo: "EmployeesCollection",
-			UpToEmployeesByReportsTo: "Employees",
-			OrdersCollectionByEmployeeID: "OrdersCollection"
-		};
 	});
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.Employees.prototype.routes = {
+	es.objects.Employees.prototype.esTypeDefs = {
+		EmployeesCollectionByReportsTo: "EmployeesCollection",
+		UpToEmployeesByReportsTo: "Employees",
+		OrdersCollectionByEmployeeID: "OrdersCollection"
+	};
+	
+	es.objects.Employees.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Employees_Save', response: 'entity' },
 		loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' }
 	};
+
+	es.objects.Employees.prototype.esColumnMap = [];
 
 	//#endregion
 
@@ -58,13 +63,13 @@
 
 	es.objects.EmployeesCollection = es.defineCollection('EmployeesCollection', 'Employees');
 
-	//#region Routing
+	//#region Prototype Level Information
 
-	es.objects.EmployeesCollection.prototype.routes = {
+	es.objects.EmployeesCollection.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'EmployeesCollection_Save', response: 'collection' },
 		loadAll: { method: 'GET', url: 'EmployeesCollection_LoadAll', response: 'collection' }
 	};
 
 	//#endregion
 
-}(window.es));
+}(window.es, window.myNS));

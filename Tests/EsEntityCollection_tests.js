@@ -7,68 +7,46 @@
 module('Basic Collection Tests');
 
 test('Basic Collection Smoke Test', function () {
-    var Product = es.defineEntity(function () {
-        this.ProductId = ko.observable(null);
-    });
 
-    var ProductCollection = es.defineCollection('ProductCollection', 'Product');
+    var coll = new es.objects.EmployeesCollection();
 
-    ProductCollection.prototype.myMethod = function () {
-        return 2;
-    };
-
-    var myProdCollection = new ProductCollection();
-
-    ok(myProdCollection, 'Collection Initialized');
-    equals(myProdCollection().length, [].length, 'Initialized as an Empty Array');
-    equals(myProdCollection.myMethod(), 2, 'Extra method was correctly added to Collection');
+    ok(coll, 'Collection Initialized');
+    equals(coll.length, 0, 'Initialized as an Empty Array');
+    equals(coll.myMethod(), 2, 'Extra method was correctly added to Collection');
 });
 
 test('Basic Populate Collection Test', function () {
-    var Product = es.defineEntity("Product", function () {
-        this.ProductId = ko.observable(null);
-    });
 
-    var ProductCollection = es.defineCollection('ProductCollection', 'Product');
+    var coll = new es.objects.EmployeesCollection();
 
-    var myProdCollection = new ProductCollection();
-
-    myProdCollection.populateCollection([
-        { ProductId: 'testId1' },
-        { ProductId: 'testId2' }
+    coll.populateCollection([
+        { EmployeeID: 56 },
+        { EmployeeID: 81 }
     ]);
 
-    equals(myProdCollection().length, 2, 'Collection contains 2 items');
-    equals(myProdCollection()[0].ProductId(), 'testId1', 'First item has correct property value');
-    equals(myProdCollection()[1].ProductId(), 'testId2', 'First item has correct property value');
+    equals(coll().length, 2, 'Collection contains 2 items');
+    equals(coll()[0].EmployeeID(), 56, 'First item has correct property value');
+    equals(coll()[1].EmployeeID(), 81, 'First item has correct property value');
 });
 
 test('Collection IsDirty Test', function () {
-    var Product = es.defineEntity("Product", function () {
-        this.ProductId = ko.observable(null);
-    });
 
-    var ProductCollection = es.defineCollection('ProductCollection', 'Product');
-    var myProdCollection = new ProductCollection();
+    var coll = new es.objects.EmployeesCollection();
 
-    var Product = es.defineEntity(function () {
-        this.ProductId = ko.observable('something');
-    });
+    var emp = new es.objects.Employees();
+    emp.EmployeeID(44);
 
-    var prd = new Product();
-    prd.ProductId('testId');
+    coll.push(emp);
+    equals(coll.isDirty(), true, 'isDirty returns true!');
 
-    myProdCollection.push(prd);
-    equals(myProdCollection.isDirty(), true, 'isDirty returns true!');
+    emp.acceptChanges();
+    equals(!coll.isDirty(), true, 'isDirty returns true!');
 
-    prd.acceptChanges();
-    equals(!myProdCollection.isDirty(), true, 'isDirty returns true!');
+    emp.EmployeeID(44); // set it to the same value shouldn't make it dirty
+    equals(!coll.isDirty(), true, 'isDirty returns true!');
 
-    prd.ProductId('testId'); // set it to the same value shouldn't make it dirty
-    equals(!myProdCollection.isDirty(), true, 'isDirty returns true!');
-
-    prd.ProductId('newTestId'); // now really change it
-    equals(myProdCollection.isDirty(), true, 'isDirty returns true!');
+    emp.EmployeeID(45); // now really change it
+    equals(coll.isDirty(), true, 'isDirty returns true!');
 });
 
 
