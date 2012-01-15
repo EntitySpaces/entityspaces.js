@@ -186,6 +186,11 @@ var utils = {
     // NOTE: This strips out unwanted properties, this method is only to
     //       be used to by getDirtyEntities
     shallowCopy: function (src) {
+
+        if (es.isEsEntity(src)) {
+            return src.stripDownForJSON();
+        }
+
         if (typeof src === 'object' && src !== null) {
             var dst;
 
@@ -220,6 +225,10 @@ var utils = {
                 var srcValue = src[key];
 
                 if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
+
+                    if (es.isEsEntity(srcValue)) {
+                        var ii = 0;
+                    }
 
                     switch (key) {
                         case 'es':

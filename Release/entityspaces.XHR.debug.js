@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.7-pre 
-// Built on Sat 01/14/2012 at 20:54:28.63    
+// Built on Sat 01/14/2012 at 21:30:42.69    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -377,6 +377,11 @@ var utils = {
     // NOTE: This strips out unwanted properties, this method is only to
     //       be used to by getDirtyEntities
     shallowCopy: function (src) {
+
+        if (es.isEsEntity(src)) {
+            return src.stripDownForJSON();
+        }
+
         if (typeof src === 'object' && src !== null) {
             var dst;
 
@@ -411,6 +416,10 @@ var utils = {
                 var srcValue = src[key];
 
                 if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
+
+                    if (es.isEsEntity(srcValue)) {
+                        var ii = 0;
+                    }
 
                     switch (key) {
                         case 'es':
@@ -727,6 +736,54 @@ es.EsEntity = function () { //empty constructor
         this.isDirty = function () {
             return (self.RowState() !== es.RowState.UNCHANGED);
         };
+    };
+
+    this.stripDownForJSON = function () {
+
+        var self = this,
+            stripped = {};
+
+        ko.utils.arrayForEach(es.objectKeys(this), function (key) {
+
+            var mappedName,
+                srcValue = self[key];
+
+            if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
+
+                switch (key) {
+                    case 'es':
+                    case 'esRoutes':
+                    case 'esTypeDefs':
+                    case 'esRoutes':
+                    case 'esColumnMap':
+                        break;
+
+                    case 'RowState':
+                        stripped['RowState'] = self.RowState;
+                        break;
+
+                    case 'ModifiedColumns':
+                        stripped['ModifiedColumns'] = self.ModifiedColumns;
+                        break;
+
+                    default:
+
+                        mappedName = self.esColumnMap[key];
+
+                        if (mappedName !== undefined) {
+                            // This is a core column ...
+                            if (srcValue instanceof Date) {
+                                stripped[key] = utils.dateParser.serialize(srcValue);
+                            } else {
+                                stripped[key] = srcValue;
+                            }
+                        }
+                        break;
+                }
+            }
+        });
+
+        return stripped;
     };
 
     this.populateEntity = function (data) {

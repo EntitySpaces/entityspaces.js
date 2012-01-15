@@ -47,6 +47,54 @@ es.EsEntity = function () { //empty constructor
         };
     };
 
+    this.stripDownForJSON = function () {
+
+        var self = this,
+            stripped = {};
+
+        ko.utils.arrayForEach(es.objectKeys(this), function (key) {
+
+            var mappedName,
+                srcValue = self[key];
+
+            if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
+
+                switch (key) {
+                    case 'es':
+                    case 'esRoutes':
+                    case 'esTypeDefs':
+                    case 'esRoutes':
+                    case 'esColumnMap':
+                        break;
+
+                    case 'RowState':
+                        stripped['RowState'] = self.RowState;
+                        break;
+
+                    case 'ModifiedColumns':
+                        stripped['ModifiedColumns'] = self.ModifiedColumns;
+                        break;
+
+                    default:
+
+                        mappedName = self.esColumnMap[key];
+
+                        if (mappedName !== undefined) {
+                            // This is a core column ...
+                            if (srcValue instanceof Date) {
+                                stripped[key] = utils.dateParser.serialize(srcValue);
+                            } else {
+                                stripped[key] = srcValue;
+                            }
+                        }
+                        break;
+                }
+            }
+        });
+
+        return stripped;
+    };
+
     this.populateEntity = function (data) {
         var self = this,
             prop,
