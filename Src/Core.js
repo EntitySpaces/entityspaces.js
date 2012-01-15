@@ -38,6 +38,14 @@ es.isEsCollection = function (coll) {
     var isEsColl = false;
     if (coll !== undefined && coll.es !== undefined && coll.es.___esCollection___ !== undefined) {
         isEsColl = true;
+    } else {
+        if (es.isArray(coll)) {
+            if (coll.length > 0) {
+                if (coll[0].hasOwnProperty("RowState")) {
+                    isEsColl = true;
+                }
+            }
+        }
     }
     return isEsColl;
 };

@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 5:52:04 PM
+// Date Generated       : 1/14/2012 8:40:32 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -31,21 +31,15 @@
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
-		this.UpToProductsCollection = undefined;
 		this.OrderDetailsCollectionByOrderID = undefined;
-		this.UpToCustomersByCustomerID = undefined;
 		this.UpToEmployeesByEmployeeID = undefined;
-		this.UpToShippersByShipVia = undefined;
 	});
 
 	//#region Prototype Level Information
 
 	es.objects.Orders.prototype.esTypeDefs = {
-		UpToProductsCollection: "ProductsCollection",
 		OrderDetailsCollectionByOrderID: "OrderDetailsCollection",
-		UpToCustomersByCustomerID: "Customers",
-		UpToEmployeesByEmployeeID: "Employees",
-		UpToShippersByShipVia: "Shippers"
+		UpToEmployeesByEmployeeID: "Employees"
 	};
 	
 	es.objects.Orders.prototype.esRoutes = {
@@ -53,7 +47,22 @@
 		loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity' }
 	};
 
-	es.objects.Orders.prototype.esColumnMap = [];
+	es.objects.Orders.prototype.esColumnMap = {
+		'OrderID': 'OrderID',
+		'CustomerID': 'CustomerID',
+		'EmployeeID': 'EmployeeID',
+		'OrderDate': 'OrderDate',
+		'RequiredDate': 'RequiredDate',
+		'ShippedDate': 'ShippedDate',
+		'ShipVia': 'ShipVia',
+		'Freight': 'Freight',
+		'ShipName': 'ShipName',
+		'ShipAddress': 'ShipAddress',
+		'ShipCity': 'ShipCity',
+		'ShipRegion': 'ShipRegion',
+		'ShipPostalCode': 'ShipPostalCode',
+		'ShipCountry': 'ShipCountry'
+	};
 
 	//#endregion
 

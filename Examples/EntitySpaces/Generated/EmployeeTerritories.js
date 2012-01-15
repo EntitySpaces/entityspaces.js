@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 5:51:24 PM
+// Date Generated       : 1/14/2012 8:40:02 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -35,7 +35,10 @@
 		loadByPrimaryKey: { method: 'GET', url: 'EmployeeTerritories_LoadByPrimaryKey', response: 'entity' }
 	};
 
-	es.objects.EmployeeTerritories.prototype.esColumnMap = [];
+	es.objects.EmployeeTerritories.prototype.esColumnMap = {
+		'EmployeeID': 'EmployeeID',
+		'TerritoryID': 'TerritoryID'
+	};
 
 	//#endregion
 

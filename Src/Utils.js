@@ -59,6 +59,8 @@ var utils = {
             // This is the actual PropertyChanged event
             property.subscribe(function (originalValue) {
 
+                var mappedName;
+
                 if (obj.es.ignorePropertyChanged === false) {
 
                     if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
@@ -68,7 +70,10 @@ var utils = {
                         }
 
                         if (propertyName !== "RowState") {
-                            obj.ModifiedColumns.push(propertyName);
+
+                            mappedName = obj.esColumnMap[propertyName];
+
+                            obj.ModifiedColumns.push(mappedName || propertyName);
 
                             if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
                                 obj.RowState(es.RowState.MODIFIED);
@@ -278,7 +283,7 @@ var utils = {
                         }
                     }
                     break;
-                }
+            }
 
             return theObj;
         })

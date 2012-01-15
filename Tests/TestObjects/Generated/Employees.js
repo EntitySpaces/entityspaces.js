@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 5:52:04 PM
+// Date Generated       : 1/14/2012 8:40:32 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -37,8 +37,6 @@
 		// Hierarchical Properties
 		this.EmployeesCollectionByReportsTo = undefined;
 		this.UpToEmployeesByReportsTo = undefined;
-		this.UpToTerritoriesCollection = undefined;
-		this.EmployeeTerritoriesCollectionByEmployeeID = undefined;
 		this.OrdersCollectionByEmployeeID = undefined;
 	});
 
@@ -47,8 +45,6 @@
 	es.objects.Employees.prototype.esTypeDefs = {
 		EmployeesCollectionByReportsTo: "EmployeesCollection",
 		UpToEmployeesByReportsTo: "Employees",
-		UpToTerritoriesCollection: "TerritoriesCollection",
-		EmployeeTerritoriesCollectionByEmployeeID: "EmployeeTerritoriesCollection",
 		OrdersCollectionByEmployeeID: "OrdersCollection"
 	};
 	
@@ -57,7 +53,26 @@
 		loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' }
 	};
 
-	es.objects.Employees.prototype.esColumnMap = [];
+	es.objects.Employees.prototype.esColumnMap = {
+		'EmployeeID': 'EmployeeID',
+		'LastName': 'LastName',
+		'FirstName': 'FirstName',
+		'Title': 'Title',
+		'TitleOfCourtesy': 'TitleOfCourtesy',
+		'BirthDate': 'BirthDate',
+		'HireDate': 'HireDate',
+		'Address': 'Address',
+		'City': 'City',
+		'Region': 'Region',
+		'PostalCode': 'PostalCode',
+		'Country': 'Country',
+		'HomePhone': 'HomePhone',
+		'Extension': 'Extension',
+		'Photo': 'Photo',
+		'Notes': 'Notes',
+		'ReportsTo': 'ReportsTo',
+		'PhotoPath': 'PhotoPath'
+	};
 
 	//#endregion
 

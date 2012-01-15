@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 5:51:23 PM
+// Date Generated       : 1/14/2012 8:40:02 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -57,7 +57,26 @@
 		loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' }
 	};
 
-	es.objects.Employees.prototype.esColumnMap = [];
+	es.objects.Employees.prototype.esColumnMap = {
+		'EmployeeID': 'EmployeeID',
+		'LastName': 'LastName',
+		'FirstName': 'FirstName',
+		'Title': 'Title',
+		'TitleOfCourtesy': 'TitleOfCourtesy',
+		'BirthDate': 'BirthDate',
+		'HireDate': 'HireDate',
+		'Address': 'Address',
+		'City': 'City',
+		'Region': 'Region',
+		'PostalCode': 'PostalCode',
+		'Country': 'Country',
+		'HomePhone': 'HomePhone',
+		'Extension': 'Extension',
+		'Photo': 'Photo',
+		'Notes': 'Notes',
+		'ReportsTo': 'ReportsTo',
+		'PhotoPath': 'PhotoPath'
+	};
 
 	//#endregion
 

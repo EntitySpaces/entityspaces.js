@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 5:51:24 PM
+// Date Generated       : 1/14/2012 8:40:02 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -47,7 +47,18 @@
 		loadByPrimaryKey: { method: 'GET', url: 'Products_LoadByPrimaryKey', response: 'entity' }
 	};
 
-	es.objects.Products.prototype.esColumnMap = [];
+	es.objects.Products.prototype.esColumnMap = {
+		'ProductID': 'ProductID',
+		'ProductName': 'ProductName',
+		'SupplierID': 'SupplierID',
+		'CategoryID': 'CategoryID',
+		'QuantityPerUnit': 'QuantityPerUnit',
+		'UnitPrice': 'UnitPrice',
+		'UnitsInStock': 'UnitsInStock',
+		'UnitsOnOrder': 'UnitsOnOrder',
+		'ReorderLevel': 'ReorderLevel',
+		'Discontinued': 'Discontinued'
+	};
 
 	//#endregion
 

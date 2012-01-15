@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.7-pre 
-// Built on Sat 01/14/2012 at 18:53:14.02    
+// Built on Sat 01/14/2012 at 20:54:28.38    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -159,6 +159,14 @@ es.isEsCollection = function (coll) {
     var isEsColl = false;
     if (coll !== undefined && coll.es !== undefined && coll.es.___esCollection___ !== undefined) {
         isEsColl = true;
+    } else {
+        if (es.isArray(coll)) {
+            if (coll.length > 0) {
+                if (coll[0].hasOwnProperty("RowState")) {
+                    isEsColl = true;
+                }
+            }
+        }
     }
     return isEsColl;
 };
@@ -242,6 +250,8 @@ var utils = {
             // This is the actual PropertyChanged event
             property.subscribe(function (originalValue) {
 
+                var mappedName;
+
                 if (obj.es.ignorePropertyChanged === false) {
 
                     if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
@@ -251,7 +261,10 @@ var utils = {
                         }
 
                         if (propertyName !== "RowState") {
-                            obj.ModifiedColumns.push(propertyName);
+
+                            mappedName = obj.esColumnMap[propertyName];
+
+                            obj.ModifiedColumns.push(mappedName || propertyName);
 
                             if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
                                 obj.RowState(es.RowState.MODIFIED);
@@ -461,7 +474,7 @@ var utils = {
                         }
                     }
                     break;
-                }
+            }
 
             return theObj;
         })

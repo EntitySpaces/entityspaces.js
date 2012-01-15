@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 5:51:23 PM
+// Date Generated       : 1/14/2012 8:40:02 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -46,7 +46,19 @@
 		loadByPrimaryKey: { method: 'GET', url: 'Customers_LoadByPrimaryKey', response: 'entity' }
 	};
 
-	es.objects.Customers.prototype.esColumnMap = [];
+	es.objects.Customers.prototype.esColumnMap = {
+		'CustomerID': 'CustomerID',
+		'CompanyName': 'CompanyName',
+		'ContactName': 'ContactName',
+		'ContactTitle': 'ContactTitle',
+		'Address': 'Address',
+		'City': 'City',
+		'Region': 'Region',
+		'PostalCode': 'PostalCode',
+		'Country': 'Country',
+		'Phone': 'Phone',
+		'Fax': 'Fax'
+	};
 
 	//#endregion
 
