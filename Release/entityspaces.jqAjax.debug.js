@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.7-pre 
-// Built on Sat 01/14/2012 at 21:30:42.46    
+// Built on Sat 01/14/2012 at 21:53:51.67    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -373,79 +373,6 @@ var utils = {
         return entity;
     },
 
-    // Private function used by 'getDirtyEntities' below
-    // NOTE: This strips out unwanted properties, this method is only to
-    //       be used to by getDirtyEntities
-    shallowCopy: function (src) {
-
-        if (es.isEsEntity(src)) {
-            return src.stripDownForJSON();
-        }
-
-        if (typeof src === 'object' && src !== null) {
-            var dst;
-
-            if (es.isArray(src)) {
-                dst = [];
-            }
-            else if (src instanceof Date) {
-                dst = new Date(src);
-            }
-            else if (src instanceof Boolean) {
-                dst = new Boolean(src);
-            }
-            else if (src instanceof Number) {
-                dst = new Number(src);
-            }
-            else if (src instanceof String) {
-                dst = new String(src);
-            }
-            else if (Object.create && Object.getPrototypeOf) {
-                dst = Object.create(Object.getPrototypeOf(src));
-            }
-            else if (src.__proto__ || src.constructor.prototype) {
-                var proto = src.__proto__ || src.constructor.prototype || {};
-                var T = function () { };
-                T.prototype = proto;
-                dst = new T;
-                if (!dst.__proto__) { dst.__proto__ = proto; }
-            }
-
-            ko.utils.arrayForEach(es.objectKeys(src), function (key) {
-
-                var srcValue = src[key];
-
-                if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
-
-                    if (es.isEsEntity(srcValue)) {
-                        var ii = 0;
-                    }
-
-                    switch (key) {
-                        case 'es':
-                        case 'routes':
-                        case 'esTypeDefs':
-                        case 'esRoutes':
-                        case 'esColumnMap':
-                            break;
-
-                        default:
-
-                            if (srcValue instanceof Date) {
-                                dst[key] = utils.dateParser.serialize(srcValue);
-                            } else {
-                                dst[key] = srcValue;
-                            }
-                            break;
-                    }
-                }
-            });
-            return dst;
-        } else {
-            return src;
-        }
-    },
-
     getDirtyGraph: function (obj) {
 
         var i, k, dirty, paths = [], root = null;
@@ -455,7 +382,6 @@ var utils = {
             switch (this.key) {
 
                 case 'es':
-                case 'routes':
                 case 'esTypeDefs':
                 case 'esRoutes':
                 case 'esColumnMap':
@@ -494,7 +420,7 @@ var utils = {
             if (es.isArray(obj)) {
                 dirty = [];
             } else {
-                dirty = utils.shallowCopy(utils.removeExtraColumns(obj));
+                dirty = obj.stripDownForJSON();
             }
 
             root = dirty;
@@ -520,16 +446,14 @@ var utils = {
                     data = data[thePath[k]];
                 }
 
-                data = utils.removeExtraColumns(data);
-
                 if (es.isArray(dirty)) {
-                    dirty.push(utils.shallowCopy(data));
+                    dirty.push(data.stripDownForJSON());
                 } else {
-                    dirty = utils.shallowCopy(data);
+                    dirty = data.stripDownForJSON();
                 }
             }
         }
-        //#endregion Save
+        //#endregion
 
         return root;
     }
