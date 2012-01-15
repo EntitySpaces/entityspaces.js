@@ -228,37 +228,48 @@ var utils = {
 
             if (es.isArray(obj)) {
                 dirty = [];
+                if (es.isEsCollection(obj)) {
+                    //obj.prepareForJSON();
+                }
             } else {
-                dirty = obj.stripDownForJSON();
+                dirty = obj.prepareForJSON();
             }
 
             root = dirty;
 
             for (i = 0; i < paths.length; i++) {
 
-                var thePath = paths[i];
-                var data = obj;
-                dirty = root;
+                var thePath = paths[i],
+                    data = obj,
+                    dirty = root,
+                    prop;
 
                 for (k = 0; k < thePath.length; k++) {
 
-                    if (!dirty.hasOwnProperty(thePath[k])) {
+                    prop = thePath[k];
 
-                        if (es.isArray(data[thePath[k]])) {
-                            dirty[thePath[k]] = [];
-                            dirty = dirty[thePath[k]];
+                    if (!dirty.hasOwnProperty(prop)) {
+
+                        if (es.isArray(data[prop])) {
+                            dirty[prop] = [];
+
+                            if (es.isEsCollection(data[prop])) {
+                                //data[prop].prepareForJSON();
+                            }
+
+                            dirty = dirty[prop];
                         }
                     } else {
-                        dirty = dirty[thePath[k]];
+                        dirty = dirty[prop];
                     }
 
-                    data = data[thePath[k]];
+                    data = data[prop];
                 }
 
                 if (es.isArray(dirty)) {
-                    dirty.push(data.stripDownForJSON());
+                    dirty.push(data.prepareForJSON());
                 } else {
-                    dirty = data.stripDownForJSON();
+                    dirty = data.prepareForJSON();
                 }
             }
         }

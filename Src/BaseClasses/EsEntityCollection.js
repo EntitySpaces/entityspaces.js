@@ -27,6 +27,10 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         return ko.utils.arrayFilter(array, predicate);
     },
 
+    prepareForJSON: function () {
+
+    },
+
     acceptChanges: function () {
 
         var self = this;

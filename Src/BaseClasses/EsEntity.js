@@ -47,7 +47,7 @@ es.EsEntity = function () { //empty constructor
         };
     };
 
-    this.stripDownForJSON = function () {
+    this.prepareForJSON = function () {
 
         var self = this,
             stripped = {};

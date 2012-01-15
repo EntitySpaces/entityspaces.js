@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.7-pre 
-// Built on Sat 01/14/2012 at 21:53:51.90    
+// Built on Sat 01/14/2012 at 22:20:37.40    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -419,37 +419,48 @@ var utils = {
 
             if (es.isArray(obj)) {
                 dirty = [];
+                if (es.isEsCollection(obj)) {
+                    //obj.prepareForJSON();
+                }
             } else {
-                dirty = obj.stripDownForJSON();
+                dirty = obj.prepareForJSON();
             }
 
             root = dirty;
 
             for (i = 0; i < paths.length; i++) {
 
-                var thePath = paths[i];
-                var data = obj;
-                dirty = root;
+                var thePath = paths[i],
+                    data = obj,
+                    dirty = root,
+                    prop;
 
                 for (k = 0; k < thePath.length; k++) {
 
-                    if (!dirty.hasOwnProperty(thePath[k])) {
+                    prop = thePath[k];
 
-                        if (es.isArray(data[thePath[k]])) {
-                            dirty[thePath[k]] = [];
-                            dirty = dirty[thePath[k]];
+                    if (!dirty.hasOwnProperty(prop)) {
+
+                        if (es.isArray(data[prop])) {
+                            dirty[prop] = [];
+
+                            if (es.isEsCollection(data[prop])) {
+                                //data[prop].prepareForJSON();
+                            }
+
+                            dirty = dirty[prop];
                         }
                     } else {
-                        dirty = dirty[thePath[k]];
+                        dirty = dirty[prop];
                     }
 
-                    data = data[thePath[k]];
+                    data = data[prop];
                 }
 
                 if (es.isArray(dirty)) {
-                    dirty.push(data.stripDownForJSON());
+                    dirty.push(data.prepareForJSON());
                 } else {
-                    dirty = data.stripDownForJSON();
+                    dirty = data.prepareForJSON();
                 }
             }
         }
@@ -662,7 +673,7 @@ es.EsEntity = function () { //empty constructor
         };
     };
 
-    this.stripDownForJSON = function () {
+    this.prepareForJSON = function () {
 
         var self = this,
             stripped = {};
@@ -979,6 +990,10 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         var array = this();
 
         return ko.utils.arrayFilter(array, predicate);
+    },
+
+    prepareForJSON: function () {
+
     },
 
     acceptChanges: function () {
