@@ -29,6 +29,38 @@ Up to Five EnititySpaces Profiler Licenses depending on your team size. <BR>
 We are looking for medium to large companies, if you are interested send an email to support@entityspaces.net with "Early Adopter" in the subject line with information about your company and how you would use entityspaces.js.
 
 
+The entityspaces.js classes
+============================================
+
+The Single Entity Class (pseudocode)
+
+````javascript
+
+class es.EsEntity = function () {
+
+	// Public Methods
+	acceptChanges();    // rarely used
+	rejectChanges();    // rollback any changes
+	applyDefaults();    // override to assign defaults to columns
+	isDirty();          // does this entity have changes
+	isDirtyGraph();     // does this entire object graph have changes
+	loadByPrimaryKey(); // load this entity by the primary key
+	markAsDeleted();    // mark this entity as deleted
+	save();             // save this entity
+
+	// Protected Methods
+	load();             // called by your custom load methods
+	populateEntity();   // load by passing in data (not recommended)
+
+	// Properties
+	RowState();         // es.es.RowState.ADDED/DELETED/MODIFIED/UNCHANGED
+	ModifiedColumns[];  // contains the columns that are dirty
+};
+````
+
+
+
+
 The entityspaces.js syntax
 ============================================
 
