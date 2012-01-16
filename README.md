@@ -53,7 +53,7 @@ es.EsEntity = function () {
 	populateEntity();   // load by passing in data (not recommended)
 
 	// Properties
-	RowState();         // es.es.RowState.ADDED/DELETED/MODIFIED/UNCHANGED
+	RowState();         // es.RowState.ADDED/DELETED/MODIFIED/UNCHANGED
 	ModifiedColumns[];  // contains the columns that are dirty
 };
 ````
@@ -125,12 +125,12 @@ Below is an example of real working code for the entityspaces.js and is the same
     // Add two new employees through a collection
     var coll = new es.objects.EmployeesCollection();
 
-    emp = new es.objects.Employees();
+    emp = coll.addNew();
     emp.FirstName("Just1");
     emp.LastName("Added1");
     coll.push(emp);
 
-    emp = new es.objects.Employees();
+    emp = coll.addNew();
     emp.FirstName("Just2");
     emp.LastName("Added2");
     coll.push(emp);
