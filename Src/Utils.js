@@ -63,7 +63,15 @@ var utils = {
 
                 if (obj.es.ignorePropertyChanged === false) {
 
-                    if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
+                    mappedName = obj.esColumnMap[propertyName];
+
+                    if (mappedName === 1) {
+                        mappedName = propertyName;
+                    }
+
+                    mappedName = mappedName || propertyName;
+
+                    if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), mappedName) === -1) {
 
                         if (!obj.es.originalValues[propertyName]) {
                             obj.es.originalValues[propertyName] = originalValue;
@@ -71,13 +79,7 @@ var utils = {
 
                         if (propertyName !== "RowState") {
 
-                            mappedName = obj.esColumnMap[propertyName];
-
-                            if (mappedName === 1) {
-                                mappedName = propertyName;
-                            }
-
-                            obj.ModifiedColumns.push(mappedName || propertyName);
+                            obj.ModifiedColumns.push(mappedName);
 
                             if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
                                 obj.RowState(es.RowState.MODIFIED);

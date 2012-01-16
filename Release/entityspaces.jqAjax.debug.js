@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.8-pre 
-// Built on Sun 01/15/2012 at 19:35:48.00    
+// Built on Sun 01/15/2012 at 19:52:21.09    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -250,7 +250,15 @@ var utils = {
 
                 if (obj.es.ignorePropertyChanged === false) {
 
-                    if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), propertyName) === -1) {
+                    mappedName = obj.esColumnMap[propertyName];
+
+                    if (mappedName === 1) {
+                        mappedName = propertyName;
+                    }
+
+                    mappedName = mappedName || propertyName;
+
+                    if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), mappedName) === -1) {
 
                         if (!obj.es.originalValues[propertyName]) {
                             obj.es.originalValues[propertyName] = originalValue;
@@ -258,13 +266,7 @@ var utils = {
 
                         if (propertyName !== "RowState") {
 
-                            mappedName = obj.esColumnMap[propertyName];
-
-                            if (mappedName === 1) {
-                                mappedName = propertyName;
-                            }
-
-                            obj.ModifiedColumns.push(mappedName || propertyName);
+                            obj.ModifiedColumns.push(mappedName);
 
                             if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
                                 obj.RowState(es.RowState.MODIFIED);
