@@ -81,9 +81,6 @@ es.EsEntityCollection = function () {
 };
 ````
 
-
-
-
 The entityspaces.js syntax
 ============================================
 
