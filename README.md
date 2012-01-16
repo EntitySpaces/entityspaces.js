@@ -53,7 +53,7 @@ es.EsEntity = function () {
 	populateEntity();   // load by passing in data (not recommended)
 
 	// Properties
-	RowState();         // es.es.RowState.ADDED/DELETED/MODIFIED/UNCHANGED
+	RowState();         // es.RowState.ADDED/DELETED/MODIFIED/UNCHANGED
 	ModifiedColumns[];  // contains the columns that are dirty
 };
 ````
