@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 8:40:02 PM
+// Date Generated       : 1/15/2012 12:20:55 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -58,24 +58,24 @@
 	};
 
 	es.objects.Employees.prototype.esColumnMap = {
-		'EmployeeID': 'EmployeeID',
-		'LastName': 'LastName',
-		'FirstName': 'FirstName',
-		'Title': 'Title',
-		'TitleOfCourtesy': 'TitleOfCourtesy',
-		'BirthDate': 'BirthDate',
-		'HireDate': 'HireDate',
-		'Address': 'Address',
-		'City': 'City',
-		'Region': 'Region',
-		'PostalCode': 'PostalCode',
-		'Country': 'Country',
-		'HomePhone': 'HomePhone',
-		'Extension': 'Extension',
-		'Photo': 'Photo',
-		'Notes': 'Notes',
-		'ReportsTo': 'ReportsTo',
-		'PhotoPath': 'PhotoPath'
+		'EmployeeID': 1,
+		'LastName': 1,
+		'FirstName': 1,
+		'Title': 1,
+		'TitleOfCourtesy': 1,
+		'BirthDate': 1,
+		'HireDate': 1,
+		'Address': 1,
+		'City': 1,
+		'Region': 1,
+		'PostalCode': 1,
+		'Country': 1,
+		'HomePhone': 1,
+		'Extension': 1,
+		'Photo': 1,
+		'Notes': 1,
+		'ReportsTo': 1,
+		'PhotoPath': 1
 	};
 
 	//#endregion

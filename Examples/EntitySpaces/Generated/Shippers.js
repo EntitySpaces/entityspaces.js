@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 8:40:02 PM
+// Date Generated       : 1/15/2012 12:20:55 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -35,9 +35,9 @@
 	};
 
 	es.objects.Shippers.prototype.esColumnMap = {
-		'ShipperID': 'ShipperID',
-		'CompanyName': 'CompanyName',
-		'Phone': 'Phone'
+		'ShipperID': 1,
+		'CompanyName': 1,
+		'Phone': 1
 	};
 
 	//#endregion

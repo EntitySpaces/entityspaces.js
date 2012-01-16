@@ -73,6 +73,10 @@ var utils = {
 
                             mappedName = obj.esColumnMap[propertyName];
 
+                            if (mappedName === 1) {
+                                mappedName = propertyName;
+                            }
+
                             obj.ModifiedColumns.push(mappedName || propertyName);
 
                             if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
@@ -182,98 +186,59 @@ var utils = {
         return entity;
     },
 
-    getDirtyGraph: function (obj) {
+    getDirtyGraph: function (obj, root, dirtyGraph) {
 
-        var i, k, dirty, paths = [], root = null;
+        var propertyName, entity, arr, temp, index;
 
-        es.Visit(obj).forEach(function (theObj) {
-
-            switch (this.key) {
-
-                case 'es':
-                case 'esTypeDefs':
-                case 'esRoutes':
-                case 'esColumnMap':
-                case 'esExtendedData':
-                    this.block();
-                    break;
-
-                default:
-
-                    if (this.isLeaf === false) {
-
-                        if (theObj instanceof Array) { return theObj; }
-
-                        if (theObj.hasOwnProperty("RowState")) {
-
-                            switch (theObj.RowState) {
-
-                                case es.RowState.ADDED:
-                                case es.RowState.DELETED:
-                                case es.RowState.MODIFIED:
-
-                                    paths.push(this.path);
-                                    break;
-                            }
-                        }
-                    }
-                    break;
-            }
-
-            return theObj;
-        })
-
-        //#region Rebuild tree of dirty objects from "paths[]"
-        if (paths.length > 0) {
-
-            if (es.isArray(obj)) {
-                dirty = [];
-                if (es.isEsCollection(obj)) {
-                    //obj.prepareForJSON();
-                }
-            } else {
-                dirty = obj.prepareForJSON();
-            }
-
-            root = dirty;
-
-            for (i = 0; i < paths.length; i++) {
-
-                var thePath = paths[i],
-                    data = obj,
-                    dirty = root,
-                    prop;
-
-                for (k = 0; k < thePath.length; k++) {
-
-                    prop = thePath[k];
-
-                    if (!dirty.hasOwnProperty(prop)) {
-
-                        if (es.isArray(data[prop])) {
-                            dirty[prop] = [];
-
-                            if (es.isEsCollection(data[prop])) {
-                                //data[prop].prepareForJSON();
-                            }
-
-                            dirty = dirty[prop];
-                        }
-                    } else {
-                        dirty = dirty[prop];
-                    }
-
-                    data = data[prop];
-                }
-
-                if (es.isArray(dirty)) {
-                    dirty.push(data.prepareForJSON());
-                } else {
-                    dirty = data.prepareForJSON();
-                }
+        // Check and see if we have anything dirty at all?
+        if (root === undefined) {
+            if (!obj.isDirtyGraph()) {
+                return {};
             }
         }
-        //#endregion
+
+        if (es.isEsEntity(obj)) {
+
+            if (es.isArray(dirtyGraph)) {
+                temp = obj.prepareForJSON();
+                dirtyGraph.push(temp);
+                dirtyGraph = temp;
+            } else {
+                dirtyGraph = obj.prepareForJSON();
+            }
+
+            if (root === undefined) {
+                root = dirtyGraph;
+            }
+
+            for (propertyName in obj.esTypeDefs) {
+
+                if (obj[propertyName] !== undefined) {
+
+                    if (obj[propertyName].isDirtyGraph()) {
+
+                        arr = obj[propertyName].prepareForJSON();
+                        dirtyGraph[propertyName] = [];
+
+                        for (index = 0; index < arr.length; index++) {
+                            entity = arr[index];
+                            es.utils.getDirtyGraph(entity, root, dirtyGraph[propertyName]);
+                        }
+                    }
+                }
+            }
+        } else {
+
+            // They passed in a collection 
+            root = [];
+
+            arr = obj.prepareForJSON();
+
+            for (index = 0; index < arr.length; index++) {
+                entity = arr[index];
+                es.utils.getDirtyGraph(entity, root, root);
+            }
+        }
 
         return root;
     }

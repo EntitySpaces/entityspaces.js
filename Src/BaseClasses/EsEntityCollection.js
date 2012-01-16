@@ -29,6 +29,22 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     prepareForJSON: function () {
 
+        var stripped = [],
+            self = this;
+
+        ko.utils.arrayForEach(this(), function (entity) {
+            if (entity.isDirtyGraph()) {
+                stripped.push(entity);
+            }
+        });
+
+        ko.utils.arrayForEach(this.es.deletedEntities, function (entity) {
+            if (entity.RowState() !== es.RowState.ADDED) {
+                stripped.push(entity);
+            }
+        });
+
+        return stripped;
     },
 
     acceptChanges: function () {
@@ -241,7 +257,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         options.route = self.esRoutes['commit'];
 
         //TODO: potentially the most inefficient call in the whole lib
-        options.data = es.utils.getDirtyGraph(ko.toJS(self));
+        options.data = es.utils.getDirtyGraph(self);
 
         if (options.route) {
             options.url = options.route.url;

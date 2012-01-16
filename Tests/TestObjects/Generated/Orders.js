@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 8:40:32 PM
+// Date Generated       : 1/15/2012 12:22:24 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -48,20 +48,20 @@
 	};
 
 	es.objects.Orders.prototype.esColumnMap = {
-		'OrderID': 'OrderID',
-		'CustomerID': 'CustomerID',
-		'EmployeeID': 'EmployeeID',
-		'OrderDate': 'OrderDate',
-		'RequiredDate': 'RequiredDate',
-		'ShippedDate': 'ShippedDate',
-		'ShipVia': 'ShipVia',
-		'Freight': 'Freight',
-		'ShipName': 'ShipName',
-		'ShipAddress': 'ShipAddress',
-		'ShipCity': 'ShipCity',
-		'ShipRegion': 'ShipRegion',
-		'ShipPostalCode': 'ShipPostalCode',
-		'ShipCountry': 'ShipCountry'
+		'OrderID': 1,
+		'CustomerID': 1,
+		'EmployeeID': 1,
+		'OrderDate': 1,
+		'RequiredDate': 1,
+		'ShippedDate': 1,
+		'ShipVia': 1,
+		'Freight': 1,
+		'ShipName': 1,
+		'ShipAddress': 1,
+		'ShipCity': 1,
+		'ShipRegion': 1,
+		'ShipPostalCode': 1,
+		'ShipCountry': 1
 	};
 
 	//#endregion

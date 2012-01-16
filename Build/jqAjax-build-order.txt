@@ -3,7 +3,6 @@
 ..\Src\DateParser.js
 ..\Src\Core.js
 ..\Src\utils.js
-..\Src\Visitor.js
 ..\Src\BaseClasses\EsEntity.js
 ..\Src\BaseClasses\EsEntityCollection.js
 ..\Src\BaseClasses\DefineEntity.js

@@ -48,28 +48,28 @@ es.defineCollection = function (typeName, entityName) {
             /*
             this.isDirty = ko.computed(function () {
 
-                var i,
-                    entity,
-                    arr = self(),
-                    isDirty = false;
+            var i,
+            entity,
+            arr = self(),
+            isDirty = false;
 
-                if (this.es.deletedEntities.length > 0) {
-                    isDirty = true;
-                } else if (this.length > 0 && this()[this.length - 1].isDirty()) {
-                        isDirty = true;
-                } else {
-                    for (i = 0; i < arr.length; i++) {
+            if (this.es.deletedEntities.length > 0) {
+            isDirty = true;
+            } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
+            isDirty = true;
+            } else {
+            for (i = 0; i < arr.length; i++) {
 
-                        entity = arr[i];
+            entity = arr[i];
 
-                        if (entity.RowState() !== es.RowState.UNCHANGED) {
-                            isDirty = true;
-                            break;
-                        }
-                    }
-                }
+            if (entity.RowState() !== es.RowState.UNCHANGED) {
+            isDirty = true;
+            break;
+            }
+            }
+            }
 
-                return isDirty;
+            return isDirty;
             });
             */
 
@@ -79,25 +79,58 @@ es.defineCollection = function (typeName, entityName) {
                 var i,
                     entity,
                     arr = self(),
-                    isDirty = false;
+                    dirty = false;
 
                 if (this.es.deletedEntities.length > 0) {
-                    isDirty = true;
-                } else if (this.length > 0 && this()[this.length - 1].isDirty()) {
-                        isDirty = true;
+                    dirty = true;
+                } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
+                    dirty = true;
                 } else {
                     for (i = 0; i < arr.length; i++) {
 
                         entity = arr[i];
 
                         if (entity.RowState() !== es.RowState.UNCHANGED) {
-                            isDirty = true;
+                            dirty = true;
                             break;
                         }
                     }
                 }
 
-                return isDirty;
+                return dirty;
+            };
+
+            this.isDirtyGraph = function () {
+
+                // Rather than just call isDirty() above we dup the logic here
+                // for performance so we do not have to walk all of the entities twice
+                var i,
+                    entity,
+                    arr = self(),
+                    dirty = false;
+
+                if (this.es.deletedEntities.length > 0) {
+                    dirty = true;
+                } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
+                    dirty = true;
+                } else {
+                    for (i = 0; i < arr.length; i++) {
+
+                        entity = arr[i];
+
+                        if (entity.RowState() !== es.RowState.UNCHANGED) {
+                            dirty = true;
+                            break;
+                        } else {
+                            dirty = entity.isDirtyGraph();
+                            if (dirty === true) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                return dirty;
             };
         };
 

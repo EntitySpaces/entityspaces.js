@@ -45,6 +45,27 @@ es.EsEntity = function () { //empty constructor
         this.isDirty = function () {
             return (self.RowState() !== es.RowState.UNCHANGED);
         };
+
+        this.isDirtyGraph = function () {
+
+            var dirty = false;
+
+            if (self.RowState() !== es.RowState.UNCHANGED) {
+                return true;
+            }
+
+            for (propertyName in this.esTypeDefs) {
+
+                if (this[propertyName] !== undefined) {
+                    dirty = this[propertyName].isDirtyGraph();
+                    if (dirty == true) {
+                        break;
+                    }
+                }
+            }
+
+            return dirty;
+        }
     };
 
     this.prepareForJSON = function () {
@@ -54,28 +75,30 @@ es.EsEntity = function () { //empty constructor
 
         ko.utils.arrayForEach(es.objectKeys(this), function (key) {
 
-            var mappedName,
-                srcValue = self[key];
+            var mappedName, srcValue;
 
-            if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
+            switch (key) {
+                case 'es':
+                case 'esRoutes':
+                case 'esTypeDefs':
+                case 'esRoutes':
+                case 'esColumnMap':
+                case 'esExtendedData':
+                    break;
 
-                switch (key) {
-                    case 'es':
-                    case 'esRoutes':
-                    case 'esTypeDefs':
-                    case 'esRoutes':
-                    case 'esColumnMap':
-                        break;
+                case 'RowState':
+                    stripped['RowState'] = ko.utils.unwrapObservable(self.RowState);
+                    break;
 
-                    case 'RowState':
-                        stripped['RowState'] = self.RowState;
-                        break;
+                case 'ModifiedColumns':
+                    stripped['ModifiedColumns'] = ko.utils.unwrapObservable(self.ModifiedColumns);
+                    break;
 
-                    case 'ModifiedColumns':
-                        stripped['ModifiedColumns'] = self.ModifiedColumns;
-                        break;
+                default:
 
-                    default:
+                    srcValue = ko.utils.unwrapObservable(self[key]);
+
+                    if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
 
                         mappedName = self.esColumnMap[key];
 
@@ -87,8 +110,8 @@ es.EsEntity = function () { //empty constructor
                                 stripped[key] = srcValue;
                             }
                         }
-                        break;
-                }
+                    }
+                    break;
             }
         });
 
@@ -300,8 +323,10 @@ es.EsEntity = function () { //empty constructor
 
         options.route = route;
 
+        var root = undefined;
+
         //TODO: potentially the most inefficient call in the whole lib
-        options.data = es.utils.getDirtyGraph(ko.toJS(self));
+        options.data = es.utils.getDirtyGraph(self);
 
         if (route) {
             options.url = route.url;

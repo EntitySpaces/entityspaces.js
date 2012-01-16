@@ -216,7 +216,7 @@ test('Hierarchical Save', function () {
     emp.FirstName("Googy");
     emp.OrdersCollectionByEmployeeID()[0].CustomerID('ERIC');
     emp.OrdersCollectionByEmployeeID()[0].OrderDetailsCollectionByOrderID()[0].Quantity(16);
-    emp.OrdersCollectionByEmployeeID()[1].Freight(55);
+    emp.OrdersCollectionByEmployeeID()[1].Freight(56);
 
     //override the provider's execute method
     es.testDataProvider.execute = function (options) {
@@ -228,6 +228,6 @@ test('Hierarchical Save', function () {
     ok(saveReq.data, 'data submitted for save');
     equals(saveReq.data.OrdersCollectionByEmployeeID[0].CustomerID, 'ERIC', 'Correct CustomerID');
     equals(saveReq.data.OrdersCollectionByEmployeeID[0].OrderDetailsCollectionByOrderID[0].Quantity, 16, 'Correct Quantity');
-    equals(saveReq.data.OrdersCollectionByEmployeeID[1].Freight, 55, 'Correct Freight');
+    equals(saveReq.data.OrdersCollectionByEmployeeID[1].Freight, 56, 'Correct Freight');
 });
 

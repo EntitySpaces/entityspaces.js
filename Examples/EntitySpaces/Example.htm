@@ -32,6 +32,7 @@
 
         emp.FirstName("Thiss");
         emp.OrdersCollectionByEmployeeID()[0].ShipCity(Math.random().toString().substr(0, 4));
+        emp.OrdersCollectionByEmployeeID()[1].ShipCity(Math.random().toString().substr(0, 4));
         emp.save();
 
         // Collection load/save

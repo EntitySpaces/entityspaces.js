@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 8:40:32 PM
+// Date Generated       : 1/15/2012 12:22:24 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -37,11 +37,11 @@
 	};
 
 	es.objects.OrderDetails.prototype.esColumnMap = {
-		'OrderID': 'OrderID',
-		'ProductID': 'ProductID',
-		'UnitPrice': 'UnitPrice',
-		'Quantity': 'Quantity',
-		'Discount': 'Discount'
+		'OrderID': 1,
+		'ProductID': 1,
+		'UnitPrice': 1,
+		'Quantity': 1,
+		'Discount': 1
 	};
 
 	//#endregion

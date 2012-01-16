@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/14/2012 8:40:02 PM
+// Date Generated       : 1/15/2012 12:20:55 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -47,17 +47,17 @@
 	};
 
 	es.objects.Customers.prototype.esColumnMap = {
-		'CustomerID': 'CustomerID',
-		'CompanyName': 'CompanyName',
-		'ContactName': 'ContactName',
-		'ContactTitle': 'ContactTitle',
-		'Address': 'Address',
-		'City': 'City',
-		'Region': 'Region',
-		'PostalCode': 'PostalCode',
-		'Country': 'Country',
-		'Phone': 'Phone',
-		'Fax': 'Fax'
+		'CustomerID': 1,
+		'CompanyName': 1,
+		'ContactName': 1,
+		'ContactTitle': 1,
+		'Address': 1,
+		'City': 1,
+		'Region': 1,
+		'PostalCode': 1,
+		'Country': 1,
+		'Phone': 1,
+		'Fax': 1
 	};
 
 	//#endregion

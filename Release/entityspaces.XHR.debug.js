@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.7-pre 
-// Built on Sat 01/14/2012 at 22:20:37.40    
+// Built on Sun 01/15/2012 at 19:15:37.58    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -264,6 +264,10 @@ var utils = {
 
                             mappedName = obj.esColumnMap[propertyName];
 
+                            if (mappedName === 1) {
+                                mappedName = propertyName;
+                            }
+
                             obj.ModifiedColumns.push(mappedName || propertyName);
 
                             if (obj.RowState() !== es.RowState.MODIFIED && obj.RowState() !== es.RowState.ADDED) {
@@ -373,98 +377,59 @@ var utils = {
         return entity;
     },
 
-    getDirtyGraph: function (obj) {
+    getDirtyGraph: function (obj, root, dirtyGraph) {
 
-        var i, k, dirty, paths = [], root = null;
+        var propertyName, entity, arr, temp, index;
 
-        es.Visit(obj).forEach(function (theObj) {
-
-            switch (this.key) {
-
-                case 'es':
-                case 'esTypeDefs':
-                case 'esRoutes':
-                case 'esColumnMap':
-                case 'esExtendedData':
-                    this.block();
-                    break;
-
-                default:
-
-                    if (this.isLeaf === false) {
-
-                        if (theObj instanceof Array) { return theObj; }
-
-                        if (theObj.hasOwnProperty("RowState")) {
-
-                            switch (theObj.RowState) {
-
-                                case es.RowState.ADDED:
-                                case es.RowState.DELETED:
-                                case es.RowState.MODIFIED:
-
-                                    paths.push(this.path);
-                                    break;
-                            }
-                        }
-                    }
-                    break;
-            }
-
-            return theObj;
-        })
-
-        //#region Rebuild tree of dirty objects from "paths[]"
-        if (paths.length > 0) {
-
-            if (es.isArray(obj)) {
-                dirty = [];
-                if (es.isEsCollection(obj)) {
-                    //obj.prepareForJSON();
-                }
-            } else {
-                dirty = obj.prepareForJSON();
-            }
-
-            root = dirty;
-
-            for (i = 0; i < paths.length; i++) {
-
-                var thePath = paths[i],
-                    data = obj,
-                    dirty = root,
-                    prop;
-
-                for (k = 0; k < thePath.length; k++) {
-
-                    prop = thePath[k];
-
-                    if (!dirty.hasOwnProperty(prop)) {
-
-                        if (es.isArray(data[prop])) {
-                            dirty[prop] = [];
-
-                            if (es.isEsCollection(data[prop])) {
-                                //data[prop].prepareForJSON();
-                            }
-
-                            dirty = dirty[prop];
-                        }
-                    } else {
-                        dirty = dirty[prop];
-                    }
-
-                    data = data[prop];
-                }
-
-                if (es.isArray(dirty)) {
-                    dirty.push(data.prepareForJSON());
-                } else {
-                    dirty = data.prepareForJSON();
-                }
+        // Check and see if we have anything dirty at all?
+        if (root === undefined) {
+            if (!obj.isDirtyGraph()) {
+                return {};
             }
         }
-        //#endregion
+
+        if (es.isEsEntity(obj)) {
+
+            if (es.isArray(dirtyGraph)) {
+                temp = obj.prepareForJSON();
+                dirtyGraph.push(temp);
+                dirtyGraph = temp;
+            } else {
+                dirtyGraph = obj.prepareForJSON();
+            }
+
+            if (root === undefined) {
+                root = dirtyGraph;
+            }
+
+            for (propertyName in obj.esTypeDefs) {
+
+                if (obj[propertyName] !== undefined) {
+
+                    if (obj[propertyName].isDirtyGraph()) {
+
+                        arr = obj[propertyName].prepareForJSON();
+                        dirtyGraph[propertyName] = [];
+
+                        for (index = 0; index < arr.length; index++) {
+                            entity = arr[index];
+                            es.utils.getDirtyGraph(entity, root, dirtyGraph[propertyName]);
+                        }
+                    }
+                }
+            }
+        } else {
+
+            // They passed in a collection 
+            root = [];
+
+            arr = obj.prepareForJSON();
+
+            for (index = 0; index < arr.length; index++) {
+                entity = arr[index];
+                es.utils.getDirtyGraph(entity, root, root);
+            }
+        }
 
         return root;
     }
@@ -484,141 +449,6 @@ es.utils = utils;
 es.exportSymbol('es.extend', es.extend);
 es.exportSymbol('es.startTracking', es.startTracking);
 es.exportSymbol('es.getDirtyGraph', es.getDirtyGraph); 
- 
- 
-/*********************************************** 
-* FILE: ..\Src\Visitor.js 
-***********************************************/ 
-﻿
-es.Visit = function (obj) {
-    if (!(this instanceof es.Visit)) {
-        return new es.Visit(obj);
-    }
-    this.value = obj;
-};
-
-es.Visit.prototype.forEach = function (cb) {
-    this.value = walk(this.value, cb, false);
-    return this.value;
-};
-
-var walk = function(root, cb, immutable) {
-    var path = [];
-    var parents = [];
-    var alive = true;
-
-    var forEach = function (xs, fn) {
-        if (xs.forEach) return xs.forEach(fn)
-        else for (var i = 0; i < xs.length; i++) {
-            fn(xs[i], i, xs);
-        }
-    };
-
-    return (function walker(node_) {
-        var node = immutable ? copy(node_) : node_;
-        var modifiers = {};
-
-        var keepGoing = true;
-
-        var state = {
-            node: node,
-            node_: node_,
-            path: [].concat(path),
-            parent: parents[parents.length - 1],
-            parents: parents,
-            key: path.slice(-1)[0],
-            isRoot: path.length === 0,
-            level: path.length,
-            circular: null,
-            update: function (x, stopHere) {
-                if (!state.isRoot) {
-                    state.parent.node[state.key] = x;
-                }
-                state.node = x;
-                if (stopHere) { keepGoing = false; }
-            },
-            'delete': function (stopHere) {
-                delete state.parent.node[state.key];
-                if (stopHere) { keepGoing = false; }
-            },
-            remove: function (stopHere) {
-                if (es.isArray(state.parent.node)) {
-                    state.parent.node.splice(state.key, 1);
-                } else {
-                    delete state.parent.node[state.key];
-                }
-                if (stopHere) { keepGoing = false; }
-            },
-            keys: null,
-            before: function (f) { modifiers.before = f; },
-            after: function (f) { modifiers.after = f; },
-            pre: function (f) { modifiers.pre = f; },
-            post: function (f) { modifiers.post = f; },
-            stop: function () { alive = false; },
-            block: function () { keepGoing = false; }
-        };
-
-        if (!alive) { return state; }
-
-        if (typeof node === 'object' && node !== null) {
-            state.keys = es.objectKeys(node);
-
-            state.isLeaf = state.keys.length === 0;
-
-            for (var i = 0; i < parents.length; i++) {
-                if (parents[i].node_ === node_) {
-                    state.circular = parents[i];
-                    break;
-                }
-            }
-        }
-        else {
-            state.isLeaf = true;
-        }
-
-        state.notLeaf = !state.isLeaf;
-        state.notRoot = !state.isRoot;
-
-        // use return values to update if defined
-        var ret = cb.call(state, state.node);
-        if (ret !== undefined && state.update) state.update(ret);
-
-        if (modifiers.before) modifiers.before.call(state, state.node);
-
-        if (!keepGoing) return state;
-
-        if (typeof state.node === 'object' && state.node !== null && !state.circular) {
-            parents.push(state);
-
-            forEach(state.keys, function (key, i) {
-                path.push(key);
-
-                if (modifiers.pre) modifiers.pre.call(state, state.node[key], key);
-
-                var child = walker(state.node[key]);
-                if (immutable && Object.hasOwnProperty.call(state.node, key)) {
-                    state.node[key] = child.node;
-                }
-
-                child.isLast = i == state.keys.length - 1;
-                child.isFirst = i == 0;
-
-                if (modifiers.post) modifiers.post.call(state, child);
-
-                path.pop();
-            });
-            parents.pop();
-        }
-
-        if (modifiers.after) modifiers.after.call(state, state.node);
-
-        return state;
-    })(root).node;
-};
-
-
-
- 
  
  
 /*********************************************** 
@@ -671,6 +501,27 @@ es.EsEntity = function () { //empty constructor
         this.isDirty = function () {
             return (self.RowState() !== es.RowState.UNCHANGED);
         };
+
+        this.isDirtyGraph = function () {
+
+            var dirty = false;
+
+            if (self.RowState() !== es.RowState.UNCHANGED) {
+                return true;
+            }
+
+            for (propertyName in this.esTypeDefs) {
+
+                if (this[propertyName] !== undefined) {
+                    dirty = this[propertyName].isDirtyGraph();
+                    if (dirty == true) {
+                        break;
+                    }
+                }
+            }
+
+            return dirty;
+        }
     };
 
     this.prepareForJSON = function () {
@@ -680,28 +531,30 @@ es.EsEntity = function () { //empty constructor
 
         ko.utils.arrayForEach(es.objectKeys(this), function (key) {
 
-            var mappedName,
-                srcValue = self[key];
+            var mappedName, srcValue;
 
-            if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
+            switch (key) {
+                case 'es':
+                case 'esRoutes':
+                case 'esTypeDefs':
+                case 'esRoutes':
+                case 'esColumnMap':
+                case 'esExtendedData':
+                    break;
 
-                switch (key) {
-                    case 'es':
-                    case 'esRoutes':
-                    case 'esTypeDefs':
-                    case 'esRoutes':
-                    case 'esColumnMap':
-                        break;
+                case 'RowState':
+                    stripped['RowState'] = ko.utils.unwrapObservable(self.RowState);
+                    break;
 
-                    case 'RowState':
-                        stripped['RowState'] = self.RowState;
-                        break;
+                case 'ModifiedColumns':
+                    stripped['ModifiedColumns'] = ko.utils.unwrapObservable(self.ModifiedColumns);
+                    break;
 
-                    case 'ModifiedColumns':
-                        stripped['ModifiedColumns'] = self.ModifiedColumns;
-                        break;
+                default:
 
-                    default:
+                    srcValue = ko.utils.unwrapObservable(self[key]);
+
+                    if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
 
                         mappedName = self.esColumnMap[key];
 
@@ -713,8 +566,8 @@ es.EsEntity = function () { //empty constructor
                                 stripped[key] = srcValue;
                             }
                         }
-                        break;
-                }
+                    }
+                    break;
             }
         });
 
@@ -926,8 +779,10 @@ es.EsEntity = function () { //empty constructor
 
         options.route = route;
 
+        var root = undefined;
+
         //TODO: potentially the most inefficient call in the whole lib
-        options.data = es.utils.getDirtyGraph(ko.toJS(self));
+        options.data = es.utils.getDirtyGraph(self);
 
         if (route) {
             options.url = route.url;
@@ -994,6 +849,22 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     prepareForJSON: function () {
 
+        var stripped = [],
+            self = this;
+
+        ko.utils.arrayForEach(this(), function (entity) {
+            if (entity.isDirtyGraph()) {
+                stripped.push(entity);
+            }
+        });
+
+        ko.utils.arrayForEach(this.es.deletedEntities, function (entity) {
+            if (entity.RowState() !== es.RowState.ADDED) {
+                stripped.push(entity);
+            }
+        });
+
+        return stripped;
     },
 
     acceptChanges: function () {
@@ -1206,7 +1077,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         options.route = self.esRoutes['commit'];
 
         //TODO: potentially the most inefficient call in the whole lib
-        options.data = es.utils.getDirtyGraph(ko.toJS(self));
+        options.data = es.utils.getDirtyGraph(self);
 
         if (options.route) {
             options.url = options.route.url;
@@ -1325,28 +1196,28 @@ es.defineCollection = function (typeName, entityName) {
             /*
             this.isDirty = ko.computed(function () {
 
-                var i,
-                    entity,
-                    arr = self(),
-                    isDirty = false;
+            var i,
+            entity,
+            arr = self(),
+            isDirty = false;
 
-                if (this.es.deletedEntities.length > 0) {
-                    isDirty = true;
-                } else if (this.length > 0 && this()[this.length - 1].isDirty()) {
-                        isDirty = true;
-                } else {
-                    for (i = 0; i < arr.length; i++) {
+            if (this.es.deletedEntities.length > 0) {
+            isDirty = true;
+            } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
+            isDirty = true;
+            } else {
+            for (i = 0; i < arr.length; i++) {
 
-                        entity = arr[i];
+            entity = arr[i];
 
-                        if (entity.RowState() !== es.RowState.UNCHANGED) {
-                            isDirty = true;
-                            break;
-                        }
-                    }
-                }
+            if (entity.RowState() !== es.RowState.UNCHANGED) {
+            isDirty = true;
+            break;
+            }
+            }
+            }
 
-                return isDirty;
+            return isDirty;
             });
             */
 
@@ -1356,25 +1227,58 @@ es.defineCollection = function (typeName, entityName) {
                 var i,
                     entity,
                     arr = self(),
-                    isDirty = false;
+                    dirty = false;
 
                 if (this.es.deletedEntities.length > 0) {
-                    isDirty = true;
-                } else if (this.length > 0 && this()[this.length - 1].isDirty()) {
-                        isDirty = true;
+                    dirty = true;
+                } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
+                    dirty = true;
                 } else {
                     for (i = 0; i < arr.length; i++) {
 
                         entity = arr[i];
 
                         if (entity.RowState() !== es.RowState.UNCHANGED) {
-                            isDirty = true;
+                            dirty = true;
                             break;
                         }
                     }
                 }
 
-                return isDirty;
+                return dirty;
+            };
+
+            this.isDirtyGraph = function () {
+
+                // Rather than just call isDirty() above we dup the logic here
+                // for performance so we do not have to walk all of the entities twice
+                var i,
+                    entity,
+                    arr = self(),
+                    dirty = false;
+
+                if (this.es.deletedEntities.length > 0) {
+                    dirty = true;
+                } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
+                    dirty = true;
+                } else {
+                    for (i = 0; i < arr.length; i++) {
+
+                        entity = arr[i];
+
+                        if (entity.RowState() !== es.RowState.UNCHANGED) {
+                            dirty = true;
+                            break;
+                        } else {
+                            dirty = entity.isDirtyGraph();
+                            if (dirty === true) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                return dirty;
             };
         };
 
