@@ -292,7 +292,8 @@ The custom class contains custom methods and properties. The methods are added v
 ````javascript
 
 // Custom method
-es.objects.Employees.prototype.LoadByPrimaryKeyHierarchical = function (employeeId, success, error, state) {
+es.objects.Employees.prototype.LoadByPrimaryKeyHierarchical = 
+    function (employeeId, success, error, state) {
 
     this.load({
         route: this.esRoutes['LoadByPrimaryKeyHierarchical'],
