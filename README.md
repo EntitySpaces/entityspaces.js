@@ -42,6 +42,7 @@ es.EsEntity = function () {
 	acceptChanges();    // rarely used
 	rejectChanges();    // rollback any changes
 	applyDefaults();    // override to assign defaults to columns
+	customize();        // override to add extra columns to your entity
 	isDirty();          // does this entity have changes
 	isDirtyGraph();     // does this entire object graph have changes
 	loadByPrimaryKey(); // load this entity by the primary key
