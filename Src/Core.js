@@ -61,4 +61,3 @@ es.isEsEntity = function (entity) {
 //#endregion
 
 es.exportSymbol('es.isEsCollection', es.isEsCollection);
-

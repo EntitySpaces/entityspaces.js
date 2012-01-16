@@ -48,28 +48,28 @@ es.defineCollection = function (typeName, entityName) {
             /*
             this.isDirty = ko.computed(function () {
 
-            var i,
-            entity,
-            arr = self(),
-            isDirty = false;
+                var i,
+                    entity,
+                    arr = self(),
+                    dirty = false;
 
-            if (this.es.deletedEntities.length > 0) {
-            isDirty = true;
-            } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
-            isDirty = true;
-            } else {
-            for (i = 0; i < arr.length; i++) {
+                if (this.es.deletedEntities.length > 0) {
+                    dirty = true;
+                } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
+                    dirty = true;
+                } else {
+                    for (i = 0; i < arr.length; i++) {
 
-            entity = arr[i];
+                        entity = arr[i];
 
-            if (entity.RowState() !== es.RowState.UNCHANGED) {
-            isDirty = true;
-            break;
-            }
-            }
-            }
+                        if (entity.RowState() !== es.RowState.UNCHANGED) {
+                            dirty = true;
+                            break;
+                        }
+                    }
+                }
 
-            return isDirty;
+                return dirty;
             });
             */
 

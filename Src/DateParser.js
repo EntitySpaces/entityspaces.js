@@ -1,5 +1,4 @@
 ﻿
-
 es.DateParser = function () {
 
     // From the Server

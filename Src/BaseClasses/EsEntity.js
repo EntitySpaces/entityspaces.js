@@ -38,7 +38,7 @@ es.EsEntity = function () { //empty constructor
 
         /*
         this.isDirty = ko.computed(function () {
-        return (self.RowState() !== es.RowState.UNCHANGED);
+            return (self.RowState() !== es.RowState.UNCHANGED);
         });
         */
 

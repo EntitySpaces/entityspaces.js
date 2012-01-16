@@ -245,11 +245,11 @@ var utils = {
 };
 
 utils.newId = (function () {
-	var seedId = new Date().getTime();
+    var seedId = new Date().getTime();
 
-	return function () {
-		return ++seedId;
-	};
+    return function () {
+        return ++seedId;
+    };
 
 } ());
 
