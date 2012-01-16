@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.7-pre 
-// Built on Sun 01/15/2012 at 19:15:37.39    
+// The entityspaces.js JavaScript library v1.0.8-pre 
+// Built on Sun 01/15/2012 at 19:35:48.00    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -68,8 +68,7 @@ es.getGeneratedNamespaceObj = function() {
     return es.generatedNamespace;
 };
 
-es.exportSymbol('es', es);
- 
+es.exportSymbol('es', es); 
  
  
 /*********************************************** 
@@ -91,7 +90,6 @@ es.exportSymbol('es.RowState', es.RowState);
 * FILE: ..\Src\DateParser.js 
 ***********************************************/ 
 ﻿
-
 es.DateParser = function () {
 
     // From the Server
@@ -181,9 +179,7 @@ es.isEsEntity = function (entity) {
 
 //#endregion
 
-es.exportSymbol('es.isEsCollection', es.isEsCollection);
-
- 
+es.exportSymbol('es.isEsCollection', es.isEsCollection); 
  
  
 /*********************************************** 
@@ -436,11 +432,11 @@ var utils = {
 };
 
 utils.newId = (function () {
-	var seedId = new Date().getTime();
+    var seedId = new Date().getTime();
 
-	return function () {
-		return ++seedId;
-	};
+    return function () {
+        return ++seedId;
+    };
 
 } ());
 
@@ -494,7 +490,7 @@ es.EsEntity = function () { //empty constructor
 
         /*
         this.isDirty = ko.computed(function () {
-        return (self.RowState() !== es.RowState.UNCHANGED);
+            return (self.RowState() !== es.RowState.UNCHANGED);
         });
         */
 
@@ -1196,28 +1192,28 @@ es.defineCollection = function (typeName, entityName) {
             /*
             this.isDirty = ko.computed(function () {
 
-            var i,
-            entity,
-            arr = self(),
-            isDirty = false;
+                var i,
+                    entity,
+                    arr = self(),
+                    dirty = false;
 
-            if (this.es.deletedEntities.length > 0) {
-            isDirty = true;
-            } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
-            isDirty = true;
-            } else {
-            for (i = 0; i < arr.length; i++) {
+                if (this.es.deletedEntities.length > 0) {
+                    dirty = true;
+                } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
+                    dirty = true;
+                } else {
+                    for (i = 0; i < arr.length; i++) {
 
-            entity = arr[i];
+                        entity = arr[i];
 
-            if (entity.RowState() !== es.RowState.UNCHANGED) {
-            isDirty = true;
-            break;
-            }
-            }
-            }
+                        if (entity.RowState() !== es.RowState.UNCHANGED) {
+                            dirty = true;
+                            break;
+                        }
+                    }
+                }
 
-            return isDirty;
+                return dirty;
             });
             */
 
