@@ -36,7 +36,7 @@ The Single Entity Class (pseudocode)
 
 ````javascript
 
-class es.EsEntity = function () {
+es.EsEntity = function () {
 
 	// Public Methods
 	acceptChanges();    // rarely used
@@ -55,6 +55,29 @@ class es.EsEntity = function () {
 	// Properties
 	RowState();         // es.es.RowState.ADDED/DELETED/MODIFIED/UNCHANGED
 	ModifiedColumns[];  // contains the columns that are dirty
+};
+````
+
+The Collection Class (pseudocode)
+
+````javascript
+
+es.EsEntityCollection = function () {
+
+	// Public Methods
+	acceptChanges();      // rarely used
+	addNew();             // adds a new entity and returns it
+	rejectChanges();      // rollback any changes
+	applyDefaults();      // override to assign defaults to columns
+	isDirty();            // does this entity have changes
+	isDirtyGraph();       // does this entire object graph have changes
+	loadAll();            // loads all records from the associate table
+	markAllAsDeleted();   // marks all entities in the collection as deleted
+	save();               // save this entity (and the entire graph)
+
+	// Protected Methods
+	load();               // called by your custom load methods
+	populateCollection(); // load by passing in data (not recommended)
 };
 ````
 
