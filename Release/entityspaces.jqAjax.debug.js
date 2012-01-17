@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.8-pre 
-// Built on Tue 01/17/2012 at  9:07:50.79    
+// The entityspaces.js JavaScript library v1.0.9-pre 
+// Built on Tue 01/17/2012 at 11:09:52.55    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -477,6 +477,7 @@ es.EsEntity = function () { //empty constructor
         self.es.ignorePropertyChanged = false;
         self.es.originalValues = {};
         self.es.collection = undefined;
+        self.es.isLoading = ko.observable(false);
 
         //start change tracking
         es.utils.startTracking(self);
@@ -494,10 +495,10 @@ es.EsEntity = function () { //empty constructor
         this.isDirty = ko.computed(function () {
             return (self.RowState() !== es.RowState.UNCHANGED);
         });
-       
+
         /*
         this.isDirty = function () {
-            return (self.RowState() !== es.RowState.UNCHANGED);
+        return (self.RowState() !== es.RowState.UNCHANGED);
         };
         */
 
@@ -692,6 +693,8 @@ es.EsEntity = function () { //empty constructor
     this.load = function (options) {
         var self = this;
 
+        self.es.isLoading(true);
+
         if (options.success !== undefined || options.error !== undefined) {
             options.async = true;
         } else {
@@ -716,13 +719,19 @@ es.EsEntity = function () { //empty constructor
 
             //fire the passed in success handler
             if (successHandler) { successHandler.call(self, data, options.state); }
+            self.es.isLoading(false);
         };
 
         options.error = function (status, responseText, options) {
             if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
+            self.es.isLoading(false);
         };
 
         es.dataProvider.execute(options);
+
+        if (options.async === false) {
+            self.es.isLoading(false);
+        }
     };
 
     this.loadByPrimaryKey = function (primaryKey, success, error, state) { // or single argument of options
@@ -747,6 +756,8 @@ es.EsEntity = function () { //empty constructor
     //#region Save
     this.save = function (success, error, state) {
         var self = this;
+
+        self.es.isLoading(true);
 
         var route,
 			options = { success: success, error: error, state: state };
@@ -794,13 +805,19 @@ es.EsEntity = function () { //empty constructor
         options.success = function (data, options) {
             self.populateEntity(data);
             if (successHandler) { successHandler.call(self, data, options.state); }
+            self.es.isLoading(false);
         };
 
         options.error = function (status, responseText, options) {
             if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
+            self.es.isLoading(false);
         };
 
         es.dataProvider.execute(options);
+
+        if (options.async === false) {
+            self.es.isLoading(false);
+        }
     };
     //#endregion
 };
@@ -834,6 +851,7 @@ es.EsEntityCollection = function () {
 
     obs.es['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
     obs.es.deletedEntities = new ko.observableArray();
+    obs.es.isLoading = ko.observable(false);
 
     return obs;
 };
@@ -1005,6 +1023,8 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     load: function (options) {
         var self = this;
 
+        self.es.isLoading(true);
+
         if (options.success !== undefined || options.error !== undefined) {
             options.async = true;
         } else {
@@ -1029,13 +1049,19 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
             //fire the passed in success handler
             if (successHandler) { successHandler.call(self, data, options.state); }
+            self.es.isLoading(false);
         };
 
         options.error = function (status, responseText, options) {
             if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
+            self.es.isLoading(false);
         };
 
         es.dataProvider.execute(options);
+
+        if (options.async === false) {
+            self.es.isLoading(false);
+        }
     },
 
     loadAll: function (success, error, state) {
@@ -1059,6 +1085,8 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     //#region Save
     save: function (success, error, state) {
         var self = this;
+
+        self.es.isLoading(true);
 
         var route,
             options = { success: success, error: error, state: state };
@@ -1089,13 +1117,19 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         options.success = function (data, options) {
             self.populateCollection(data);
             if (successHandler) { successHandler.call(self, data, options.state); }
+            self.es.isLoading(false);
         };
 
         options.error = function (status, responseText, options) {
             if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
+            self.es.isLoading(false);
         };
 
         es.dataProvider.execute(options);
+
+        if (options.async === false) {
+            self.es.isLoading(false);
+        }
     }
     //#endregion
 };
@@ -1188,43 +1222,41 @@ es.defineCollection = function (typeName, entityName) {
                 }
             }
 
-            //#region Private Methods
-
-            //#endregion Private Methods
-
+            /*
             this.isDirty = ko.computed(function () {
 
-                var i,
-                    entity,
-                    arr = self(),
-                    dirty = false;
+            var i,
+            entity,
+            arr = self(),
+            dirty = false;
 
-                if (self.es.deletedEntities().length > 0) {
-                    dirty = true;
-                } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
-                    dirty = true;
-                } else {
-                    for (i = 0; i < arr.length; i++) {
+            if (self.es.deletedEntities().length > 0) {
+            dirty = true;
+            } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
+            dirty = true;
+            } else {
+            for (i = 0; i < arr.length; i++) {
 
-                        entity = arr[i];
+            entity = arr[i];
 
-                        if (entity.RowState() !== es.RowState.UNCHANGED) {
-                            dirty = true;
-                            break;
-                        }
-                    }
-                }
+            if (entity.RowState() !== es.RowState.UNCHANGED) {
+            dirty = true;
+            break;
+            }
+            }
+            }
 
-                return dirty;
+            return dirty;
             });
+            */
 
-            /*
+
             this.isDirty = function () {
 
                 var i,
-                    entity,
-                    arr = self(),
-                    dirty = false;
+            entity,
+            arr = self(),
+            dirty = false;
 
                 if (this.es.deletedEntities().length > 0) {
                     dirty = true;
@@ -1244,7 +1276,7 @@ es.defineCollection = function (typeName, entityName) {
 
                 return dirty;
             };
-            */
+
 
             this.isDirtyGraph = function () {
 

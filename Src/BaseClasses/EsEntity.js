@@ -23,6 +23,7 @@ es.EsEntity = function () { //empty constructor
         self.es.ignorePropertyChanged = false;
         self.es.originalValues = {};
         self.es.collection = undefined;
+        self.es.isLoading = ko.observable(false);
 
         //start change tracking
         es.utils.startTracking(self);
@@ -40,10 +41,10 @@ es.EsEntity = function () { //empty constructor
         this.isDirty = ko.computed(function () {
             return (self.RowState() !== es.RowState.UNCHANGED);
         });
-       
+
         /*
         this.isDirty = function () {
-            return (self.RowState() !== es.RowState.UNCHANGED);
+        return (self.RowState() !== es.RowState.UNCHANGED);
         };
         */
 
@@ -238,6 +239,8 @@ es.EsEntity = function () { //empty constructor
     this.load = function (options) {
         var self = this;
 
+        self.es.isLoading(true);
+
         if (options.success !== undefined || options.error !== undefined) {
             options.async = true;
         } else {
@@ -262,13 +265,19 @@ es.EsEntity = function () { //empty constructor
 
             //fire the passed in success handler
             if (successHandler) { successHandler.call(self, data, options.state); }
+            self.es.isLoading(false);
         };
 
         options.error = function (status, responseText, options) {
             if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
+            self.es.isLoading(false);
         };
 
         es.dataProvider.execute(options);
+
+        if (options.async === false) {
+            self.es.isLoading(false);
+        }
     };
 
     this.loadByPrimaryKey = function (primaryKey, success, error, state) { // or single argument of options
@@ -293,6 +302,8 @@ es.EsEntity = function () { //empty constructor
     //#region Save
     this.save = function (success, error, state) {
         var self = this;
+
+        self.es.isLoading(true);
 
         var route,
 			options = { success: success, error: error, state: state };
@@ -340,13 +351,19 @@ es.EsEntity = function () { //empty constructor
         options.success = function (data, options) {
             self.populateEntity(data);
             if (successHandler) { successHandler.call(self, data, options.state); }
+            self.es.isLoading(false);
         };
 
         options.error = function (status, responseText, options) {
             if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
+            self.es.isLoading(false);
         };
 
         es.dataProvider.execute(options);
+
+        if (options.async === false) {
+            self.es.isLoading(false);
+        }
     };
     //#endregion
 };

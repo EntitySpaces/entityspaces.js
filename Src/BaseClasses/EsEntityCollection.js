@@ -15,6 +15,7 @@ es.EsEntityCollection = function () {
 
     obs.es['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
     obs.es.deletedEntities = new ko.observableArray();
+    obs.es.isLoading = ko.observable(false);
 
     return obs;
 };
@@ -186,6 +187,8 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     load: function (options) {
         var self = this;
 
+        self.es.isLoading(true);
+
         if (options.success !== undefined || options.error !== undefined) {
             options.async = true;
         } else {
@@ -210,13 +213,19 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
             //fire the passed in success handler
             if (successHandler) { successHandler.call(self, data, options.state); }
+            self.es.isLoading(false);
         };
 
         options.error = function (status, responseText, options) {
             if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
+            self.es.isLoading(false);
         };
 
         es.dataProvider.execute(options);
+
+        if (options.async === false) {
+            self.es.isLoading(false);
+        }
     },
 
     loadAll: function (success, error, state) {
@@ -240,6 +249,8 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     //#region Save
     save: function (success, error, state) {
         var self = this;
+
+        self.es.isLoading(true);
 
         var route,
             options = { success: success, error: error, state: state };
@@ -270,13 +281,19 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         options.success = function (data, options) {
             self.populateCollection(data);
             if (successHandler) { successHandler.call(self, data, options.state); }
+            self.es.isLoading(false);
         };
 
         options.error = function (status, responseText, options) {
             if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
+            self.es.isLoading(false);
         };
 
         es.dataProvider.execute(options);
+
+        if (options.async === false) {
+            self.es.isLoading(false);
+        }
     }
     //#endregion
 };

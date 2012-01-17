@@ -41,43 +41,41 @@ es.defineCollection = function (typeName, entityName) {
                 }
             }
 
-            //#region Private Methods
-
-            //#endregion Private Methods
-
+            /*
             this.isDirty = ko.computed(function () {
 
-                var i,
-                    entity,
-                    arr = self(),
-                    dirty = false;
+            var i,
+            entity,
+            arr = self(),
+            dirty = false;
 
-                if (self.es.deletedEntities().length > 0) {
-                    dirty = true;
-                } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
-                    dirty = true;
-                } else {
-                    for (i = 0; i < arr.length; i++) {
+            if (self.es.deletedEntities().length > 0) {
+            dirty = true;
+            } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
+            dirty = true;
+            } else {
+            for (i = 0; i < arr.length; i++) {
 
-                        entity = arr[i];
+            entity = arr[i];
 
-                        if (entity.RowState() !== es.RowState.UNCHANGED) {
-                            dirty = true;
-                            break;
-                        }
-                    }
-                }
+            if (entity.RowState() !== es.RowState.UNCHANGED) {
+            dirty = true;
+            break;
+            }
+            }
+            }
 
-                return dirty;
+            return dirty;
             });
+            */
 
-            /*
+
             this.isDirty = function () {
 
                 var i,
-                    entity,
-                    arr = self(),
-                    dirty = false;
+            entity,
+            arr = self(),
+            dirty = false;
 
                 if (this.es.deletedEntities().length > 0) {
                     dirty = true;
@@ -97,7 +95,7 @@ es.defineCollection = function (typeName, entityName) {
 
                 return dirty;
             };
-            */
+
 
             this.isDirtyGraph = function () {
 
