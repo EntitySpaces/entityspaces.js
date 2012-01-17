@@ -14,7 +14,7 @@ es.EsEntityCollection = function () {
     ko.utils.extend(obs, es.EsEntityCollection.fn);
 
     obs.es['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
-    obs.es.deletedEntities = [];
+    obs.es.deletedEntities = new ko.observableArray();
 
     return obs;
 };
@@ -38,7 +38,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             }
         });
 
-        ko.utils.arrayForEach(this.es.deletedEntities, function (entity) {
+        ko.utils.arrayForEach(this.es.deletedEntities(), function (entity) {
             if (entity.RowState() !== es.RowState.ADDED) {
                 stripped.push(entity);
             }
@@ -57,7 +57,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             }
         });
 
-        this.es.deletedEntities = [];
+        this.es.deletedEntities = new ko.observableArray();
     },
 
     rejectChanges: function () {
@@ -67,7 +67,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             slot = 0,
             index = 0;
 
-        ko.utils.arrayForEach(this.es.deletedEntities, function (entity) {
+        ko.utils.arrayForEach(this.es.deletedEntities(), function (entity) {
             if (entity.RowState() === es.RowState.ADDED) {
                 addedEntities[slot] = index;
                 slot += 1;
@@ -80,7 +80,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         if (addedEntities.length > 0) {
             for (index = addedEntities.length - 1; index >= 0; index--) {
-                this.es.deletedEntities.splice(addedEntities[index], 1);
+                this.es.deletedEntities().splice(addedEntities[index], 1);
             }
         }
 
@@ -90,26 +90,26 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             }
         });
 
-        ko.utils.arrayForEach(this.es.deletedEntities, function (entity) {
+        ko.utils.arrayForEach(this.es.deletedEntities(), function (entity) {
             self.push(entity);
         });
 
-        this.es.deletedEntities = [];
+        this.es.deletedEntities = new ko.observableArray();
     },
 
     markAllAsDeleted: function () {
 
         var i, entity, coll, len;
 
-        this.es.deletedEntities = this.splice(0, this().length);
+        this.es.deletedEntities(this.splice(0, this().length));
 
         coll = this.es.deletedEntities;
-        len = coll.length;
+        len = coll().length;
 
         // NOTE: Added ones are moved into the es.deletedEntities area incase reject changes is called
         //       in which case they are restored, however, during a save they are simply discarded.
         for (i = 0; i < len; i += 1) {
-            entity = coll[i];
+            entity = coll()[i];
             if (entity.RowState() === es.RowState.UNCHANGED) {
                 entity.markAsDeleted();
             }

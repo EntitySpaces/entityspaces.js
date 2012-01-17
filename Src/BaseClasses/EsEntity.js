@@ -36,15 +36,16 @@ es.EsEntity = function () { //empty constructor
             }
         });
 
-        /*
+
         this.isDirty = ko.computed(function () {
             return (self.RowState() !== es.RowState.UNCHANGED);
         });
-        */
-
+       
+        /*
         this.isDirty = function () {
             return (self.RowState() !== es.RowState.UNCHANGED);
         };
+        */
 
         this.isDirtyGraph = function () {
 

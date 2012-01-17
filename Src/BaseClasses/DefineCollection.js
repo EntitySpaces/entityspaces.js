@@ -45,7 +45,6 @@ es.defineCollection = function (typeName, entityName) {
 
             //#endregion Private Methods
 
-            /*
             this.isDirty = ko.computed(function () {
 
                 var i,
@@ -53,7 +52,7 @@ es.defineCollection = function (typeName, entityName) {
                     arr = self(),
                     dirty = false;
 
-                if (this.es.deletedEntities.length > 0) {
+                if (self.es.deletedEntities().length > 0) {
                     dirty = true;
                 } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
                     dirty = true;
@@ -71,9 +70,8 @@ es.defineCollection = function (typeName, entityName) {
 
                 return dirty;
             });
-            */
 
-
+            /*
             this.isDirty = function () {
 
                 var i,
@@ -81,7 +79,7 @@ es.defineCollection = function (typeName, entityName) {
                     arr = self(),
                     dirty = false;
 
-                if (this.es.deletedEntities.length > 0) {
+                if (this.es.deletedEntities().length > 0) {
                     dirty = true;
                 } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
                     dirty = true;
@@ -99,6 +97,7 @@ es.defineCollection = function (typeName, entityName) {
 
                 return dirty;
             };
+            */
 
             this.isDirtyGraph = function () {
 
@@ -109,7 +108,7 @@ es.defineCollection = function (typeName, entityName) {
                     arr = self(),
                     dirty = false;
 
-                if (this.es.deletedEntities.length > 0) {
+                if (this.es.deletedEntities().length > 0) {
                     dirty = true;
                 } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
                     dirty = true;

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.8-pre 
-// Built on Sun 01/15/2012 at 19:52:21.09    
+// Built on Tue 01/17/2012 at  9:07:50.79    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -490,15 +490,16 @@ es.EsEntity = function () { //empty constructor
             }
         });
 
-        /*
+
         this.isDirty = ko.computed(function () {
             return (self.RowState() !== es.RowState.UNCHANGED);
         });
-        */
-
+       
+        /*
         this.isDirty = function () {
             return (self.RowState() !== es.RowState.UNCHANGED);
         };
+        */
 
         this.isDirtyGraph = function () {
 
@@ -832,7 +833,7 @@ es.EsEntityCollection = function () {
     ko.utils.extend(obs, es.EsEntityCollection.fn);
 
     obs.es['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
-    obs.es.deletedEntities = [];
+    obs.es.deletedEntities = new ko.observableArray();
 
     return obs;
 };
@@ -856,7 +857,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             }
         });
 
-        ko.utils.arrayForEach(this.es.deletedEntities, function (entity) {
+        ko.utils.arrayForEach(this.es.deletedEntities(), function (entity) {
             if (entity.RowState() !== es.RowState.ADDED) {
                 stripped.push(entity);
             }
@@ -875,7 +876,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             }
         });
 
-        this.es.deletedEntities = [];
+        this.es.deletedEntities = new ko.observableArray();
     },
 
     rejectChanges: function () {
@@ -885,7 +886,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             slot = 0,
             index = 0;
 
-        ko.utils.arrayForEach(this.es.deletedEntities, function (entity) {
+        ko.utils.arrayForEach(this.es.deletedEntities(), function (entity) {
             if (entity.RowState() === es.RowState.ADDED) {
                 addedEntities[slot] = index;
                 slot += 1;
@@ -898,7 +899,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         if (addedEntities.length > 0) {
             for (index = addedEntities.length - 1; index >= 0; index--) {
-                this.es.deletedEntities.splice(addedEntities[index], 1);
+                this.es.deletedEntities().splice(addedEntities[index], 1);
             }
         }
 
@@ -908,26 +909,26 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             }
         });
 
-        ko.utils.arrayForEach(this.es.deletedEntities, function (entity) {
+        ko.utils.arrayForEach(this.es.deletedEntities(), function (entity) {
             self.push(entity);
         });
 
-        this.es.deletedEntities = [];
+        this.es.deletedEntities = new ko.observableArray();
     },
 
     markAllAsDeleted: function () {
 
         var i, entity, coll, len;
 
-        this.es.deletedEntities = this.splice(0, this().length);
+        this.es.deletedEntities(this.splice(0, this().length));
 
         coll = this.es.deletedEntities;
-        len = coll.length;
+        len = coll().length;
 
         // NOTE: Added ones are moved into the es.deletedEntities area incase reject changes is called
         //       in which case they are restored, however, during a save they are simply discarded.
         for (i = 0; i < len; i += 1) {
-            entity = coll[i];
+            entity = coll()[i];
             if (entity.RowState() === es.RowState.UNCHANGED) {
                 entity.markAsDeleted();
             }
@@ -1191,7 +1192,6 @@ es.defineCollection = function (typeName, entityName) {
 
             //#endregion Private Methods
 
-            /*
             this.isDirty = ko.computed(function () {
 
                 var i,
@@ -1199,7 +1199,7 @@ es.defineCollection = function (typeName, entityName) {
                     arr = self(),
                     dirty = false;
 
-                if (this.es.deletedEntities.length > 0) {
+                if (self.es.deletedEntities().length > 0) {
                     dirty = true;
                 } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
                     dirty = true;
@@ -1217,9 +1217,8 @@ es.defineCollection = function (typeName, entityName) {
 
                 return dirty;
             });
-            */
 
-
+            /*
             this.isDirty = function () {
 
                 var i,
@@ -1227,7 +1226,7 @@ es.defineCollection = function (typeName, entityName) {
                     arr = self(),
                     dirty = false;
 
-                if (this.es.deletedEntities.length > 0) {
+                if (this.es.deletedEntities().length > 0) {
                     dirty = true;
                 } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
                     dirty = true;
@@ -1245,6 +1244,7 @@ es.defineCollection = function (typeName, entityName) {
 
                 return dirty;
             };
+            */
 
             this.isDirtyGraph = function () {
 
@@ -1255,7 +1255,7 @@ es.defineCollection = function (typeName, entityName) {
                     arr = self(),
                     dirty = false;
 
-                if (this.es.deletedEntities.length > 0) {
+                if (this.es.deletedEntities().length > 0) {
                     dirty = true;
                 } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
                     dirty = true;
