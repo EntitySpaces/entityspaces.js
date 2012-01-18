@@ -12,22 +12,20 @@
 </head>
 <body>
     <div id="sandbox1" style="font-family: Verdana, Helvetica, Sans-Serif; font-size: 12px;">
-        <div style="max-height: 600px; max-width: 900px;">
-        <div style="width: 900px; height:400px">
-            <div id="myGrid" data-bind="koGrid:{ data: collection, 
-                                    isMultiSelect: false,
-                                    selectedItem: mySelectedItem,
-                                    autogenerateColumns: false,
-                                    columnDefs: [
-                                        {field: 'EmployeeID', displayName: 'Employee ID', width: 110}, 
-                                        {field: 'FirstName', displayName: 'First Name', width: 200}, 
-                                        {field: 'LastName', displayName: 'Last Name', width: 180} 
-                                    ],
-                                    displaySelectionCheckbox: true,
-                                    displayRowIndex: true }" >
-             </div>
+        
+        <div id="myGrid" style="max-height: 500px; max-width: 500px;" data-bind="koGrid:{ data: collection, 
+                            isMultiSelect: false,
+                            selectedItem: mySelectedItem,
+                            autogenerateColumns: false,
+                            columnDefs: [
+                                {field: 'EmployeeID', displayName: 'Employee ID', width: 140}, 
+                                {field: 'FirstName', displayName: 'First Name', width: 130}, 
+                                {field: 'LastName', displayName: 'Last Name', width: 150} 
+                            ],
+                            displaySelectionCheckbox: true,
+                            displayRowIndex: true }" >
         </div>
-
+        
         <div data-bind="with: mySelectedItem">
 
             <!--------------------------->
@@ -85,16 +83,32 @@
 
     };
 
-    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+    //es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+    $(document).ready(function () {
+        var vm = {
+            collection: new es.objects.EmployeesCollection(),
+            mySelectedItem: ko.observable(new es.objects.Employees())
+        };
 
-    var vm = {
-        collection: new es.objects.EmployeesCollection(),
-        mySelectedItem: ko.observable(new es.objects.Employees())
-    };
+        ko.applyBindings(vm, $('#sandbox1')[0]);
+        //vm.collection.loadAll();
 
-    ko.applyBindings(vm, $('#sandbox1')[0]);
-    vm.collection.loadAll();
+        var emps = [];
+        var emp, i = 0;
 
+        while (emps.length < 200) {
+            emp = new es.objects.Employees();
+
+            emp.FirstName('John');
+            emp.LastName('Doe' + i.toString());
+            emp.EmployeeID(i);
+
+            emps.push(emp);
+            i++;
+        }
+
+        vm.collection(emps);
+    });
 </script>
 
 </html>
