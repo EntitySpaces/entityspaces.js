@@ -86,14 +86,15 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         }
 
         ko.utils.arrayForEach(this(), function (entity) {
-            if (entity.RowState() === es.RowState.MODIFIED) {
+            if (entity.RowState() !== es.RowState.UNCHANGED) {
                 entity.rejectChanges();
             }
         });
 
-        ko.utils.arrayForEach(this.es.deletedEntities(), function (entity) {
-            self.push(entity);
-        });
+        if (this.es.deletedEntities().length > 0) {
+            var newArr = self().concat(this.es.deletedEntities());
+            self(newArr);
+        }
 
         this.es.deletedEntities = new ko.observableArray();
     },

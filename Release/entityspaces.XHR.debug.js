@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.9-pre 
-// Built on Tue 01/17/2012 at 11:09:55.05    
+// The entityspaces.js JavaScript library v1.0.10-pre 
+// Built on Wed 01/18/2012 at 15:51:24.06    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -922,14 +922,15 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         }
 
         ko.utils.arrayForEach(this(), function (entity) {
-            if (entity.RowState() === es.RowState.MODIFIED) {
+            if (entity.RowState() !== es.RowState.UNCHANGED) {
                 entity.rejectChanges();
             }
         });
 
-        ko.utils.arrayForEach(this.es.deletedEntities(), function (entity) {
-            self.push(entity);
-        });
+        if (this.es.deletedEntities().length > 0) {
+            var newArr = self().concat(this.es.deletedEntities());
+            self(newArr);
+        }
 
         this.es.deletedEntities = new ko.observableArray();
     },
