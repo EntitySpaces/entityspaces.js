@@ -13,7 +13,7 @@
 <body>
     <div id="sandbox1" style="font-family: Verdana, Helvetica, Sans-Serif; font-size: 12px;">
         <div style="max-height: 600px; max-width: 900px;">
-        <div id="myGrid" style="float: left; max-height: 600px; max-width: 800px;"
+        <div id="myGrid" style="float: left; max-height: 600px; max-width: 1000px;"
             data-bind="koGrid:{ data: collection, 
                                 isMultiSelect: false,
                                 selectedItem: mySelectedItem,
@@ -25,7 +25,7 @@
                                 columnDefs: 
                                 [
                                     {field: 'EmployeeID', displayName: 'EmployeeID', width: 110}, 
-                                    {field: 'FirstName', displayName: 'First Name', width: 120}, 
+                                    {field: 'FirstName', displayName: 'First Name', width: 200}, 
                                     {field: 'LastName', displayName: 'Last Name', width: 180} 
                                 ],
                                 enablePaging: true,
@@ -34,7 +34,7 @@
                                 totalServerItems: null,
                                 displaySelectionCheckbox: true,
                                 displayRowIndex: true,
-                                showRowIndex: true }"></div>
+                                showRowIndex: false }"></div>
         </div>
 
         <div data-bind="with: mySelectedItem">
@@ -83,7 +83,7 @@
 <script type="text/javascript">
 
     function onCommit() {
-	
+
     };
 
     function onAdd() {
@@ -100,10 +100,9 @@
     coll.loadAll();
 
     var vm = {
-        collection: ko.observableArray([{ 'EmployeeID': ko.observable(), 'FirstName': ko.observable(), 'LastName': ko.observable()}]),
-        mySelectedItem: ko.observable([{ 'EmployeeID': ko.observable(), 'FirstName': ko.observable(), 'LastName': ko.observable()}])
+        collection: ko.observableArray([{ 'EmployeeID': ko.observable(1), 'FirstName': ko.observable('aDSF'), 'LastName': ko.observable('ASDF')}]),
+        mySelectedItem: ko.observable(coll()[0])
     };
-
 
     ko.applyBindings(vm, $('#sandbox1')[0]);
     vm.collection(coll);
