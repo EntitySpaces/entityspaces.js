@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Ko Grid Sandbox</title>
+    <script src="../../Libs/jquery-1.7.1.js" type="text/javascript"></script>
+    <script src="../../Libs/json2.js" type="text/javascript"></script>
+    <script src="../../Libs/knockout-2.0.0.debug.js" type="text/javascript"></script>
+    <script src="koGrid/koGrid.debug.js" type="text/javascript"></script>
+    <script src="../../Release/entityspaces.XHR.debug.js" type="text/javascript"></script>
+    <script src="Generated/Employees.js" type="text/javascript"></script>
+    <link href="koGrid/KoGrid.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div id="sandbox1" style="font-family: Verdana, Helvetica, Sans-Serif; font-size: 12px;">
+        <div style="max-height: 600px; max-width: 900px;">
+        <div id="myGrid" style="float: left; max-height: 600px; max-width: 800px;"
+            data-bind="koGrid:{ data: collection, 
+                                isMultiSelect: false,
+                                selectedItem: mySelectedItem,
+                                rowHeight: 30,
+                                columnWidth: 130,
+                                headerRowHeight: 30,
+                                footerRowHeight: 45,
+                                autogenerateColumns: false,
+                                columnDefs: 
+                                [
+                                    {field: 'EmployeeID', displayName: 'EmployeeID', width: 110}, 
+                                    {field: 'FirstName', displayName: 'First Name', width: 120}, 
+                                    {field: 'LastName', displayName: 'Last Name', width: 180} 
+                                ],
+                                enablePaging: true,
+                                pageSizes: [250, 500, 1000], 
+                                defaultPageSize: 250,
+                                totalServerItems: null,
+                                displaySelectionCheckbox: true,
+                                displayRowIndex: true,
+                                showRowIndex: true }"></div>
+        </div>
+
+        <div data-bind="with: mySelectedItem">
+
+            <!--------------------------->
+            <!-- This is our Edit Area -->
+            <!--------------------------->
+            <table id="EditArea" class="es-grid" cellpadding="3" style="vertical-align:top;">
+                <tr>
+                    <td>EmployeeID: </td>
+                    <td data-bind="text: EmployeeID"></td>
+                </tr>
+                <tr>
+                    <td>First Name: </td>
+                    <td><input data-bind='value: FirstName, valueUpdate: "afterkeydown"' maxlength="10" /></td>
+                </tr>
+                <tr>
+                    <td>Last Name: </td>
+                    <td><input data-bind='value: LastName, valueUpdate: "afterkeydown"' maxlength="20"/></td>
+                </tr>
+                <tr>
+                    <td>RowState: </td>
+                    <td data-bind="text: RowState"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <hr />
+                        Unchanged = 2, Added = 4, Deleted = 8, Modified = 16
+                        <hr>
+                    </td>
+                </tr>
+                <tr align="right">
+                    <td colspan="6"><button data-bind="click: onAdd" style="width:80px">Add</button></td>
+                </tr>
+                <tr align="right">
+                    <td colspan="6"><button data-bind="click: onDelete" style="width:80px">Delete</button></td>
+                </tr>
+                <tr align="right">
+                    <td colspan="6"><button data-bind="click: onCommit" style="width:80px">Commit</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+</body>
+<script type="text/javascript">
+
+    function onCommit() {
+	
+    };
+
+    function onAdd() {
+
+    };
+
+    function onDelete() {
+
+    };
+
+    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+
+    var coll = new es.objects.EmployeesCollection();
+    coll.loadAll();
+
+    var vm = {
+        collection: ko.observableArray([{ 'EmployeeID': ko.observable(), 'FirstName': ko.observable(), 'LastName': ko.observable()}]),
+        mySelectedItem: ko.observable([{ 'EmployeeID': ko.observable(), 'FirstName': ko.observable(), 'LastName': ko.observable()}])
+    };
+
+
+    ko.applyBindings(vm, $('#sandbox1')[0]);
+    vm.collection(coll);
+
+</script>
+
+</html>
