@@ -71,6 +71,9 @@
 </body>
 <script type="text/javascript">
 
+  //es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
+    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+
     function onCommit() {
 
     };
@@ -91,23 +94,24 @@
         };
 
         ko.applyBindings(vm, $('#sandbox1')[0]);
-        //vm.collection.loadAll();
+        vm.collection.loadAll();
 
+		/*
+		// If you want to work offline uncomment this block
         var emps = [];
         var emp, i = 0;
 
         while (emps.length < 200) {
-            emp = new es.objects.Employees();
+            emp = emps.addNew();
 
             emp.FirstName('John');
             emp.LastName('Doe' + i.toString());
             emp.EmployeeID(i);
-
-            emps.push(emp);
             i++;
         }
 
         vm.collection(emps);
+		*/
     });
 </script>
 
