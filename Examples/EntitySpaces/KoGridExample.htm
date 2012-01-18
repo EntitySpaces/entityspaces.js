@@ -17,24 +17,14 @@
             data-bind="koGrid:{ data: collection, 
                                 isMultiSelect: false,
                                 selectedItem: mySelectedItem,
-                                rowHeight: 30,
-                                columnWidth: 130,
-                                headerRowHeight: 30,
-                                footerRowHeight: 45,
                                 autogenerateColumns: false,
-                                columnDefs: 
-                                [
-                                    {field: 'EmployeeID', displayName: 'EmployeeID', width: 110}, 
+                                columnDefs: [
+                                    {field: 'EmployeeID', displayName: 'Employee ID', width: 110}, 
                                     {field: 'FirstName', displayName: 'First Name', width: 200}, 
                                     {field: 'LastName', displayName: 'Last Name', width: 180} 
                                 ],
-                                enablePaging: true,
-                                pageSizes: [250, 500, 1000], 
-                                defaultPageSize: 250,
-                                totalServerItems: null,
                                 displaySelectionCheckbox: true,
-                                displayRowIndex: true,
-                                showRowIndex: false }"></div>
+                                displayRowIndex: true }"></div>
         </div>
 
         <div data-bind="with: mySelectedItem">
@@ -96,16 +86,13 @@
 
     es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
-    var coll = new es.objects.EmployeesCollection();
-    coll.loadAll();
-
     var vm = {
-        collection: ko.observableArray([{ 'EmployeeID': ko.observable(1), 'FirstName': ko.observable('aDSF'), 'LastName': ko.observable('ASDF')}]),
-        mySelectedItem: ko.observable(coll()[0])
+        collection: new es.objects.EmployeesCollection(),
+        mySelectedItem: ko.observable(new es.objects.Employees())
     };
 
     ko.applyBindings(vm, $('#sandbox1')[0]);
-    vm.collection(coll);
+    vm.collection.loadAll();
 
 </script>
 
