@@ -11,9 +11,11 @@
     <link href="koGrid/KoGrid.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <div id="sandbox1" style="font-family: Verdana, Helvetica, Sans-Serif; font-size: 12px;">
-        
-        <div id="myGrid" style="max-height: 500px; max-width: 500px;" data-bind="koGrid:{ data: collection, 
+    <table>
+        <tr>
+            <td valign="top">
+                <div id="sandbox1" style="font-family: Verdana, Helvetica, Sans-Serif; font-size: 12px;">
+                    <div id="myGrid" style="max-height: 500px; max-width: 500px;" data-bind="koGrid:{ data: collection, 
                             isMultiSelect: false,
                             selectedItem: mySelectedItem,
                             autogenerateColumns: false,
@@ -23,59 +25,61 @@
                                 {field: 'LastName', displayName: 'Last Name', width: 150} 
                             ],
                             displaySelectionCheckbox: true,
-                            displayRowIndex: true }" >
-        </div>
-        
-        <div data-bind="with: mySelectedItem">
-
-            <!--------------------------->
-            <!-- This is our Edit Area -->
-            <!--------------------------->
-            <table id="EditArea" class="es-grid" cellpadding="3" style="vertical-align:top;">
-                <tr>
-                    <td>EmployeeID: </td>
-                    <td data-bind="text: EmployeeID"></td>
-                </tr>
-                <tr>
-                    <td>First Name: </td>
-                    <td><input data-bind='value: FirstName, valueUpdate: "afterkeydown"' maxlength="10" /></td>
-                </tr>
-                <tr>
-                    <td>Last Name: </td>
-                    <td><input data-bind='value: LastName, valueUpdate: "afterkeydown"' maxlength="20"/></td>
-                </tr>
-                <tr>
-                    <td>RowState: </td>
-                    <td data-bind="text: RowState"></td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <hr />
-                        Unchanged = 2, Added = 4, Deleted = 8, Modified = 16
-                        <hr>
-                    </td>
-                </tr>
-                <tr align="right">
-                    <td colspan="6"><button data-bind="click: onAdd" style="width:80px">Add</button></td>
-                </tr>
-                <tr align="right">
-                    <td colspan="6"><button data-bind="click: onDelete" style="width:80px">Delete</button></td>
-                </tr>
-                <tr align="right">
-                    <td colspan="6"><button data-bind="click: onCommit" style="width:80px">Commit</button></td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    
+                            displayRowIndex: true }">
+                    </div>
+                </div>
+            </td>
+            <td valign="top">
+                <div data-bind="with: mySelectedItem">
+                    <!--------------------------->
+                    <!-- This is our Edit Area -->
+                    <!--------------------------->
+                    <table id="EditArea" class="es-grid" cellpadding="3" style="vertical-align: top;">
+                        <tr>
+                            <td>EmployeeID:</td>
+                            <td data-bind="text: EmployeeID"></td>
+                        </tr>
+                        <tr>
+                            <td>First Name:</td>
+                            <td><input data-bind='value: FirstName, valueUpdate: "afterkeydown"' maxlength="10" /></td>
+                        </tr>
+                        <tr>
+                            <td>Last Name:</td>
+                            <td><input data-bind='value: LastName, valueUpdate: "afterkeydown"' maxlength="20" /></td>
+                        </tr>
+                        <tr>
+                            <td>RowState:</td>
+                            <td data-bind="text: RowState"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <hr />
+                                Unchanged = 2, Added = 4, Deleted = 8, Modified = 16
+                                <hr>
+                            </td>
+                        </tr>
+                        <tr align="right">
+                            <td colspan="6">
+                                <button data-bind="click: $root.onMarkAllAsDeleted" style="width: 80px">Mark All as Deleted</button>
+                                <button data-bind="click: $root.onMarkAsDeleted" style="width: 80px">Mark Selected Item as Deleted</button>
+                                <button data-bind="click: $root.onRejectChanges" style="width: 80px">Reject Changes</button>
+                                <button data-bind="click: $root.onCommit" style="width: 80px">Save</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
 </body>
+
 <script type="text/javascript">
 
   //es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
     es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     function onCommit() {
-
+        vm.collection.markAllAsDeleted();
     };
 
     function onAdd() {
@@ -88,12 +92,30 @@
 
     //es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
     $(document).ready(function () {
+
         var vm = {
-            collection: new es.objects.EmployeesCollection(),
-            mySelectedItem: ko.observable(new es.objects.Employees())
+           collection: new es.objects.EmployeesCollection(),
+           mySelectedItem: ko.observable(new es.objects.Employees()),
+
+           onCommit: function() {
+               vm.collection.save();
+           },
+
+           onMarkAllAsDeleted: function() {
+               vm.collection.markAllAsDeleted();
+           },
+
+           onMarkAsDeleted: function() {
+               vm.mySelectedItem().markAsDeleted();
+           },
+
+           onRejectChanges: function() {
+               vm.collection.rejectChanges();
+           }
+
         };
 
-        ko.applyBindings(vm, $('#sandbox1')[0]);
+        ko.applyBindings(vm);
         vm.collection.loadAll();
 
 		/*
