@@ -13,18 +13,19 @@
 <body>
     <div id="sandbox1" style="font-family: Verdana, Helvetica, Sans-Serif; font-size: 12px;">
         <div style="max-height: 600px; max-width: 900px;">
-        <div id="myGrid" style="float: left; max-height: 600px; max-width: 1000px;"
-            data-bind="koGrid:{ data: collection, 
-                                isMultiSelect: false,
-                                selectedItem: mySelectedItem,
-                                autogenerateColumns: false,
-                                columnDefs: [
-                                    {field: 'EmployeeID', displayName: 'Employee ID', width: 110}, 
-                                    {field: 'FirstName', displayName: 'First Name', width: 200}, 
-                                    {field: 'LastName', displayName: 'Last Name', width: 180} 
-                                ],
-                                displaySelectionCheckbox: true,
-                                displayRowIndex: true }"></div>
+        <div style="width: 900px; height:400px">
+            <div id="myGrid" data-bind="koGrid:{ data: collection, 
+                                    isMultiSelect: false,
+                                    selectedItem: mySelectedItem,
+                                    autogenerateColumns: false,
+                                    columnDefs: [
+                                        {field: 'EmployeeID', displayName: 'Employee ID', width: 110}, 
+                                        {field: 'FirstName', displayName: 'First Name', width: 200}, 
+                                        {field: 'LastName', displayName: 'Last Name', width: 180} 
+                                    ],
+                                    displaySelectionCheckbox: true,
+                                    displayRowIndex: true }" >
+             </div>
         </div>
 
         <div data-bind="with: mySelectedItem">
