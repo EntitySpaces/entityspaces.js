@@ -58,14 +58,27 @@
                                 <hr>
                             </td>
                         </tr>
-                        <tr align="right">
-                            <td colspan="6">
-                                <button data-bind="click: $root.onMarkAllAsDeleted" style="width: 80px">Mark All as Deleted</button>
-                                <button data-bind="click: $root.onMarkAsDeleted" style="width: 80px">Mark Selected Item as Deleted</button>
-                                <button data-bind="click: $root.onRejectChanges" style="width: 80px">Reject Changes</button>
-                                <button data-bind="click: $root.onCommit" style="width: 80px">Save</button>
+                        <tr>
+                            <td colspan="2">
+                                <button data-bind="click: $root.onMarkAllAsDeleted" style="width: 280px">Mark All as Deleted</button>
                             </td>
-                        </tr>
+                         </tr>
+                        <tr>
+
+                            <td colspan="2">
+                                <button data-bind="click: $root.onMarkAsDeleted" style="width: 280px">Mark Selected Item as Deleted</button>
+                            </td>
+                         </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button data-bind="click: $root.onRejectChanges" style="width: 280px">Reject Changes</button>
+                            </td>
+                         </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button data-bind="click: $root.onAddNew" style="width: 280px">Add a New Employee</button>
+                            </td>
+                         </tr>
                     </table>
                 </div>
             </td>
@@ -75,56 +88,41 @@
 
 <script type="text/javascript">
 
-  //es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
     es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
-    function onCommit() {
-        vm.collection.markAllAsDeleted();
-    };
-
-    function onAdd() {
-
-    };
-
-    function onDelete() {
-
-    };
-
-    //es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
     $(document).ready(function () {
 
         var vm = {
-           collection: new es.objects.EmployeesCollection(),
-           mySelectedItem: ko.observable(new es.objects.Employees()),
+            collection: new es.objects.EmployeesCollection(),
+            mySelectedItem: ko.observable(new es.objects.Employees()),
 
-           onCommit: function() {
-               vm.collection.save();
-           },
+            onAddNew: function () {
+                vm.collection.addNew();
+            },
 
-           onMarkAllAsDeleted: function() {
-               vm.collection.markAllAsDeleted();
-           },
+            onMarkAllAsDeleted: function () {
+                vm.collection.markAllAsDeleted();
+            },
 
-           onMarkAsDeleted: function() {
-               vm.mySelectedItem().markAsDeleted();
-           },
+            onMarkAsDeleted: function () {
+                vm.mySelectedItem().markAsDeleted();
+            },
 
-           onRejectChanges: function() {
-               vm.collection.rejectChanges();
-           }
-
+            onRejectChanges: function () {
+                vm.collection.rejectChanges();
+            }
         };
 
         ko.applyBindings(vm);
-        vm.collection.loadAll();
 
-		/*
-		// If you want to work offline uncomment this block
-        var emps = [];
+        //vm.collection.loadAll();
+
+        // If you want to work offline uncomment this block
+        var coll = new es.objects.EmployeesCollection()
         var emp, i = 0;
 
-        while (emps.length < 200) {
-            emp = emps.addNew();
+        while (vm.collection().length < 200) {
+            emp = vm.collection.addNew();
 
             emp.FirstName('John');
             emp.LastName('Doe' + i.toString());
@@ -132,8 +130,9 @@
             i++;
         }
 
-        vm.collection(emps);
-		*/
+        vm.collection.acceptChanges();
+
+       // ko.applyBindings(vm);
     });
 </script>
 

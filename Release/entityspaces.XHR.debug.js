@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.10-pre 
-// Built on Wed 01/18/2012 at 15:51:24.06    
+// The entityspaces.js JavaScript library v1.0.11-pre 
+// Built on Wed 01/18/2012 at 22:59:48.24    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -678,6 +678,16 @@ es.EsEntity = function () { //empty constructor
     this.markAsDeleted = function () {
         var entity = this;
 
+        if (entity.es.collection !== undefined) {
+            // We are in a collection, remove it from there and add it to it's 
+            // deletedEntities list
+            var index = ko.utils.arrayIndexOf(entity.es.collection(), entity);
+            if (index >= 0) {
+                var obj = entity.es.collection.splice(index, 1);
+            }
+            entity.es.collection.es.deletedEntities.push(obj[0]);
+        }
+
         if (!entity.hasOwnProperty("RowState")) {
             entity.RowState = ko.observable(es.RowState.DELETED);
         } else if (entity.RowState() !== es.RowState.DELETED) {
@@ -902,9 +912,10 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         var addedEntities = [],
             slot = 0,
-            index = 0;
+            index = 0,
+            i;
 
-        ko.utils.arrayForEach(this.es.deletedEntities(), function (entity) {
+        ko.utils.arrayForEach(self.es.deletedEntities(), function (entity) {
             if (entity.RowState() === es.RowState.ADDED) {
                 addedEntities[slot] = index;
                 slot += 1;
@@ -917,15 +928,32 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         if (addedEntities.length > 0) {
             for (index = addedEntities.length - 1; index >= 0; index--) {
-                this.es.deletedEntities().splice(addedEntities[index], 1);
+                this.es.deletedEntities.splice(addedEntities[index], 1);
             }
         }
 
+        addedEntities = [];
         ko.utils.arrayForEach(this(), function (entity) {
-            if (entity.RowState() !== es.RowState.UNCHANGED) {
-                entity.rejectChanges();
+
+            switch (entity.RowState()) {
+                case es.RowState.MODIFIED:
+                    entity.rejectChanges();
+                    break;
+
+                case es.RowState.ADDED:
+                    addedEntities.push(entity);
+                    break;
             }
         });
+
+        if (addedEntities.length > 0) {
+            for (i = 0; i < addedEntities.length; i++) {
+                var index = ko.utils.arrayIndexOf(self(), addedEntities[i]);
+                if (index >= 0) {
+                    var obj = self.splice(index, 1);
+                }
+            }
+        }
 
         if (this.es.deletedEntities().length > 0) {
             var newArr = self().concat(this.es.deletedEntities());
@@ -948,8 +976,18 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         //       in which case they are restored, however, during a save they are simply discarded.
         for (i = 0; i < len; i += 1) {
             entity = coll()[i];
+
             if (entity.RowState() === es.RowState.UNCHANGED) {
-                entity.markAsDeleted();
+
+                if (!entity.hasOwnProperty("RowState")) {
+                    entity.RowState = ko.observable(es.RowState.DELETED);
+                } else if (entity.RowState() !== es.RowState.DELETED) {
+                    entity.RowState(es.RowState.DELETED);
+                }
+
+                if (entity.hasOwnProperty("ModifiedColumns")) {
+                    entity.ModifiedColumns.removeAll();
+                }
             }
         }
     },
@@ -1014,6 +1052,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         if (entityTypeName) {
             EntityCtor = es.getType(entityTypeName);
             entity = new EntityCtor();
+            entity.es.collection = this;
             this.push(entity);
         }
 

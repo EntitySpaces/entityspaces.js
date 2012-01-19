@@ -224,6 +224,16 @@ es.EsEntity = function () { //empty constructor
     this.markAsDeleted = function () {
         var entity = this;
 
+        if (entity.es.collection !== undefined) {
+            // We are in a collection, remove it from there and add it to it's 
+            // deletedEntities list
+            var index = ko.utils.arrayIndexOf(entity.es.collection(), entity);
+            if (index >= 0) {
+                var obj = entity.es.collection.splice(index, 1);
+            }
+            entity.es.collection.es.deletedEntities.push(obj[0]);
+        }
+
         if (!entity.hasOwnProperty("RowState")) {
             entity.RowState = ko.observable(es.RowState.DELETED);
         } else if (entity.RowState() !== es.RowState.DELETED) {
