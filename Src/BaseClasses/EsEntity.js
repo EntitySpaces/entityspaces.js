@@ -98,15 +98,16 @@ es.EsEntity = function () { //empty constructor
 
                 default:
 
-                    srcValue = ko.utils.unwrapObservable(self[key]);
+                    mappedName = self.esColumnMap[key];
 
-                    if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
+                    if (mappedName !== undefined) {
 
-                        mappedName = self.esColumnMap[key];
+                        srcValue = ko.utils.unwrapObservable(self[key]);
 
-                        if (mappedName !== undefined) {
+                        if (srcValue === null || (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined)) {
+
                             // This is a core column ...
-                            if (srcValue instanceof Date) {
+                            if (srcValue != null && srcValue instanceof Date) {
                                 stripped[key] = utils.dateParser.serialize(srcValue);
                             } else {
                                 stripped[key] = srcValue;
@@ -114,6 +115,7 @@ es.EsEntity = function () { //empty constructor
                         }
                     }
                     break;
+
             }
         });
 

@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.12-pre 
+// The entityspaces.js JavaScript library v1.0.13-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Thu 01/19/2012 at 23:24:52.73    
+// Built on Fri 01/20/2012 at 14:48:55.05    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -554,15 +554,16 @@ es.EsEntity = function () { //empty constructor
 
                 default:
 
-                    srcValue = ko.utils.unwrapObservable(self[key]);
+                    mappedName = self.esColumnMap[key];
 
-                    if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
+                    if (mappedName !== undefined) {
 
-                        mappedName = self.esColumnMap[key];
+                        srcValue = ko.utils.unwrapObservable(self[key]);
 
-                        if (mappedName !== undefined) {
+                        if (srcValue === null || (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined)) {
+
                             // This is a core column ...
-                            if (srcValue instanceof Date) {
+                            if (srcValue != null && srcValue instanceof Date) {
                                 stripped[key] = utils.dateParser.serialize(srcValue);
                             } else {
                                 stripped[key] = srcValue;
@@ -570,6 +571,7 @@ es.EsEntity = function () { //empty constructor
                         }
                     }
                     break;
+
             }
         });
 
