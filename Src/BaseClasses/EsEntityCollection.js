@@ -119,9 +119,16 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     markAllAsDeleted: function () {
 
-        var i, entity, coll, len;
+        var i, entity, coll, len, arr;
 
-        this.es.deletedEntities(this.splice(0, this().length));
+        if (arguments.length > 0) {
+            arr = this.es.deletedEntities().concat(arguments[0]());
+            this.es.deletedEntities(arr);
+
+            this.removeAll(arguments[0]());
+        } else {
+            this.es.deletedEntities(this.splice(0, this().length));
+        }
 
         coll = this.es.deletedEntities;
         len = coll().length;

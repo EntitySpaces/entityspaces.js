@@ -1,6 +1,8 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.11-pre 
-// Built on Wed 01/18/2012 at 22:59:44.58    
+// (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
+// 
+// Built on Thu 01/19/2012 at 23:22:09.73    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -965,9 +967,16 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     markAllAsDeleted: function () {
 
-        var i, entity, coll, len;
+        var i, entity, coll, len, arr;
 
-        this.es.deletedEntities(this.splice(0, this().length));
+        if (arguments.length > 0) {
+            arr = this.es.deletedEntities().concat(arguments[0]());
+            this.es.deletedEntities(arr);
+
+            this.removeAll(arguments[0]());
+        } else {
+            this.es.deletedEntities(this.splice(0, this().length));
+        }
 
         coll = this.es.deletedEntities;
         len = coll().length;
