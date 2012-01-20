@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.13-pre 
+// The entityspaces.js JavaScript library v1.0.14-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Fri 01/20/2012 at 14:48:52.11    
+// Built on Fri 01/20/2012 at 15:10:25.99    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -773,8 +773,19 @@ es.EsEntity = function () { //empty constructor
 
         self.es.isLoading(true);
 
-        var route,
-			options = { success: success, error: error, state: state };
+        var options = { success: success, error: error, state: state, route: self.esRoutes['commit'] }
+
+        switch (self.RowState()) {
+            case es.RowState.ADDED:
+                options.route = self.esRoutes['create'];
+                break;
+            case es.RowState.MODIFIED:
+                options.route = self.esRoutes['update'];
+                break;
+            case es.RowState.DELETED:
+                options.route = self.esRoutes['delete'];
+                break;
+        }
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);
@@ -786,29 +797,12 @@ es.EsEntity = function () { //empty constructor
             options.async = false;
         }
 
-        // The default unless overriden
-        route = self.esRoutes['commit'];
-
-        switch (self.RowState()) {
-            case es.RowState.ADDED:
-                route = self.esRoutes['create'] || route;
-                break;
-            case es.RowState.MODIFIED:
-                route = self.esRoutes['update'] || route;
-                break;
-            case es.RowState.DELETED:
-                route = self.esRoutes['delete'] || route;
-                break;
-        }
-
-        options.route = route;
-
         var root = undefined;
 
         //TODO: potentially the most inefficient call in the whole lib
         options.data = es.utils.getDirtyGraph(self);
 
-        if (route) {
+        if (options.route) {
             options.url = route.url;
             options.type = route.method;
         }
@@ -1139,8 +1133,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         self.es.isLoading(true);
 
-        var route,
-            options = { success: success, error: error, state: state };
+        var options = { success: success, error: error, state: state, route: self.esRoutes['commit'] }
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);
@@ -1151,8 +1144,6 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         } else {
             options.async = false;
         }
-
-        options.route = self.esRoutes['commit'];
 
         //TODO: potentially the most inefficient call in the whole lib
         options.data = es.utils.getDirtyGraph(self);

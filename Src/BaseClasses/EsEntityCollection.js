@@ -289,8 +289,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         self.es.isLoading(true);
 
-        var route,
-            options = { success: success, error: error, state: state };
+        var options = { success: success, error: error, state: state, route: self.esRoutes['commit'] }
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);
@@ -301,8 +300,6 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         } else {
             options.async = false;
         }
-
-        options.route = self.esRoutes['commit'];
 
         //TODO: potentially the most inefficient call in the whole lib
         options.data = es.utils.getDirtyGraph(self);
