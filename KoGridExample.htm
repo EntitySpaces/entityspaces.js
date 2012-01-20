@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Ko Grid Sandbox</title>
+    <script src="Libs/jquery-1.7.1.js" type="text/javascript"></script>
+    <script src="Libs/knockout-2.0.0.debug.js" type="text/javascript"></script>
+    <script src="Libs/json2.js" type="text/javascript"></script>
+    <script src="koGrid/koGrid.debug.js" type="text/javascript"></script>
+    <script src="Release/entityspaces.XHR.debug.js" type="text/javascript"></script>
+    <script src="Generated/Employees.js" type="text/javascript"></script>
+    <link href="koGrid/KoGrid.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <table>
+        <tr>
+            <td valign="top">
+                <div id="sandbox1" style="font-family: Verdana, Helvetica, Sans-Serif; font-size: 12px;">
+                    <div id="myGrid" style="max-height: 500px; max-width: 500px;" data-bind="koGrid:{ data: collection, 
+                            isMultiSelect: false,
+                            selectedItem: mySelectedItem,
+                            autogenerateColumns: false,
+                            columnDefs: [
+                                {field: 'EmployeeID', displayName: 'Employee ID', width: 140}, 
+                                {field: 'FirstName', displayName: 'First Name', width: 130}, 
+                                {field: 'LastName', displayName: 'Last Name', width: 150} 
+                            ],
+                            displaySelectionCheckbox: true,
+                            displayRowIndex: true }">
+                    </div>
+                </div>
+            </td>
+            <td valign="top">
+                <div data-bind="with: mySelectedItem">
+                    <!--------------------------->
+                    <!-- This is our Edit Area -->
+                    <!--------------------------->
+                    <table id="EditArea" class="es-grid" cellpadding="3" style="vertical-align: top;">
+                        <tr>
+                            <td>EmployeeID:</td>
+                            <td data-bind="text: EmployeeID"></td>
+                        </tr>
+                        <tr>
+                            <td>First Name:</td>
+                            <td><input data-bind='value: FirstName, valueUpdate: "afterkeydown"' maxlength="10" /></td>
+                        </tr>
+                        <tr>
+                            <td>Last Name:</td>
+                            <td><input data-bind='value: LastName, valueUpdate: "afterkeydown"' maxlength="20" /></td>
+                        </tr>
+                        <tr>
+                            <td>RowState:</td>
+                            <td data-bind="text: RowState"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <hr />
+                                Unchanged = 2, Added = 4, Deleted = 8, Modified = 16
+                                <hr>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button data-bind="click: $root.onMarkAllAsDeleted" style="width: 280px">Mark All as Deleted</button>
+                            </td>
+                         </tr>
+                        <tr>
+
+                            <td colspan="2">
+                                <button data-bind="click: $root.onMarkAsDeleted" style="width: 280px">Mark Selected Item as Deleted</button>
+                            </td>
+                         </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button data-bind="click: $root.onRejectChanges" style="width: 280px">Reject Changes</button>
+                            </td>
+                         </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button data-bind="click: $root.onAddNew" style="width: 280px">Add a New Employee</button>
+                            </td>
+                         </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+
+<script type="text/javascript">
+
+    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+
+    $(document).ready(function () {
+
+        var vm = {
+            collection: new es.objects.EmployeesCollection(),
+            mySelectedItem: ko.observable(new es.objects.Employees()),
+
+            onAddNew: function () {
+                vm.collection.addNew();
+            },
+
+            onMarkAllAsDeleted: function () {
+                vm.collection.markAllAsDeleted();
+            },
+
+            onMarkAsDeleted: function () {
+                vm.mySelectedItem().markAsDeleted();
+            },
+
+            onRejectChanges: function () {
+                vm.collection.rejectChanges();
+            }
+        };
+
+        ko.applyBindings(vm);
+
+        //vm.collection.loadAll();
+
+        // If you want to work offline uncomment this block
+        var coll = new es.objects.EmployeesCollection()
+        var emp, i = 0;
+
+        while (vm.collection().length < 100) {
+            emp = vm.collection.addNew();
+
+            emp.FirstName('John');
+            emp.LastName('Doe' + i.toString());
+            emp.EmployeeID(i);
+            i++;
+        }
+
+        vm.collection.acceptChanges();
+
+        // ko.applyBindings(vm);
+    });
+</script>
+
+</html>
