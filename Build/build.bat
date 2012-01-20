@@ -24,6 +24,8 @@ DEL %OutPutFile%
 @REM Wrap the final output in an IIFE
 @ECHO //-------------------------------------------------------------------- >> %OutPutFile%
 @ECHO // The entityspaces.js JavaScript library v1.0.11-pre >> %OutPutFile%
+@ECHO // (c) EntitySpaces, LLC - http://www.entityspaces.net/ >> %OutPutFile%
+@ECHO // >> %OutPutFile%
 @ECHO // Built on %Date% at %Time%  >> %OutPutFile%  
 @ECHO // https://github.com/EntitySpaces/entityspaces.js >> %OutPutFile%
 @ECHO // >> %OutPutFile%
@@ -64,6 +66,8 @@ DEL %OutPutFile%
 @REM Wrap the final output in an IIFE
 @ECHO //-------------------------------------------------------------------- >> %OutPutFile%
 @ECHO // The entityspaces.js JavaScript library v1.0.11-pre >> %OutPutFile%
+@ECHO // (c) EntitySpaces, LLC - http://www.entityspaces.net/ >> %OutPutFile%
+@ECHO // >> %OutPutFile%
 @ECHO // Built on %Date% at %Time%  >> %OutPutFile%  
 @ECHO // https://github.com/EntitySpaces/entityspaces.js >> %OutPutFile%
 @ECHO // >> %OutPutFile%
