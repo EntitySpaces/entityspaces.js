@@ -195,7 +195,7 @@ var utils = {
         // Check and see if we have anything dirty at all?
         if (root === undefined) {
             if (!obj.isDirtyGraph()) {
-                return {};
+                return null;
             }
         }
 

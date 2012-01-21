@@ -321,13 +321,13 @@ es.EsEntity = function () { //empty constructor
 
         switch (self.RowState()) {
             case es.RowState.ADDED:
-                options.route = self.esRoutes['create'];
+                options.route = self.esRoutes['create'] || options.route;
                 break;
             case es.RowState.MODIFIED:
-                options.route = self.esRoutes['update'];
+                options.route = self.esRoutes['update'] || options.route;
                 break;
             case es.RowState.DELETED:
-                options.route = self.esRoutes['delete'];
+                options.route = self.esRoutes['delete'] || options.route;
                 break;
         }
 
@@ -343,12 +343,21 @@ es.EsEntity = function () { //empty constructor
 
         var root = undefined;
 
-        //TODO: potentially the most inefficient call in the whole lib
         options.data = es.utils.getDirtyGraph(self);
 
+        if (options.data === null) {
+            // there was no data to save
+            if (options.async === false) {
+                self.es.isLoading(false);
+                return;
+            } else {
+                options.success(null, options);
+            }
+        }
+
         if (options.route) {
-            options.url = route.url;
-            options.type = route.method;
+            options.url = options.route.url;
+            options.type = options.route.method;
         }
 
         var successHandler = options.success;

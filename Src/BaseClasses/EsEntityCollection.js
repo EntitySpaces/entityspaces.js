@@ -304,6 +304,16 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         //TODO: potentially the most inefficient call in the whole lib
         options.data = es.utils.getDirtyGraph(self);
 
+        if (options.data === null) {
+            // there was no data to save
+            if (options.async === false) {
+                self.es.isLoading(false);
+                return;
+            } else {
+                options.success(null, options);
+            }
+        }
+
         if (options.route) {
             options.url = options.route.url;
             options.type = options.route.method;

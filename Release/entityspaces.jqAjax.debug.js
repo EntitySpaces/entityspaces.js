@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.15-pre 
+// The entityspaces.js JavaScript library v1.0.16-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Fri 01/20/2012 at 21:53:11.25    
+// Built on Fri 01/20/2012 at 23:38:58.38    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -384,7 +384,7 @@ var utils = {
         // Check and see if we have anything dirty at all?
         if (root === undefined) {
             if (!obj.isDirtyGraph()) {
-                return {};
+                return null;
             }
         }
 
@@ -777,13 +777,13 @@ es.EsEntity = function () { //empty constructor
 
         switch (self.RowState()) {
             case es.RowState.ADDED:
-                options.route = self.esRoutes['create'];
+                options.route = self.esRoutes['create'] || options.route;
                 break;
             case es.RowState.MODIFIED:
-                options.route = self.esRoutes['update'];
+                options.route = self.esRoutes['update'] || options.route;
                 break;
             case es.RowState.DELETED:
-                options.route = self.esRoutes['delete'];
+                options.route = self.esRoutes['delete'] || options.route;
                 break;
         }
 
@@ -799,12 +799,21 @@ es.EsEntity = function () { //empty constructor
 
         var root = undefined;
 
-        //TODO: potentially the most inefficient call in the whole lib
         options.data = es.utils.getDirtyGraph(self);
 
+        if (options.data === null) {
+            // there was no data to save
+            if (options.async === false) {
+                self.es.isLoading(false);
+                return;
+            } else {
+                options.success(null, options);
+            }
+        }
+
         if (options.route) {
-            options.url = route.url;
-            options.type = route.method;
+            options.url = options.route.url;
+            options.type = options.route.method;
         }
 
         var successHandler = options.success;
@@ -1147,6 +1156,16 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         //TODO: potentially the most inefficient call in the whole lib
         options.data = es.utils.getDirtyGraph(self);
+
+        if (options.data === null) {
+            // there was no data to save
+            if (options.async === false) {
+                self.es.isLoading(false);
+                return;
+            } else {
+                options.success(null, options);
+            }
+        }
 
         if (options.route) {
             options.url = options.route.url;
