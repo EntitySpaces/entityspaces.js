@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.14-pre 
+// The entityspaces.js JavaScript library v1.0.15-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Fri 01/20/2012 at 15:10:29.15    
+// Built on Fri 01/20/2012 at 21:53:14.96    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -1411,24 +1411,28 @@ es.XMLHttpRequestProvider = function () {
 
     executeCompleted = function (responseText, route) {
 
-        var theData = JSON.parse(responseText);
+        var response = {
+            data: JSON.parse(responseText),
+            error: undefined
+        };
 
         if (route.response !== undefined) {
             switch (route.response) {
                 case 'entity':
-                    return theData[route.response];
                 case 'collection':
-                    return theData[route.response];
+                    response.error = response.data['exception'];
+                    response.data = response.data[route.response];
+                    break;
             }
         }
 
-        return theData;
+        return response;
     };
 
     // Called by the entityspaces.js framework when working with entities
     this.execute = function (options) {
 
-        var path = null, xmlHttp, success, error;
+        var path = null, xmlHttp, success, error, response;
 
         success = options.success || noop;
         error = options.error || noop;
@@ -1446,10 +1450,13 @@ es.XMLHttpRequestProvider = function () {
         if (options.async === true) {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState === 4) {
-                    if (xmlHttp.status === 200) {
-                        success(executeCompleted(xmlHttp.responseText, options.route), options);
+
+                    response = executeCompleted(xmlHttp.responseText, options.route);
+
+                    if (xmlHttp.status === 200 && response.error === null) {
+                        success(response.data, options);
                     } else {
-                        error(xmlHttp.status, xmlHttp.statusText, options);
+                        error(xmlHttp.status, response.error || xmlHttp.responseText, options);
                     }
                 }
             };
@@ -1458,12 +1465,15 @@ es.XMLHttpRequestProvider = function () {
         xmlHttp.send(ko.toJSON(options.data));
 
         if (options.async === false) {
-            if (xmlHttp.status === 200) {
+
+            response = executeCompleted(xmlHttp.responseText, options.route);
+
+            if (xmlHttp.status === 200 && response.error === null) {
                 if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
-                    success(executeCompleted(xmlHttp.responseText, options.route), options);
+                    success(response.data, options);
                 }
             } else {
-                error(xmlHttp.status, xmlHttp.responseText, options);
+                error(xmlHttp.status, response.error || xmlHttp.responseText, options)
             }
         }
     };

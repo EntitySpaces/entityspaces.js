@@ -13,12 +13,17 @@
 <body>
     <table>
         <tr>
+            <td colspan="2" data-bind="text: error" style=" color:Red">
+            </td>
+        </tr>
+        <tr>
             <td valign="top">
                 <div id="sandbox1" style="font-family: Verdana, Helvetica, Sans-Serif; font-size: 12px;">
                     <div id="myGrid" style="max-height: 500px; max-width: 500px;" data-bind="koGrid:{ data: collection, 
                             isMultiSelect: false,
                             selectedItem: mySelectedItem,
                             autogenerateColumns: false,
+                            sortInfo: sortInfo,
                             columnDefs: [
                                 {field: 'EmployeeID', displayName: 'Employee ID', width: 140}, 
                                 {field: 'FirstName', displayName: 'First Name', width: 130}, 
@@ -79,6 +84,11 @@
                                 <button data-bind="click: $root.onAddNew" style="width: 280px">Add a New Employee</button>
                             </td>
                          </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button data-bind="click: $root.onSave" style="width: 280px">Save changes</button>
+                            </td>
+                         </tr>
                     </table>
                 </div>
             </td>
@@ -88,51 +98,71 @@
 
 <script type="text/javascript">
 
-    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+    es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
+    //es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     $(document).ready(function () {
 
         var vm = {
             collection: new es.objects.EmployeesCollection(),
             mySelectedItem: ko.observable(new es.objects.Employees()),
+            error: ko.observable(),
+            sortInfo : ko.observable(),
 
             onAddNew: function () {
-                vm.collection.addNew();
+                var newEmployee = vm.collection.addNew();
+                newEmployee.FirstName("Joe");
+                vm:mySelectedItem(newEmployee);
+                vm.error("");
             },
 
             onMarkAllAsDeleted: function () {
                 vm.collection.markAllAsDeleted();
+                vm.error("");
             },
 
             onMarkAsDeleted: function () {
                 vm.mySelectedItem().markAsDeleted();
+                vm.error("");
             },
 
             onRejectChanges: function () {
                 vm.collection.rejectChanges();
+                vm.error("");
+            },
+
+            onSave: function () {
+                vm.collection.save({
+                    success: function (data, state) {
+                        vm.collection.loadAll();
+                        vm.error("");
+                    },
+                    error: function (status, responseText, state) {
+                        vm.error(responseText);
+                    }
+                });
             }
         };
 
         ko.applyBindings(vm);
-
-        //vm.collection.loadAll();
+        vm.collection.loadAll();
 
         // If you want to work offline uncomment this block
-        var coll = new es.objects.EmployeesCollection()
-        var emp, i = 0;
+        //        var coll = new es.objects.EmployeesCollection()
+        //        var emp, i = 0;
 
-        while (vm.collection().length < 200) {
-            emp = vm.collection.addNew();
+        //        while (vm.collection().length < 200) {
+        //            emp = vm.collection.addNew();
 
-            emp.FirstName('John');
-            emp.LastName('Doe' + i.toString());
-            emp.EmployeeID(i);
-            i++;
-        }
+        //            emp.FirstName('John');
+        //            emp.LastName('Doe' + i.toString());
+        //            emp.EmployeeID(i);
+        //            i++;
+        //        }
 
-        vm.collection.acceptChanges();
+        //        vm.collection.acceptChanges();
 
-       // ko.applyBindings(vm);
+        // ko.applyBindings(vm);
     });
 </script>
 
