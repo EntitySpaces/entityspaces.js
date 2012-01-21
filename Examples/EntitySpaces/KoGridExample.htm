@@ -110,32 +110,32 @@
             sortInfo : ko.observable(),
 
             onAddNew: function () {
+                vm.error("");
                 var newEmployee = vm.collection.addNew();
                 newEmployee.FirstName("Joe");
-                vm:mySelectedItem(newEmployee);
-                vm.error("");
+                vm.mySelectedItem(newEmployee);
             },
 
             onMarkAllAsDeleted: function () {
-                vm.collection.markAllAsDeleted();
                 vm.error("");
+                vm.collection.markAllAsDeleted();
             },
 
             onMarkAsDeleted: function () {
-                vm.mySelectedItem().markAsDeleted();
                 vm.error("");
+                vm.mySelectedItem().markAsDeleted();
             },
 
             onRejectChanges: function () {
-                vm.collection.rejectChanges();
                 vm.error("");
+                vm.collection.rejectChanges();
             },
 
             onSave: function () {
                 vm.collection.save({
                     success: function (data, state) {
-                        vm.collection.loadAll();
                         vm.error("");
+                        vm.collection.loadAll();
                     },
                     error: function (status, responseText, state) {
                         vm.error(responseText);
@@ -145,6 +145,8 @@
         };
 
         ko.applyBindings(vm);
+
+        // Hit our service ...
         vm.collection.loadAll();
 
         // If you want to work offline uncomment this block
