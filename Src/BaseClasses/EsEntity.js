@@ -42,12 +42,6 @@ es.EsEntity = function () { //empty constructor
             return (self.RowState() !== es.RowState.UNCHANGED);
         });
 
-        /*
-        this.isDirty = function () {
-        return (self.RowState() !== es.RowState.UNCHANGED);
-        };
-        */
-
         this.isDirtyGraph = function () {
 
             var dirty = false;

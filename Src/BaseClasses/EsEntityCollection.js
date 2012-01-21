@@ -58,7 +58,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             }
         });
 
-        this.es.deletedEntities = new ko.observableArray();
+        this.es.deletedEntities([]);
     },
 
     rejectChanges: function () {
@@ -114,7 +114,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             self(newArr);
         }
 
-        this.es.deletedEntities = new ko.observableArray();
+        this.es.deletedEntities([]);
     },
 
     markAllAsDeleted: function () {

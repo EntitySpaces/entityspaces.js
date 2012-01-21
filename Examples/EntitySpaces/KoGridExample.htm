@@ -13,13 +13,18 @@
 <body>
     <table>
         <tr>
-            <td colspan="2" data-bind="text: error" style=" color:Red">
+            <td colspan="3">
+                NOTE: This is access a real database. Some records cannot be deleted because of foreign key constraints. 
+                We are showing all of the low level errors that come back from our service for just as an example. In real world scenario's you would not do this of course.
             </td>
         </tr>
         <tr>
-            <td valign="top">
-                <div id="sandbox1" style="font-family: Verdana, Helvetica, Sans-Serif; font-size: 12px;">
-                    <div id="myGrid" style="max-height: 500px; max-width: 500px;" data-bind="koGrid:{ data: collection, 
+            <td colspan="3" data-bind="text: error" style="color:Red;">
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" align="left" style="width:1%;">
+                    <div id="myGrid" style="max-height: 400px; max-width: 900px; border:1px solid rgb(0, 0, 0);" data-bind="koGrid:{ data: collection, 
                             isMultiSelect: false,
                             selectedItem: mySelectedItem,
                             autogenerateColumns: false,
@@ -27,69 +32,108 @@
                             columnDefs: [
                                 {field: 'EmployeeID', displayName: 'Employee ID', width: 140}, 
                                 {field: 'FirstName', displayName: 'First Name', width: 130}, 
-                                {field: 'LastName', displayName: 'Last Name', width: 150} 
+                                {field: 'LastName', displayName: 'Last Name', width: 150},
+                                {field: 'RowState', displayName: 'RowState', width: 80},
+                                {field: 'isDirty', displayName: 'isDirty', width: 80},
+                                {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 180}
                             ],
                             displaySelectionCheckbox: true,
                             displayRowIndex: true }">
                     </div>
-                </div>
             </td>
-            <td valign="top">
-                <div data-bind="with: mySelectedItem">
-                    <!--------------------------->
-                    <!-- This is our Edit Area -->
-                    <!--------------------------->
-                    <table id="EditArea" class="es-grid" cellpadding="3" style="vertical-align: top;">
-                        <tr>
-                            <td>EmployeeID:</td>
-                            <td data-bind="text: EmployeeID"></td>
-                        </tr>
-                        <tr>
-                            <td>First Name:</td>
-                            <td><input data-bind='value: FirstName, valueUpdate: "afterkeydown"' maxlength="10" /></td>
-                        </tr>
-                        <tr>
-                            <td>Last Name:</td>
-                            <td><input data-bind='value: LastName, valueUpdate: "afterkeydown"' maxlength="20" /></td>
-                        </tr>
-                        <tr>
-                            <td>RowState:</td>
-                            <td data-bind="text: RowState"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <hr />
-                                Unchanged = 2, Added = 4, Deleted = 8, Modified = 16
-                                <hr>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <button data-bind="click: $root.onMarkAllAsDeleted" style="width: 280px">Mark All as Deleted</button>
-                            </td>
-                         </tr>
-                        <tr>
-
-                            <td colspan="2">
-                                <button data-bind="click: $root.onMarkAsDeleted" style="width: 280px">Mark Selected Item as Deleted</button>
-                            </td>
-                         </tr>
-                        <tr>
-                            <td colspan="2">
-                                <button data-bind="click: $root.onRejectChanges" style="width: 280px">Reject Changes</button>
-                            </td>
-                         </tr>
-                        <tr>
-                            <td colspan="2">
-                                <button data-bind="click: $root.onAddNew" style="width: 280px">Add a New Employee</button>
-                            </td>
-                         </tr>
-                        <tr>
-                            <td colspan="2">
-                                <button data-bind="click: $root.onSave" style="width: 280px">Save changes</button>
-                            </td>
-                         </tr>
-                    </table>
+            <td>
+                &nbsp;&nbsp;
+            </td>
+            <td valign="top" align="left">
+                <!--------------------------->
+                <!-- This is our Edit Area -->
+                <!--------------------------->
+                <table id="EditArea" cellpadding="3" style="max-width: 400px; vertical-align:top; border:1px solid rgb(0,0,0);" data-bind="with: mySelectedItem">
+                    <tr align="center">
+                        <td colspan="2">
+                            <hr />
+                            <b>Edit Selected Employee Here</b>
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr align="center">
+                        <td colspan="2">
+                            The Original Values are stored for each column, however, they are not shown here, but they are restored when you selected 'Reject Changes'
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>EmployeeID:</td>
+                        <td data-bind="text: EmployeeID"></td>
+                    </tr>
+                    <tr>
+                        <td>First Name:</td>
+                        <td><input data-bind='value: FirstName, valueUpdate: "afterkeydown"' maxlength="10" /></td>
+                    </tr>
+                    <tr>
+                        <td>Last Name:</td>
+                        <td><input data-bind='value: LastName, valueUpdate: "afterkeydown"' maxlength="20" /></td>
+                    </tr>
+                    <tr>
+                        <td>RowState:</td>
+                        <td data-bind="text: RowState"></td>
+                    </tr>
+                    <tr align="center">
+                        <td colspan="2">
+                            <hr />
+                            Unchanged = 2, Added = 4, Deleted = 8, Modified = 16
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button data-bind="click: $root.onMarkAllAsDeleted" style="width: 280px">Mark 'All' as Deleted</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button data-bind="click: $root.onMarkAsDeleted" style="width: 280px">Mark 'Selected Item' as Deleted</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button data-bind="click: $root.onRejectChanges" style="width: 280px">Reject All Changes</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button data-bind="click: $root.onAddNew" style="width: 280px">Add a New Employee</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button data-bind="click: $root.onSave" style="width: 280px">Save changes</button>
+                        </td>
+                    </tr>
+                </table>
+            </td>    
+        </tr>
+        <tr>
+            <td>
+                <b>The Collections Deleted Item List (collection.es.deletedEntities)</b>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" align="left" style="width:1%">
+                <div id="myDeleted" style="max-height: 200px; max-width: 900px; border:1px solid rgb(0,0,0);" data-bind="koGrid:{ data: collection.es.deletedEntities, 
+                        isMultiSelect: false,
+                        autogenerateColumns: false,
+                        sortInfo: sortInfo,
+                        columnDefs: [
+                            {field: 'EmployeeID', displayName: 'Employee ID', width: 140}, 
+                            {field: 'FirstName', displayName: 'First Name', width: 130}, 
+                            {field: 'LastName', displayName: 'Last Name', width: 150},
+                            {field: 'RowState', displayName: 'RowState', width: 80},
+                            {field: 'isDirty', displayName: 'isDirty', width: 80},
+                            {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 180}
+                        ],
+                        displaySelectionCheckbox: true,
+                        displayRowIndex: true }">
                 </div>
             </td>
         </tr>
@@ -124,11 +168,20 @@
             onMarkAsDeleted: function () {
                 vm.error("");
                 vm.mySelectedItem().markAsDeleted();
+
+                if (vm.collection().length > 0) {
+                    vm.mySelectedItem(vm.collection()[0]);
+                }
+
             },
 
             onRejectChanges: function () {
                 vm.error("");
                 vm.collection.rejectChanges();
+
+//                if (vm.collection().length > 0) {
+//                    vm.mySelectedItem(vm.collection()[0]);
+//                }
             },
 
             onSave: function () {

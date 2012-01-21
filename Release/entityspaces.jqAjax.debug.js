@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.16-pre 
+// The entityspaces.js JavaScript library v1.0.17-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Fri 01/20/2012 at 23:38:58.38    
+// Built on Sat 01/21/2012 at 12:41:59.01    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -498,12 +498,6 @@ es.EsEntity = function () { //empty constructor
             return (self.RowState() !== es.RowState.UNCHANGED);
         });
 
-        /*
-        this.isDirty = function () {
-        return (self.RowState() !== es.RowState.UNCHANGED);
-        };
-        */
-
         this.isDirtyGraph = function () {
 
             var dirty = false;
@@ -911,7 +905,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             }
         });
 
-        this.es.deletedEntities = new ko.observableArray();
+        this.es.deletedEntities([]);
     },
 
     rejectChanges: function () {
@@ -967,7 +961,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             self(newArr);
         }
 
-        this.es.deletedEntities = new ko.observableArray();
+        this.es.deletedEntities([]);
     },
 
     markAllAsDeleted: function () {
