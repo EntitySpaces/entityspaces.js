@@ -4,15 +4,6 @@
 ##Live Example##
 * [Fully Editable Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
 
-##Watch a video of entityspaces.js in action##
-<table border="0">
-    <tr>
-        <td>
-            <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a>
-        </td>
-    </tr>
-</table>
-
 ##Features##
 * Supports WCF JSON Service and RESTFUL API's
 * Supports Full Hierrachical Data Models
@@ -23,7 +14,9 @@
 ##EntitySpaces Studio Specific Abilities##
 * Will Generate your entire set of JavaScript class from your Database Schema
 * Will Generate your WCF JSON Service for you that will work Out-Of-The-Box 
-* <table border="0">
+
+##Watch a video of entityspaces.js in action##
+<table border="0">
     <tr>
         <td>
             <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a>
