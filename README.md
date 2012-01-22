@@ -17,7 +17,7 @@ Dependencies: Knockout
 * Tracks Original Values so Edits can be Cancelled via RejectChanges
 * Generic - Can be used for an ORM or Database Backend
 
-##Untuitive API##
+##Intuitive API##
 ```javascript
 
     // Add a single record
