@@ -13,6 +13,17 @@
     </tr>
 </table>
 
+##Features##
+* Supports WCF JSON Service and RESTFUL API's
+* Supports Full Hierrachical Data Models
+* Tracks Row Level and Column Level Dirty State
+* Tracks Original Values so Edits can be Cancelled via RejectChanges
+* Generic - Can be used for an ORM or Database Backend
+
+##EntitySpaces Specific Abilities##
+* Will Generate your entire set of JavaScript class from your Database Schema
+* Will Generate your WCF JSON Service for you that will work Out-Of-The-Box 
+
 ##Example Class Definitions (pseudocode)##
 * [Single Entity Class] (https://github.com/EntitySpaces/entityspaces.js/wiki/Single-Entity-Class-Definition)
 * [Collection Class] (https://github.com/EntitySpaces/entityspaces.js/wiki/Collection-Entity-Class-Definition)
