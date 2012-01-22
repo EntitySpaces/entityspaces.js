@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Ko Grid Sandbox</title>
+    <script src="../../Libs/jquery-1.7.1.js" type="text/javascript"></script>
+    <script src="../../Libs/json2.js" type="text/javascript"></script>
+    <script src="../../Libs/knockout-2.0.0.debug.js" type="text/javascript"></script>
+    <script src="koGrid/koGrid.debug.js" type="text/javascript"></script>
+    <script src="../../Release/entityspaces.XHR.debug.js" type="text/javascript"></script>
+    <script src="Generated/Employees.js" type="text/javascript"></script>
+    <link href="koGrid/KoGrid.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <table>
+        <tr>
+            <td colspan="3">
+                <h3>Editing <a href="https://github.com/EntitySpaces/entityspaces.js" target="new">entityspaces.js</a> demonstration. We are using <a href="https://github.com/ericmbarnard/KoGrid" target="new">KoGrid</a> in the example for the grid control. The KoGrid control is new so please excuse any painting errors you might see.</h3>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <strong>NOTE:</strong> This is accessing a real database. Some records cannot be deleted because of foreign key constraints. We are showing all of the low level errors that come back from our service just as an example. In real world scenarios you would not do this, of course.
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" data-bind="text: error" style="color:Red;">
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" align="left" style="width:1%;">
+                    <div id="myGrid" style="max-height: 400px; max-width: 900px; border:1px solid rgb(0, 0, 0);" data-bind="koGrid:{ data: collection, 
+                            isMultiSelect: false,
+                            selectedItem: mySelectedItem,
+                            autogenerateColumns: false,
+                            sortInfo: sortInfo,
+                            columnDefs: [
+                                {field: 'EmployeeID', displayName: 'Employee ID', width: 140}, 
+                                {field: 'FirstName', displayName: 'First Name', width: 130}, 
+                                {field: 'LastName', displayName: 'Last Name', width: 150},
+                                {field: 'RowState', displayName: 'RowState', width: 80},
+                                {field: 'isDirty', displayName: 'isDirty', width: 80},
+                                {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 180}
+                            ],
+                            displaySelectionCheckbox: true,
+                            displayRowIndex: true }">
+                    </div>
+            </td>
+            <td>
+                &nbsp;&nbsp;
+            </td>
+            <td valign="top" align="left">
+                <!--------------------------->
+                <!-- This is our Edit Area -->
+                <!--------------------------->
+                <table id="EditArea" cellpadding="3" style="max-width: 400px; vertical-align:top; border:1px solid rgb(0,0,0);" data-bind="with: mySelectedItem">
+                    <tr align="center">
+                        <td colspan="2">
+                            <hr />
+                            <b>Edit Selected Employee Here</b>
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr align="center">
+                        <td colspan="2">
+                            The Original Values are stored for each column. They are not shown below. However, they are restored when you selected 'Reject Changes'.
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>EmployeeID:</td>
+                        <td data-bind="text: EmployeeID"></td>
+                    </tr>
+                    <tr>
+                        <td>First Name:</td>
+                        <td><input data-bind='value: FirstName, valueUpdate: "afterkeydown"' maxlength="10" /></td>
+                    </tr>
+                    <tr>
+                        <td>Last Name:</td>
+                        <td><input data-bind='value: LastName, valueUpdate: "afterkeydown"' maxlength="20" /></td>
+                    </tr>
+                    <tr>
+                        <td>RowState:</td>
+                        <td data-bind="text: RowState"></td>
+                    </tr>
+                    <tr align="center">
+                        <td colspan="2">
+                            <hr />
+                            Unchanged = 2, Added = 4, Deleted = 8, Modified = 16
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button data-bind="click: $root.onMarkAllAsDeleted" style="width: 280px">Mark 'All' as Deleted</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button data-bind="click: $root.onMarkAsDeleted" style="width: 280px">Mark 'Selected Item' as Deleted</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button data-bind="click: $root.onRejectChanges" style="width: 280px">Reject All Changes</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button data-bind="click: $root.onAddNew" style="width: 280px">Add a New Employee</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button data-bind="click: $root.onSave" style="width: 280px">Save changes</button>
+                        </td>
+                    </tr>
+                </table>
+            </td>    
+        </tr>
+        <tr>
+            <td>
+                <b>The Collections Deleted Item List (collection.es.deletedEntities)</b>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" align="left" style="width:1%">
+                <div id="myDeleted" style="max-height: 200px; max-width: 900px; border:1px solid rgb(0,0,0);" data-bind="koGrid:{ data: collection.es.deletedEntities, 
+                        isMultiSelect: false,
+                        autogenerateColumns: false,
+                        sortInfo: sortInfo,
+                        columnDefs: [
+                            {field: 'EmployeeID', displayName: 'Employee ID', width: 140}, 
+                            {field: 'FirstName', displayName: 'First Name', width: 130}, 
+                            {field: 'LastName', displayName: 'Last Name', width: 150},
+                            {field: 'RowState', displayName: 'RowState', width: 80},
+                            {field: 'isDirty', displayName: 'isDirty', width: 80},
+                            {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 180}
+                        ],
+                        displaySelectionCheckbox: true,
+                        displayRowIndex: true }">
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+
+<script type="text/javascript">
+
+ // es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
+    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+
+    $(document).ready(function () {
+
+        var vm = {
+            collection: new es.objects.EmployeesCollection(),
+            mySelectedItem: ko.observable(new es.objects.Employees()),
+            error: ko.observable(),
+            sortInfo: ko.observable(),
+
+            onAddNew: function () {
+                vm.error("");
+                var newEmployee = vm.collection.addNew();
+                newEmployee.FirstName("Joe");
+                newEmployee.LastName("Smith");
+                vm.mySelectedItem(newEmployee);
+            },
+
+            onMarkAllAsDeleted: function () {
+                vm.error("");
+                vm.collection.markAllAsDeleted();
+            },
+
+            onMarkAsDeleted: function () {
+                vm.error("");
+
+                var index = ko.utils.arrayIndexOf(vm.collection(), vm.mySelectedItem());
+
+                vm.mySelectedItem().markAsDeleted();
+
+                if (vm.collection().length > 0) {
+                    vm.mySelectedItem(vm.collection()[Math.max(index, 0)]);
+                }
+            },
+
+            onRejectChanges: function () {
+                vm.error("");
+                vm.collection.rejectChanges();
+
+                if (vm.collection().length > 0) {
+                    vm.mySelectedItem(vm.collection()[0]);
+                }
+            },
+
+            onSave: function () {
+                vm.collection.save({
+                    success: function (data, state) {
+                        vm.error("");
+                        vm.collection.loadAll();
+                    },
+                    error: function (status, responseText, state) {
+                        vm.error(responseText);
+                    }
+                });
+            }
+        };
+
+        ko.applyBindings(vm);
+
+        // Hit our service ...
+        vm.collection.loadAll();
+
+        // If you want to work offline uncomment this block
+        //        var coll = new es.objects.EmployeesCollection()
+        //        var emp, i = 0;
+
+        //        while (vm.collection().length < 200) {
+        //            emp = vm.collection.addNew();
+
+        //            emp.FirstName('John');
+        //            emp.LastName('Doe' + i.toString());
+        //            emp.EmployeeID(i);
+        //            i++;
+        //        }
+
+        //        vm.collection.acceptChanges();
+
+        // ko.applyBindings(vm);
+    });
+</script>
+
+</html>

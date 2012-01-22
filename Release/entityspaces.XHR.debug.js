@@ -1,6 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.11-pre 
-// Built on Wed 01/18/2012 at 22:59:48.24    
+// The entityspaces.js JavaScript library v1.0.18-pre 
+// (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
+// 
+// Built on Sat 01/21/2012 at 22:17:09.81    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -382,7 +384,7 @@ var utils = {
         // Check and see if we have anything dirty at all?
         if (root === undefined) {
             if (!obj.isDirtyGraph()) {
-                return {};
+                return null;
             }
         }
 
@@ -496,12 +498,6 @@ es.EsEntity = function () { //empty constructor
             return (self.RowState() !== es.RowState.UNCHANGED);
         });
 
-        /*
-        this.isDirty = function () {
-        return (self.RowState() !== es.RowState.UNCHANGED);
-        };
-        */
-
         this.isDirtyGraph = function () {
 
             var dirty = false;
@@ -552,15 +548,16 @@ es.EsEntity = function () { //empty constructor
 
                 default:
 
-                    srcValue = ko.utils.unwrapObservable(self[key]);
+                    mappedName = self.esColumnMap[key];
 
-                    if (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined) {
+                    if (mappedName !== undefined) {
 
-                        mappedName = self.esColumnMap[key];
+                        srcValue = ko.utils.unwrapObservable(self[key]);
 
-                        if (mappedName !== undefined) {
+                        if (srcValue === null || (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined)) {
+
                             // This is a core column ...
-                            if (srcValue instanceof Date) {
+                            if (srcValue != null && srcValue instanceof Date) {
                                 stripped[key] = utils.dateParser.serialize(srcValue);
                             } else {
                                 stripped[key] = srcValue;
@@ -568,6 +565,7 @@ es.EsEntity = function () { //empty constructor
                         }
                     }
                     break;
+
             }
         });
 
@@ -769,8 +767,19 @@ es.EsEntity = function () { //empty constructor
 
         self.es.isLoading(true);
 
-        var route,
-			options = { success: success, error: error, state: state };
+        var options = { success: success, error: error, state: state, route: self.esRoutes['commit'] }
+
+        switch (self.RowState()) {
+            case es.RowState.ADDED:
+                options.route = self.esRoutes['create'] || options.route;
+                break;
+            case es.RowState.MODIFIED:
+                options.route = self.esRoutes['update'] || options.route;
+                break;
+            case es.RowState.DELETED:
+                options.route = self.esRoutes['delete'] || options.route;
+                break;
+        }
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);
@@ -782,31 +791,23 @@ es.EsEntity = function () { //empty constructor
             options.async = false;
         }
 
-        // The default unless overriden
-        route = self.esRoutes['commit'];
-
-        switch (self.RowState()) {
-            case es.RowState.ADDED:
-                route = self.esRoutes['create'] || route;
-                break;
-            case es.RowState.MODIFIED:
-                route = self.esRoutes['update'] || route;
-                break;
-            case es.RowState.DELETED:
-                route = self.esRoutes['delete'] || route;
-                break;
-        }
-
-        options.route = route;
-
         var root = undefined;
 
-        //TODO: potentially the most inefficient call in the whole lib
         options.data = es.utils.getDirtyGraph(self);
 
-        if (route) {
-            options.url = route.url;
-            options.type = route.method;
+        if (options.data === null) {
+            // there was no data to save
+            if (options.async === false) {
+                self.es.isLoading(false);
+                return;
+            } else {
+                options.success(null, options);
+            }
+        }
+
+        if (options.route) {
+            options.url = options.route.url;
+            options.type = options.route.method;
         }
 
         var successHandler = options.success;
@@ -904,7 +905,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             }
         });
 
-        this.es.deletedEntities = new ko.observableArray();
+        this.es.deletedEntities([]);
     },
 
     rejectChanges: function () {
@@ -960,14 +961,21 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             self(newArr);
         }
 
-        this.es.deletedEntities = new ko.observableArray();
+        this.es.deletedEntities([]);
     },
 
     markAllAsDeleted: function () {
 
-        var i, entity, coll, len;
+        var i, entity, coll, len, arr;
 
-        this.es.deletedEntities(this.splice(0, this().length));
+        if (arguments.length > 0) {
+            arr = this.es.deletedEntities().concat(arguments[0]());
+            this.es.deletedEntities(arr);
+
+            this.removeAll(arguments[0]());
+        } else {
+            this.es.deletedEntities(this.splice(0, this().length));
+        }
 
         coll = this.es.deletedEntities;
         len = coll().length;
@@ -1128,8 +1136,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         self.es.isLoading(true);
 
-        var route,
-            options = { success: success, error: error, state: state };
+        var options = { success: success, error: error, state: state, route: self.esRoutes['commit'] }
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);
@@ -1141,10 +1148,18 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
             options.async = false;
         }
 
-        options.route = self.esRoutes['commit'];
-
         //TODO: potentially the most inefficient call in the whole lib
         options.data = es.utils.getDirtyGraph(self);
+
+        if (options.data === null) {
+            // there was no data to save
+            if (options.async === false) {
+                self.es.isLoading(false);
+                return;
+            } else {
+                options.success(null, options);
+            }
+        }
 
         if (options.route) {
             options.url = options.route.url;
@@ -1155,6 +1170,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         var errorHandler = options.error;
 
         options.success = function (data, options) {
+            self.es.deletedEntities([]);
             self.populateCollection(data);
             if (successHandler) { successHandler.call(self, data, options.state); }
             self.es.isLoading(false);
@@ -1409,24 +1425,28 @@ es.XMLHttpRequestProvider = function () {
 
     executeCompleted = function (responseText, route) {
 
-        var theData = JSON.parse(responseText);
+        var response = {
+            data: JSON.parse(responseText),
+            error: undefined
+        };
 
         if (route.response !== undefined) {
             switch (route.response) {
                 case 'entity':
-                    return theData[route.response];
                 case 'collection':
-                    return theData[route.response];
+                    response.error = response.data['exception'];
+                    response.data = response.data[route.response];
+                    break;
             }
         }
 
-        return theData;
+        return response;
     };
 
     // Called by the entityspaces.js framework when working with entities
     this.execute = function (options) {
 
-        var path = null, xmlHttp, success, error;
+        var path = null, xmlHttp, success, error, response;
 
         success = options.success || noop;
         error = options.error || noop;
@@ -1444,10 +1464,13 @@ es.XMLHttpRequestProvider = function () {
         if (options.async === true) {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState === 4) {
-                    if (xmlHttp.status === 200) {
-                        success(executeCompleted(xmlHttp.responseText, options.route), options);
+
+                    response = executeCompleted(xmlHttp.responseText, options.route);
+
+                    if (xmlHttp.status === 200 && response.error === null) {
+                        success(response.data, options);
                     } else {
-                        error(xmlHttp.status, xmlHttp.statusText, options);
+                        error(xmlHttp.status, response.error || xmlHttp.responseText, options);
                     }
                 }
             };
@@ -1456,12 +1479,15 @@ es.XMLHttpRequestProvider = function () {
         xmlHttp.send(ko.toJSON(options.data));
 
         if (options.async === false) {
-            if (xmlHttp.status === 200) {
+
+            response = executeCompleted(xmlHttp.responseText, options.route);
+
+            if (xmlHttp.status === 200 && response.error === null) {
                 if (xmlHttp.responseText !== '{}' && xmlHttp.responseText !== "") {
-                    success(executeCompleted(xmlHttp.responseText, options.route), options);
+                    success(response.data, options);
                 }
             } else {
-                error(xmlHttp.status, xmlHttp.responseText, options);
+                error(xmlHttp.status, response.error || xmlHttp.responseText, options)
             }
         }
     };
