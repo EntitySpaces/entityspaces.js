@@ -10,6 +10,7 @@ Dependencies: Knockout
 * [Fully Editable Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
 
 ##Features##
+* Built upon Knockout and the MVVM Model
 * Supports WCF JSON Service and RESTFUL API's
 * Supports Full Hierarchical Data Models
 * Two Providers, either pure XHR or JQuery Ajax (you choose which one you want to use)
