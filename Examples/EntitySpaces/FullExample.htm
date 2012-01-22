@@ -28,7 +28,7 @@
         </tr>
         <tr>
             <td valign="top" align="left" style="width:1%;">
-                    <div id="myGrid" style="max-height: 400px; max-width: 900px; border:1px solid rgb(0, 0, 0);" data-bind="koGrid:{ data: collection, 
+                    <div id="myGrid" style="max-height: 300px; max-width: 900px; border:1px solid rgb(0, 0, 0);" data-bind="koGrid:{ data: collection, 
                             isMultiSelect: false,
                             selectedItem: mySelectedItem,
                             autogenerateColumns: false,
@@ -37,9 +37,9 @@
                                 {field: 'EmployeeID', displayName: 'Employee ID', width: 140}, 
                                 {field: 'FirstName', displayName: 'First Name', width: 130}, 
                                 {field: 'LastName', displayName: 'Last Name', width: 150},
-                                {field: 'RowState', displayName: 'RowState', width: 80},
+                                {field: 'RowState', displayName: 'RowState', width: 90},
                                 {field: 'isDirty', displayName: 'isDirty', width: 80},
-                                {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 180}
+                                {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 170}
                             ],
                             displaySelectionCheckbox: true,
                             displayRowIndex: true }">
@@ -55,7 +55,6 @@
                 <table id="EditArea" width="400px" cellpadding="3" style="max-width: 400px; vertical-align:top; border:1px solid rgb(0,0,0);" data-bind="with: mySelectedItem">
                     <tr align="center">
                         <td colspan="2">
-                            <hr />
                             <b>Edit Selected Employee Here</b>
                             <hr />
                         </td>
@@ -67,19 +66,19 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>EmployeeID:</td>
+                        <td><strong>EmployeeID:</strong></td>
                         <td data-bind="text: EmployeeID"></td>
                     </tr>
                     <tr>
-                        <td>First Name:</td>
+                        <td><strong>First Name:</strong></td>
                         <td><input data-bind='value: FirstName, valueUpdate: "afterkeydown"' maxlength="10" /></td>
                     </tr>
                     <tr>
-                        <td>Last Name:</td>
+                        <td><strong>Last Name:</strong></td>
                         <td><input data-bind='value: LastName, valueUpdate: "afterkeydown"' maxlength="20" /></td>
                     </tr>
                     <tr>
-                        <td>RowState:</td>
+                        <td><strong>RowState:</strong></td>
                         <td data-bind="text: RowState"></td>
                     </tr>
                     <tr align="center">
@@ -96,7 +95,19 @@
                     </tr>
                     <tr>
                         <td colspan="2" align="center">
+                            vm.collection.markAllAsDeleted();<br />
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
                             <button data-bind="click: $root.onMarkAsDeleted" style="width: 280px">Mark 'Selected Item' as Deleted</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            vm.mySelectedItem().markAsDeleted();<br />
+                            <hr />
                         </td>
                     </tr>
                     <tr>
@@ -106,12 +117,31 @@
                     </tr>
                     <tr>
                         <td colspan="2" align="center">
+                            vm.collection.rejectChanges();<br />
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
                             <button data-bind="click: $root.onAddNew" style="width: 280px">Add a New Employee</button>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2" align="center">
+                            var newEmployee = vm.collection.addNew();<br />
+                            newEmployee.FirstName("Joe");<br />
+                            newEmployee.LastName("Smith");<br />
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
                             <button data-bind="click: $root.onSave" style="width: 280px">Save changes</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            vm.collection.save();<br />
                         </td>
                     </tr>
                 </table>
@@ -132,9 +162,9 @@
                             {field: 'EmployeeID', displayName: 'Employee ID', width: 140}, 
                             {field: 'FirstName', displayName: 'First Name', width: 130}, 
                             {field: 'LastName', displayName: 'Last Name', width: 150},
-                            {field: 'RowState', displayName: 'RowState', width: 80},
+                            {field: 'RowState', displayName: 'RowState', width: 90},
                             {field: 'isDirty', displayName: 'isDirty', width: 80},
-                            {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 180}
+                            {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 170}
                         ],
                         displaySelectionCheckbox: true,
                         displayRowIndex: true }">
@@ -146,7 +176,6 @@
 
 <script type="text/javascript">
 
- // es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
     es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     $(document).ready(function () {
@@ -159,9 +188,12 @@
 
             onAddNew: function () {
                 vm.error("");
+
+                //  Add the new Employee
                 var newEmployee = vm.collection.addNew();
                 newEmployee.FirstName("Joe");
                 newEmployee.LastName("Smith");
+
                 vm.mySelectedItem(newEmployee);
             },
 
@@ -175,6 +207,7 @@
 
                 var index = ko.utils.arrayIndexOf(vm.collection(), vm.mySelectedItem());
 
+                // only line of entityspaces.js code necessary
                 vm.mySelectedItem().markAsDeleted();
 
                 if (vm.collection().length > 0) {
@@ -205,22 +238,7 @@
         // Hit our service ...
         vm.collection.loadAll();
 
-        // If you want to work offline uncomment this block
-        //        var coll = new es.objects.EmployeesCollection()
-        //        var emp, i = 0;
-
-        //        while (vm.collection().length < 200) {
-        //            emp = vm.collection.addNew();
-
-        //            emp.FirstName('John');
-        //            emp.LastName('Doe' + i.toString());
-        //            emp.EmployeeID(i);
-        //            i++;
-        //        }
-
-        //        vm.collection.acceptChanges();
-
-        // ko.applyBindings(vm);
+        vm.mySelectedItem(vm.collection()[0]);
     });
 </script>
 
