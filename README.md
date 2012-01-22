@@ -1,18 +1,14 @@
 ##License##
-License: [MIT](http://www.opensource.org/licenses/mit-license.php)
+* License: [MIT](http://www.opensource.org/licenses/mit-license.php)
 
 ##Live Example##
-============================================
-[Fully Editable Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
+* [Fully Editable Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
 
-##A Javascript ORM (Data Access) Framework that uses Knockout##
+##Watch a video of entityspaces.js in action##
 <table border="0">
     <tr>
         <td>
             <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png"></a>
-        </td>
-        <td>
-            Watch a video of entityspaces.js in action
         </td>
     </tr>
 </table>
