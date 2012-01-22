@@ -185,10 +185,6 @@
             onRejectChanges: function () {
                 vm.error("");
                 vm.collection.rejectChanges();
-
-                if (vm.collection().length > 0) {
-                    vm.mySelectedItem(vm.collection()[0]);
-                }
             },
 
             onSave: function () {
