@@ -1,6 +1,6 @@
 #A Javascript (ORM) Data Access Framework that uses Knockout#
 
-By: EntitySpaces, LLC
+By: [EntitySpaces, LLC] (http://www.entityspaces.net)
 
 License: [MIT](http://www.opensource.org/licenses/mit-license.php)
 
