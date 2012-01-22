@@ -20,9 +20,16 @@
 * Tracks Original Values so Edits can be Cancelled via RejectChanges
 * Generic - Can be used for an ORM or Database Backend
 
-##EntitySpaces Specific Abilities##
+##EntitySpaces Studio Specific Abilities##
 * Will Generate your entire set of JavaScript class from your Database Schema
 * Will Generate your WCF JSON Service for you that will work Out-Of-The-Box 
+* <table border="0">
+    <tr>
+        <td>
+            <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a>
+        </td>
+    </tr>
+</table>
 
 ##Example Class Definitions (pseudocode)##
 * [Single Entity Class] (https://github.com/EntitySpaces/entityspaces.js/wiki/Single-Entity-Class-Definition)
