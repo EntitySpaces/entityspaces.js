@@ -29,10 +29,10 @@ Real JavaScript Classes
 [Employees Generated Class (created by EntitySpaces Studio)] (https://github.com/EntitySpaces/entityspaces.js/wiki/Our-Employee-Generated-Class)
 [Employees Collection] (https://github.com/EntitySpaces/entityspaces.js/wiki/Our-Employee-Custom-Class)
 
-Real World Usage Examples 
-======================================================
-[Adding and Saving New Records] (https://github.com/EntitySpaces/entityspaces.js/wiki/Adding-New-Records)
-[Deleting Records] (https://github.com/EntitySpaces/entityspaces.js/wiki/Deleting-Records)
-[Loading and Saving Hierarchical Data] (https://github.com/EntitySpaces/entityspaces.js/wiki/Loading-and-Saving-Hierarchical-Data)
-[Asychronous and or Synchronous methods] (https://github.com/EntitySpaces/entityspaces.js/wiki/Asychronous-and-or-Synchronous-methods)
-[Passing in 'state' to the Async methods] (https://github.com/EntitySpaces/entityspaces.js/wiki/Passing-in-'state'-to-the-Async-methods)
+##Real World Usage Examples##
+
+* [Adding and Saving New Records] (https://github.com/EntitySpaces/entityspaces.js/wiki/Adding-New-Records)
+* [Deleting Records] (https://github.com/EntitySpaces/entityspaces.js/wiki/Deleting-Records)
+* [Loading and Saving Hierarchical Data] (https://github.com/EntitySpaces/entityspaces.js/wiki/Loading-and-Saving-Hierarchical-Data)
+* [Asychronous and or Synchronous methods] (https://github.com/EntitySpaces/entityspaces.js/wiki/Asychronous-and-or-Synchronous-methods)
+* [Passing in 'state' to the Async methods] (https://github.com/EntitySpaces/entityspaces.js/wiki/Passing-in-'state'-to-the-Async-methods)
