@@ -14,16 +14,18 @@
     <table>
         <tr>
             <td colspan="3">
-                <h3>Editing <a href="https://github.com/EntitySpaces/entityspaces.js" target="new">entityspaces.js</a> demonstration. We are using <a href="https://github.com/ericmbarnard/KoGrid" target="new">KoGrid</a> in the example for the grid control. The KoGrid control is new so please excuse any painting errors you might see.</h3>
+                <h4>Editing <a href="https://github.com/EntitySpaces/entityspaces.js" target="new">entityspaces.js</a> demonstration. We are using <a href="https://github.com/ericmbarnard/KoGrid" target="new">KoGrid</a> in the example for the grid control. The KoGrid control is new so please excuse any painting errors you might see.
+                A screen like this can be written in mere minutes, the only code we really had to hand code to make it "happen" was to add the code shown beneath the buttons into our button click event handlers. It couldn't be any easier. Both the <a href="https://github.com/EntitySpaces/entityspaces.js/blob/master/Examples/EntitySpaces/Generated/Employees.js" target="new">employees.js</a> file and the <a href="https://github.com/EntitySpaces/entityspaces.js/blob/master/Examples/EntitySpaces/esJson.svc.cs" target="new">WCF JSON service</a> were generated for us by <a href="http://www.entityspaces.net/portal/Products/EntitySpacesStudio.aspx" target="new">EntitySpaces Studio</a>.</h4>
+                <hr />
             </td>
         </tr>
         <tr>
-            <td colspan="3">
+            <td colspan="4">
                 <strong>NOTE:</strong> This is accessing a real database. Some records cannot be deleted because of foreign key constraints. We are showing all of the low level errors that come back from our service just as an example. In real world scenarios you would not do this, of course.
             </td>
         </tr>
         <tr>
-            <td colspan="3" data-bind="text: error" style="color:Red;">
+            <td colspan="4" data-bind="text: error" style="color:Red; font-weight:bold;">
             </td>
         </tr>
         <tr>
@@ -35,11 +37,11 @@
                             sortInfo: sortInfo,
                             columnDefs: [
                                 {field: 'EmployeeID', displayName: 'Employee ID', width: 140}, 
-                                {field: 'FirstName', displayName: 'First Name', width: 130}, 
-                                {field: 'LastName', displayName: 'Last Name', width: 150},
+                                {field: 'FirstName', displayName: 'First Name', width: 120}, 
+                                {field: 'LastName', displayName: 'Last Name', width: 160},
                                 {field: 'RowState', displayName: 'RowState', width: 90},
                                 {field: 'isDirty', displayName: 'isDirty', width: 80},
-                                {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 170}
+                                {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 160}
                             ],
                             displaySelectionCheckbox: true,
                             displayRowIndex: true }">
@@ -48,11 +50,11 @@
             <td>
                 &nbsp;&nbsp;
             </td>
-            <td valign="top" align="left">
+            <td valign="top" align="left" rowspan="6">
                 <!--------------------------->
                 <!-- This is our Edit Area -->
                 <!--------------------------->
-                <table id="EditArea" width="400px" cellpadding="3" style="max-width: 400px; vertical-align:top; border:1px solid rgb(0,0,0);" data-bind="with: mySelectedItem">
+                <table id="EditArea" cellpadding="3" style="max-width: 500px; vertical-align:top; border:1px solid rgb(0,0,0);" data-bind="with: mySelectedItem">
                     <tr align="center">
                         <td colspan="2">
                             <b>Edit Selected Employee Here</b>
@@ -84,7 +86,7 @@
                     <tr align="center">
                         <td colspan="2">
                             <hr />
-                            Unchanged = 2, Added = 4, Deleted = 8, Modified = 16
+                            RowState : Unchanged = 2, Added = 4, Deleted = 8, Modified = 16
                             <hr />
                         </td>
                     </tr>
@@ -147,24 +149,24 @@
                 </table>
             </td>    
         </tr>
-        <tr>
+        <tr valign="top">
             <td>
                 <b>The Collections Deleted Item List (collection.es.deletedEntities)</b>
             </td>
         </tr>
-        <tr>
-            <td valign="top" align="left" style="width:1%">
+        <tr valign="top">
+            <td valign="top" align="left" style="width:1%" rowspan="3">
                 <div id="myDeleted" style="max-height: 200px; max-width: 900px; border:1px solid rgb(0,0,0);" data-bind="koGrid:{ data: collection.es.deletedEntities, 
                         isMultiSelect: false,
                         autogenerateColumns: false,
                         sortInfo: sortInfo,
                         columnDefs: [
                             {field: 'EmployeeID', displayName: 'Employee ID', width: 140}, 
-                            {field: 'FirstName', displayName: 'First Name', width: 130}, 
-                            {field: 'LastName', displayName: 'Last Name', width: 150},
+                            {field: 'FirstName', displayName: 'First Name', width: 120}, 
+                            {field: 'LastName', displayName: 'Last Name', width: 160},
                             {field: 'RowState', displayName: 'RowState', width: 90},
                             {field: 'isDirty', displayName: 'isDirty', width: 80},
-                            {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 170}
+                            {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 160}
                         ],
                         displaySelectionCheckbox: true,
                         displayRowIndex: true }">
