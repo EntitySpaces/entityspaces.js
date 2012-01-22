@@ -8,14 +8,14 @@
 <table border="0">
     <tr>
         <td>
-            <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png"></a>
+            <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a>
         </td>
     </tr>
 </table>
 
 ##Example Class Definitions (pseudocode)##
-* [Single Entity Class] (https://github.com/EntitySpaces/entityspaces.js/wiki/Single-Entity-Class-Definition-(pseudocode))
-* [Collection Class] (https://github.com/EntitySpaces/entityspaces.js/wiki/Collection-Entity-Class-Definition-(pseudocode))
+* [Single Entity Class] (https://github.com/EntitySpaces/entityspaces.js/wiki/Single-Entity-Class-Definition-(pseudocode)
+* [Collection Class] (https://github.com/EntitySpaces/entityspaces.js/wiki/Collection-Entity-Class-Definition-(pseudocode)
 
 ##Real JavaScript Classes##
 * [Employees Generated Class (created by EntitySpaces Studio)] (https://github.com/EntitySpaces/entityspaces.js/wiki/Our-Employee-Generated-Class)
