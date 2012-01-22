@@ -29,7 +29,7 @@ Dependencies: Knockout
 ```
 
 ##EntitySpaces Studio Specific Abilities##
-* Will Generate your entire set of JavaScript class from your Database Schema
+* Will Generate your entire set of JavaScript classes from your Database Schema
 * Will Generate your WCF JSON Service for you that will work Out-Of-The-Box 
 * Supports MS SQL Server, Azure, CE, MS Access, Oracle, PostgreSQL, Sybase SQL Anywhere, MySQL, SQLite, VistaDB
 
