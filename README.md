@@ -11,6 +11,16 @@
 * Tracks Original Values so Edits can be Cancelled via RejectChanges
 * Generic - Can be used for an ORM or Database Backend
 
+##Untuitive API##
+```javascript
+
+    // Add a single record
+    var emp = new es.objects.Employees();
+    emp.FirstName("Just");
+    emp.LastName("Added");
+    emp.save();
+```
+
 ##EntitySpaces Studio Specific Abilities##
 * Will Generate your entire set of JavaScript class from your Database Schema
 * Will Generate your WCF JSON Service for you that will work Out-Of-The-Box 
