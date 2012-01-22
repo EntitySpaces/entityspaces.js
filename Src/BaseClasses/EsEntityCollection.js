@@ -323,6 +323,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         var errorHandler = options.error;
 
         options.success = function (data, options) {
+            self.es.deletedEntities([]);
             self.populateCollection(data);
             if (successHandler) { successHandler.call(self, data, options.state); }
             self.es.isLoading(false);

@@ -14,8 +14,12 @@
     <table>
         <tr>
             <td colspan="3">
-                NOTE: This is access a real database. Some records cannot be deleted because of foreign key constraints. 
-                We are showing all of the low level errors that come back from our service for just as an example. In real world scenario's you would not do this of course.
+                <h3>Editing <a href="https://github.com/EntitySpaces/entityspaces.js" target="new">entityspaces.js</a> demonstration. We are using <a href="https://github.com/ericmbarnard/KoGrid" target="new">KoGrid</a> in the example for the grid control. The KoGrid control is new so please excuse any painting errors you might see.</h3>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <strong>NOTE:</strong> This is accessing a real database. Some records cannot be deleted because of foreign key constraints. We are showing all of the low level errors that come back from our service just as an example. In real world scenarios you would not do this, of course.
             </td>
         </tr>
         <tr>
@@ -58,7 +62,7 @@
                     </tr>
                     <tr align="center">
                         <td colspan="2">
-                            The Original Values are stored for each column, however, they are not shown here, but they are restored when you selected 'Reject Changes'
+                            The Original Values are stored for each column. They are not shown below. However, they are restored when you selected 'Reject Changes'.
                             <hr />
                         </td>
                     </tr>
@@ -157,6 +161,7 @@
                 vm.error("");
                 var newEmployee = vm.collection.addNew();
                 newEmployee.FirstName("Joe");
+                newEmployee.LastName("Smith");
                 vm.mySelectedItem(newEmployee);
             },
 
@@ -167,21 +172,23 @@
 
             onMarkAsDeleted: function () {
                 vm.error("");
+
+                var index = ko.utils.arrayIndexOf(vm.collection(), vm.mySelectedItem());
+
                 vm.mySelectedItem().markAsDeleted();
 
                 if (vm.collection().length > 0) {
-                    vm.mySelectedItem(vm.collection()[0]);
+                    vm.mySelectedItem(vm.collection()[Math.max(index, 0)]);
                 }
-
             },
 
             onRejectChanges: function () {
                 vm.error("");
                 vm.collection.rejectChanges();
 
-//                if (vm.collection().length > 0) {
-//                    vm.mySelectedItem(vm.collection()[0]);
-//                }
+                if (vm.collection().length > 0) {
+                    vm.mySelectedItem(vm.collection()[0]);
+                }
             },
 
             onSave: function () {

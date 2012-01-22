@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.17-pre 
+// The entityspaces.js JavaScript library v1.0.18-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Sat 01/21/2012 at 12:42:02.25    
+// Built on Sat 01/21/2012 at 22:17:09.81    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -1170,6 +1170,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         var errorHandler = options.error;
 
         options.success = function (data, options) {
+            self.es.deletedEntities([]);
             self.populateCollection(data);
             if (successHandler) { successHandler.call(self, data, options.state); }
             self.es.isLoading(false);
