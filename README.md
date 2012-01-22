@@ -14,8 +14,8 @@
 </table>
 
 ##Example Class Definitions (pseudocode)##
-* [Single Entity Class] (https://github.com/EntitySpaces/entityspaces.js/wiki/Collection-Entity-Class-Definition)
-* [Collection Class] (https://github.com/EntitySpaces/entityspaces.js/wiki/Single-Entity-Class-Definition)
+* [Single Entity Class] (https://github.com/EntitySpaces/entityspaces.js/wiki/Single-Entity-Class-Definition)
+* [Collection Class] (https://github.com/EntitySpaces/entityspaces.js/wiki/Collection-Entity-Class-Definition)
 
 ##Real JavaScript Classes##
 * [Employees Generated Class (created by EntitySpaces Studio)] (https://github.com/EntitySpaces/entityspaces.js/wiki/Our-Employee-Generated-Class)
