@@ -1,5 +1,10 @@
-##License##
-* License: [MIT](http://www.opensource.org/licenses/mit-license.php)
+#entityspaces.js : A Javascript ORM (Data Access) Framework that uses Knockout#
+
+By: EntitySpaces, LLC
+
+License: [MIT](http://www.opensource.org/licenses/mit-license.php)
+
+Dependencies: Knockout
 
 ##Live Example##
 * [Fully Editable Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
@@ -7,6 +12,7 @@
 ##Features##
 * Supports WCF JSON Service and RESTFUL API's
 * Supports Full Hierrachical Data Models
+* Two Providers, either pure XHR or JQuery Ajax (you choose which one you want to use)
 * Tracks Row Level and Column Level Dirty State
 * Tracks Original Values so Edits can be Cancelled via RejectChanges
 * Generic - Can be used for an ORM or Database Backend
