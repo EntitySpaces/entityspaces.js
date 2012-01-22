@@ -11,11 +11,11 @@ Dependencies: Knockout
 
 ##Features##
 * Supports WCF JSON Service and RESTFUL API's
-* Supports Full Hierrachical Data Models
+* Supports Full Hierarchical Data Models
 * Two Providers, either pure XHR or JQuery Ajax (you choose which one you want to use)
 * Tracks Row Level and Column Level Dirty State
 * Tracks Original Values so Edits can be Cancelled via RejectChanges
-* Generic - Can be used for an ORM or Database Backend
+* Generic - Can be used with any ORM or Database Backend
 
 ##Intuitive API##
 ```javascript
@@ -30,6 +30,7 @@ Dependencies: Knockout
 ##EntitySpaces Studio Specific Abilities##
 * Will Generate your entire set of JavaScript class from your Database Schema
 * Will Generate your WCF JSON Service for you that will work Out-Of-The-Box 
+* Supports MS SQL Server, Azure, CE, MS Access, Oracle, PostgreSQL, Sybase SQL Anywhere, MySQL, SQLite, VistaDB
 
 ##Watch a video of entityspaces.js in action##
 <table border="0">
