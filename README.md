@@ -1,4 +1,4 @@
-#entityspaces.js : A Javascript ORM (Data Access) Framework that uses Knockout#
+#A Javascript (ORM) Data Access Framework that uses Knockout#
 
 By: EntitySpaces, LLC
 
