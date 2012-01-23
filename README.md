@@ -11,6 +11,7 @@ Dependencies: Knockout
 
 ##Features##
 * Built upon Knockout and the MVVM Model
+* Only 16k minimized
 * Supports WCF JSON Service and RESTFUL API's
 * Supports Full Hierarchical Data Models
 * Two Providers, either pure XHR or JQuery Ajax (you choose which one you want to use)
