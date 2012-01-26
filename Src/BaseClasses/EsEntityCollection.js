@@ -30,8 +30,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     prepareForJSON: function () {
 
-        var stripped = [],
-            self = this;
+        var stripped = [];
 
         ko.utils.arrayForEach(this(), function (entity) {
             if (entity.isDirtyGraph()) {
@@ -62,11 +61,11 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     },
 
     rejectChanges: function () {
-        var self = this;
-
-        var addedEntities = [],
+        var self = this,
+            addedEntities = [],
             slot = 0,
             index = 0,
+            newArr,
             i;
 
         ko.utils.arrayForEach(self.es.deletedEntities(), function (entity) {
@@ -102,15 +101,15 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         if (addedEntities.length > 0) {
             for (i = 0; i < addedEntities.length; i++) {
-                var index = ko.utils.arrayIndexOf(self(), addedEntities[i]);
+                index = ko.utils.arrayIndexOf(self(), addedEntities[i]);
                 if (index >= 0) {
-                    var obj = self.splice(index, 1);
+                    self.splice(index, 1);
                 }
             }
         }
 
         if (this.es.deletedEntities().length > 0) {
-            var newArr = self().concat(this.es.deletedEntities());
+            newArr = self().concat(this.es.deletedEntities());
             self(newArr);
         }
 
@@ -119,16 +118,61 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     markAllAsDeleted: function () {
 
-        var i, entity, coll, len, arr;
+        var i, entity, coll, len;
 
-        if (arguments.length > 0) {
-            arr = this.es.deletedEntities().concat(arguments[0]());
-            this.es.deletedEntities(arr);
+        this.es.deletedEntities(this.splice(0, this().length));
+        coll = this.es.deletedEntities;
+        len = coll().length;
 
-            this.removeAll(arguments[0]());
-        } else {
-            this.es.deletedEntities(this.splice(0, this().length));
+        // NOTE: Added ones are moved into the es.deletedEntities area incase reject changes is called
+        //       in which case they are restored, however, during a save they are simply discarded.
+        for (i = 0; i < len; i += 1) {
+            entity = coll()[i];
+
+            if (entity.RowState() === es.RowState.UNCHANGED) {
+
+                if (!entity.hasOwnProperty("RowState")) {
+                    entity.RowState = ko.observable(es.RowState.DELETED);
+                } else if (entity.RowState() !== es.RowState.DELETED) {
+                    entity.RowState(es.RowState.DELETED);
+                }
+
+                if (entity.hasOwnProperty("ModifiedColumns")) {
+                    entity.ModifiedColumns.removeAll();
+                }
+            }
         }
+    },
+
+    // Can be a single entity or an array of entities
+    markAsDeleted: function (entitiesOrEntityToDelete) {
+
+        var i, entity, coll, len, arr, tempArr = [], self = this;
+
+        if (!arguments) {
+            throw new Error("The entitiesOrEntityToDelete cannot be null or undefined.");
+        }
+
+        if (es.isArray(entitiesOrEntityToDelete)) {
+
+            tempArr = ko.utils.unwrapObservable(entitiesOrEntityToDelete);
+
+            if (tempArr.length === 0) {
+                throw new Error("The array passed in to markAsDeleted.markAsDeleted() cannot be empty.");
+            }
+        } else {
+            for (i = 0; i < arguments.length; i++) {
+                if (es.isEsEntity(arguments[i])) {
+                    tempArr.push(arguments[i]);
+                } else {
+                    throw new Error("Invalid type passed in to markAsDeleted.markAsDeleted()");
+                }
+            }
+        }
+
+        arr = this.es.deletedEntities().concat(tempArr);
+        this.es.deletedEntities(arr);
+        this.removeAll(tempArr);
 
         coll = this.es.deletedEntities;
         len = coll().length;
@@ -172,7 +216,6 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
                 //call 'createEntity' for each item in the data array
                 entity = create(data, EntityCtor); //ok to pass an undefined Ctor
-                entity.es.collection = self;
 
                 if (entity !== undefined && entity !== null) { //could be zeros or empty strings legitimately
                     finalColl.push(entity);
@@ -213,7 +256,6 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         if (entityTypeName) {
             EntityCtor = es.getType(entityTypeName);
             entity = new EntityCtor();
-            entity.es.collection = this;
             this.push(entity);
         }
 
@@ -289,7 +331,7 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
         self.es.isLoading(true);
 
-        var options = { success: success, error: error, state: state, route: self.esRoutes['commit'] }
+        var options = { success: success, error: error, state: state, route: self.esRoutes['commit'] };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             es.utils.extend(options, arguments[0]);

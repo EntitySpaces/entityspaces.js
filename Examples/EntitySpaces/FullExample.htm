@@ -54,7 +54,7 @@
                 <!--------------------------->
                 <!-- This is our Edit Area -->
                 <!--------------------------->
-                <table id="EditArea" cellpadding="3" style="max-width: 500px; vertical-align:top; border:1px solid rgb(0,0,0);" data-bind="with: mySelectedItem">
+                <table id="EditArea" cellpadding="3" style="max-width: 400px; vertical-align:top; border:1px solid rgb(0,0,0);" data-bind="with: mySelectedItem">
                     <tr align="center">
                         <td colspan="2">
                             <b>Edit Selected Employee Here</b>
@@ -108,7 +108,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" align="center">
-                            vm.mySelectedItem().markAsDeleted();<br />
+                            vm.collection.markAsDeleted(vm.mySelectedItem());<br />
                             <hr />
                         </td>
                     </tr>
@@ -149,30 +149,6 @@
                 </table>
             </td>    
         </tr>
-        <tr valign="top">
-            <td>
-                <b>The Collections Deleted Item List (collection.es.deletedEntities)</b>
-            </td>
-        </tr>
-        <tr valign="top">
-            <td valign="top" align="left" style="width:1%" rowspan="3">
-                <div id="myDeleted" style="max-height: 200px; max-width: 900px; border:1px solid rgb(0,0,0);" data-bind="koGrid:{ data: collection.es.deletedEntities, 
-                        isMultiSelect: false,
-                        autogenerateColumns: false,
-                        sortInfo: sortInfo,
-                        columnDefs: [
-                            {field: 'EmployeeID', displayName: 'Employee ID', width: 140}, 
-                            {field: 'FirstName', displayName: 'First Name', width: 120}, 
-                            {field: 'LastName', displayName: 'Last Name', width: 160},
-                            {field: 'RowState', displayName: 'RowState', width: 90},
-                            {field: 'isDirty', displayName: 'isDirty', width: 80},
-                            {field: 'ModifiedColumns', displayName: 'ModifiedColumns', width: 160}
-                        ],
-                        displaySelectionCheckbox: true,
-                        displayRowIndex: true }">
-                </div>
-            </td>
-        </tr>
     </table>
 </body>
 
@@ -210,7 +186,7 @@
                 var index = ko.utils.arrayIndexOf(vm.collection(), vm.mySelectedItem());
 
                 // only line of entityspaces.js code necessary
-                vm.mySelectedItem().markAsDeleted();
+                vm.collection.markAsDeleted(vm.mySelectedItem());
 
                 if (vm.collection().length > 0) {
                     vm.mySelectedItem(vm.collection()[Math.max(index, 0)]);

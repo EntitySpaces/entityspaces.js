@@ -61,4 +61,58 @@ test('Collection IsDirty Test', function () {
     equals(coll.isDirty(), true, 'isDirty returns true!');
 });
 
+test('Collection.MarkAsDeleted Test', function () {
+
+    var i, arr, koArr,
+        coll = new es.objects.EmployeesCollection();
+
+
+    for (i = 0; i < 50; i++) {
+        var emp = new es.objects.Employees({
+            EmployeeID: i,
+            FirstName: 'John',
+            LastName: 'Smith'
+        });
+
+        coll.push(emp);
+    }
+
+    // Mark them all as unchanged
+    coll.acceptChanges();
+
+    equals(coll().length, 50, 'Count is equal to 50');
+
+    coll.markAsDeleted(coll()[25]);
+    equals(coll().length, 49, 'Count is equal to 50');
+
+    coll.rejectChanges();
+    equals(coll().length, 50, 'Count is equal to 50');
+
+    arr = [];
+    arr.push(coll()[25]);
+    arr.push(coll()[27]);
+
+    coll.markAsDeleted(arr);
+    equals(coll().length, 48, 'Count is equal to 48');
+
+    coll.rejectChanges();
+    equals(coll().length, 50, 'Count is equal to 50');
+
+    koArr = ko.observableArray();
+    koArr.push(coll()[25]);
+    koArr.push(coll()[27]);
+
+    coll.markAsDeleted(koArr);
+    equals(coll().length, 48, 'Count is equal to 48');
+
+    coll.rejectChanges();
+    equals(coll().length, 50, 'Count is equal to 50');
+
+    coll.markAsDeleted(coll()[25], coll()[27], coll()[29]);
+    equals(coll().length, 47, 'Count is equal to 47');
+
+    coll.rejectChanges();
+    equals(coll().length, 50, 'Count is equal to 50');
+});
+
 

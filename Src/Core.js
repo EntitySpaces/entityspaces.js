@@ -22,8 +22,9 @@ es.onError.subscribe(function (error) {
 //#region Core Quick Methods
 
 es.isArray = function (array) {
-    if (!array) { return false; }
-    return array.isArray || Object.prototype.toString.call(array) === '[object Array]';
+    var arr = ko.utils.unwrapObservable(array);
+    if (!arr) { return false; }
+    return arr.isArray || Object.prototype.toString.call(arr) === '[object Array]';
 };
 
 es.objectKeys = Object.keys || function(obj) {

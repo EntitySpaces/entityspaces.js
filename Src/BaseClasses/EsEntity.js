@@ -22,7 +22,6 @@ es.EsEntity = function () { //empty constructor
         self.es.___esEntity___ = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
         self.es.ignorePropertyChanged = false;
         self.es.originalValues = {};
-        self.es.collection = undefined;
         self.es.isLoading = ko.observable(false);
 
         //start change tracking
@@ -219,16 +218,6 @@ es.EsEntity = function () { //empty constructor
 
     this.markAsDeleted = function () {
         var entity = this;
-
-        if (entity.es.collection !== undefined) {
-            // We are in a collection, remove it from there and add it to it's 
-            // deletedEntities list
-            var index = ko.utils.arrayIndexOf(entity.es.collection(), entity);
-            if (index >= 0) {
-                var obj = entity.es.collection.splice(index, 1);
-            }
-            entity.es.collection.es.deletedEntities.push(obj[0]);
-        }
 
         if (!entity.hasOwnProperty("RowState")) {
             entity.RowState = ko.observable(es.RowState.DELETED);

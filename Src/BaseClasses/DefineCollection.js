@@ -20,8 +20,6 @@ es.defineCollection = function (typeName, entityName) {
         var base = this,
             extenders = [];
 
-
-
         this.init = function () {
             var self = this;
 
