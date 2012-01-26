@@ -15,6 +15,7 @@ es.EsEntityCollection = function () {
 
     obs.es['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
     obs.es.deletedEntities = new ko.observableArray();
+    obs.es.deletedEntities([]);
     obs.es.isLoading = ko.observable(false);
 
     return obs;
@@ -118,10 +119,10 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     markAllAsDeleted: function () {
 
-        var i, entity, coll, len;
+        var i, entity, coll, len, self = this;
 
-        this.es.deletedEntities(this.splice(0, this().length));
-        coll = this.es.deletedEntities;
+        self.es.deletedEntities(self.splice(0, self().length));
+        coll = self.es.deletedEntities;
         len = coll().length;
 
         // NOTE: Added ones are moved into the es.deletedEntities area incase reject changes is called

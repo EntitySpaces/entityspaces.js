@@ -2,7 +2,7 @@
 // The entityspaces.js JavaScript library v1.0.19-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Wed 01/25/2012 at 23:27:06.10    
+// Built on Thu 01/26/2012 at  7:45:48.82    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -826,6 +826,7 @@ es.EsEntityCollection = function () {
 
     obs.es['___esCollection___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
     obs.es.deletedEntities = new ko.observableArray();
+    obs.es.deletedEntities([]);
     obs.es.isLoading = ko.observable(false);
 
     return obs;
@@ -929,10 +930,10 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     markAllAsDeleted: function () {
 
-        var i, entity, coll, len;
+        var i, entity, coll, len, self = this;
 
-        this.es.deletedEntities(this.splice(0, this().length));
-        coll = this.es.deletedEntities;
+        self.es.deletedEntities(self.splice(0, self().length));
+        coll = self.es.deletedEntities;
         len = coll().length;
 
         // NOTE: Added ones are moved into the es.deletedEntities area incase reject changes is called
