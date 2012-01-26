@@ -24,6 +24,18 @@ test('basic smoke Test', function () {
     equals(emp.EmployeeID(), 1, 'EmployeeId is correct');
 });
 
+test('initialize during construction', function () {
+
+    var emp = new es.objects.Employees({
+        FirstName: 'John',
+        LastName: 'Smith'
+    });
+
+    equals(emp.RowState(), es.RowState.ADDED, 'The RowState is ADDED');
+    equals(emp.FirstName(), 'John', 'FirstName is correct');
+    equals(emp.LastName(), 'Smith', 'LastName is correct');
+});
+
 test('Two Level Hierarchical Test', function () {
 
     //override the provider's execute method

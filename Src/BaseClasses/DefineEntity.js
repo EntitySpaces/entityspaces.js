@@ -14,6 +14,11 @@ es.defineEntity = function (typeName, constrctor) {
 
         //call the init method on the base prototype
         this.init();
+
+        // Are they initializing it during construction?
+        if (arguments[0]) {
+            this.populateEntity(arguments[0]);
+        } 
     };
 
     //Setup the prototype chain correctly

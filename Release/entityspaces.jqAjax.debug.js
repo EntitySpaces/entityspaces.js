@@ -2,7 +2,7 @@
 // The entityspaces.js JavaScript library v1.0.18-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Sat 01/21/2012 at 22:17:06.25    
+// Built on Wed 01/25/2012 at 21:29:15.37    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -345,32 +345,6 @@ var utils = {
                 }
             }
 
-            delete entity.esExtendedData;
-        }
-
-        if (data !== undefined) {
-
-            entity["esExtendedData"] = [];
-
-            for (i = 0; i < data.length; i++) {
-                entity.esExtendedData.push(ko.isObservable(data[i].Key) ? data[i].Key() : data[i].Key);
-            }
-        }
-
-        return entity;
-    },
-
-
-    removeExtraColumns: function (entity) {
-        var i, data;
-
-        if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
-
-            data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
-
-            for (i = 0; i < data.length; i++) {
-                delete entity[data[i]];
-            }
             delete entity.esExtendedData;
         }
 
@@ -1216,6 +1190,11 @@ es.defineEntity = function (typeName, constrctor) {
 
         //call the init method on the base prototype
         this.init();
+
+        // Are they initializing it during construction?
+        if (arguments[0]) {
+            this.populateEntity(arguments[0]);
+        } 
     };
 
     //Setup the prototype chain correctly

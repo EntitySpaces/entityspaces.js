@@ -159,32 +159,6 @@ var utils = {
             delete entity.esExtendedData;
         }
 
-        if (data !== undefined) {
-
-            entity["esExtendedData"] = [];
-
-            for (i = 0; i < data.length; i++) {
-                entity.esExtendedData.push(ko.isObservable(data[i].Key) ? data[i].Key() : data[i].Key);
-            }
-        }
-
-        return entity;
-    },
-
-
-    removeExtraColumns: function (entity) {
-        var i, data;
-
-        if (entity.esExtendedData && es.isArray(entity.esExtendedData)) {
-
-            data = ko.isObservable(entity.esExtendedData) ? entity.esExtendedData() : entity.esExtendedData;
-
-            for (i = 0; i < data.length; i++) {
-                delete entity[data[i]];
-            }
-            delete entity.esExtendedData;
-        }
-
         return entity;
     },
 
