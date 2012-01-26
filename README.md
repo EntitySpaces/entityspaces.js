@@ -27,6 +27,13 @@ Dependencies: Knockout
     emp.FirstName("Just");
     emp.LastName("Added");
     emp.save();
+
+	// Or the same as above
+    var emp = new es.objects.Employees({
+        FirstName: 'Just',
+        LastName: 'Added'
+    });
+	emp.Save();
 ```
 
 ##EntitySpaces Studio Specific Abilities##
