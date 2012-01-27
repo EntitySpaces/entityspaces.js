@@ -1,4 +1,4 @@
-#A Javascript (ORM) Data Access Framework that uses Knockout#
+#A JavaScript Data Access Framework that uses Knockout#
 
 By: [EntitySpaces, LLC] (http://www.entityspaces.net)
 
