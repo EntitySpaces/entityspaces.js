@@ -59,6 +59,41 @@ es.isEsEntity = function (entity) {
     return isEsEnt;
 };
 
+es.lazyLoader = function (esRoute, esTypeDef) {
+
+    var Function = function () {
+
+        var val = undefined;
+
+        if (arguments.length === 0) {
+
+            if (val === undefined) {
+
+                val = this.createObjectFromType(type);
+
+                if (val === undefined) {
+                    throw "Please include the class file for " + type;
+                }
+
+                val.load({
+                    route: route,
+                    data: this.esPrimaryKeys()
+                });
+
+            }
+            return val();
+        } else {
+            val = arguments[0];
+        }
+    };
+
+    var route = esRoute;
+    var type = esTypeDef
+    var data = undefined;
+
+    return Function;
+};
+
 //#endregion
 
 es.exportSymbol('es.isEsCollection', es.isEsCollection);

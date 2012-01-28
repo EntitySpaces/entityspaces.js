@@ -63,6 +63,30 @@ es.EsEntity = function () { //empty constructor
         }
     };
 
+    this.createObjectFromEsTypeDef = function (esTypeDef) {
+        var entityProp = undefined;
+
+        if (this.esTypeDefs && this.esTypeDefs[esTypeDef]) {
+            EntityCtor = es.getType(this.esTypeDefs[esTypeDef]);
+            if (EntityCtor) {
+                entityProp = new EntityCtor();
+            }
+        }
+
+        return entityProp;
+    };
+
+    this.createObjectFromType = function (type) {
+        var entityProp = undefined;
+
+        EntityCtor = es.getType(type);
+        if (EntityCtor) {
+            entityProp = new EntityCtor();
+        }
+
+        return entityProp;
+    };
+
     this.prepareForJSON = function () {
 
         var self = this,

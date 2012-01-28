@@ -2,7 +2,7 @@
 // The entityspaces.js JavaScript library v1.0.19-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Thu 01/26/2012 at  7:45:45.63    
+// Built on Fri 01/27/2012 at 22:49:22.45    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -178,6 +178,41 @@ es.isEsEntity = function (entity) {
         isEsEnt = true;
     }
     return isEsEnt;
+};
+
+es.lazyLoader = function (esRoute, esTypeDef) {
+
+    var Function = function () {
+
+        var val = undefined;
+
+        if (arguments.length === 0) {
+
+            if (val === undefined) {
+
+                val = this.createObjectFromType(type);
+
+                if (val === undefined) {
+                    throw "Please include the class file for " + type;
+                }
+
+                val.load({
+                    route: route,
+                    data: this.esPrimaryKeys()
+                });
+
+            }
+            return val();
+        } else {
+            val = arguments[0];
+        }
+    };
+
+    var route = esRoute;
+    var type = esTypeDef
+    var data = undefined;
+
+    return Function;
 };
 
 //#endregion
@@ -492,6 +527,30 @@ es.EsEntity = function () { //empty constructor
 
             return dirty;
         }
+    };
+
+    this.createObjectFromEsTypeDef = function (esTypeDef) {
+        var entityProp = undefined;
+
+        if (this.esTypeDefs && this.esTypeDefs[esTypeDef]) {
+            EntityCtor = es.getType(this.esTypeDefs[esTypeDef]);
+            if (EntityCtor) {
+                entityProp = new EntityCtor();
+            }
+        }
+
+        return entityProp;
+    };
+
+    this.createObjectFromType = function (type) {
+        var entityProp = undefined;
+
+        EntityCtor = es.getType(type);
+        if (EntityCtor) {
+            entityProp = new EntityCtor();
+        }
+
+        return entityProp;
     };
 
     this.prepareForJSON = function () {
