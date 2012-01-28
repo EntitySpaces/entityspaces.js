@@ -27,7 +27,7 @@ es.isArray = function (array) {
     return arr.isArray || Object.prototype.toString.call(arr) === '[object Array]';
 };
 
-es.objectKeys = Object.keys || function(obj) {
+es.objectKeys = Object.keys || function (obj) {
     var res = [];
     for (var key in obj) {
         res.push(key);

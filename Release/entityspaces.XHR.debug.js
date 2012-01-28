@@ -2,7 +2,7 @@
 // The entityspaces.js JavaScript library v1.0.20-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Fri 01/27/2012 at 23:03:01.85    
+// Built on Sat 01/28/2012 at  9:54:55.03    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -148,7 +148,7 @@ es.isArray = function (array) {
     return arr.isArray || Object.prototype.toString.call(arr) === '[object Array]';
 };
 
-es.objectKeys = Object.keys || function(obj) {
+es.objectKeys = Object.keys || function (obj) {
     var res = [];
     for (var key in obj) {
         res.push(key);

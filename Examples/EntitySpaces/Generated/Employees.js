@@ -5,82 +5,88 @@
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
-	if (typeof (es) === undefined) {
-		throw "Please Load EntitySpaces.Core First";
-	}
+    if (typeof (es) === undefined) {
+        throw "Please Load EntitySpaces.Core First";
+    }
 
-	es.objects.Employees = es.defineEntity(function () {
+    es.objects.Employees = es.defineEntity(function () {
 
-		// core columns
-		this.EmployeeID = ko.observable();
-		this.LastName = ko.observable();
-		this.FirstName = ko.observable();
-		this.Title = ko.observable();
-		this.TitleOfCourtesy = ko.observable();
-		this.BirthDate = ko.observable();
-		this.HireDate = ko.observable();
-		this.Address = ko.observable();
-		this.City = ko.observable();
-		this.Region = ko.observable();
-		this.PostalCode = ko.observable();
-		this.Country = ko.observable();
-		this.HomePhone = ko.observable();
-		this.Extension = ko.observable();
-		this.Photo = ko.observable();
-		this.Notes = ko.observable();
-		this.ReportsTo = ko.observable();
-		this.PhotoPath = ko.observable();
+        // core columns
+        this.EmployeeID = ko.observable();
+        this.LastName = ko.observable();
+        this.FirstName = ko.observable();
+        this.Title = ko.observable();
+        this.TitleOfCourtesy = ko.observable();
+        this.BirthDate = ko.observable();
+        this.HireDate = ko.observable();
+        this.Address = ko.observable();
+        this.City = ko.observable();
+        this.Region = ko.observable();
+        this.PostalCode = ko.observable();
+        this.Country = ko.observable();
+        this.HomePhone = ko.observable();
+        this.Extension = ko.observable();
+        this.Photo = ko.observable();
+        this.Notes = ko.observable();
+        this.ReportsTo = ko.observable();
+        this.PhotoPath = ko.observable();
 
-		// extended columns
-		this.esExtendedData = undefined;
+        // Primary Key(s)
+        this.esPrimaryKeys = function() {
+            return this.EmployeeID();
+        }
 
-		// Hierarchical Properties
-		this.EmployeesCollectionByReportsTo = undefined;
-		this.UpToEmployeesByReportsTo = undefined;
-		this.UpToTerritoriesCollection = undefined;
-		this.EmployeeTerritoriesCollectionByEmployeeID = undefined;
-		this.OrdersCollectionByEmployeeID = undefined;
-	});
+        // extended columns
+        this.esExtendedData = undefined;
 
-	//#region Prototype Level Information
+        // Hierarchical Properties
+        this.EmployeesCollectionByReportsTo = undefined;
+        this.UpToEmployeesByReportsTo = undefined;
+        this.UpToTerritoriesCollection = undefined;
+        this.EmployeeTerritoriesCollectionByEmployeeID = undefined;
+        this.OrdersCollectionByEmployeeID = es.lazyLoader(this.esRoutes.OrdersCollectionByEmployeeID, this.esTypeDefs.OrdersCollectionByEmployeeID);
+    });
 
-	es.objects.Employees.prototype.esTypeDefs = {
-		EmployeesCollectionByReportsTo: "EmployeesCollection",
-		UpToEmployeesByReportsTo: "Employees",
-		UpToTerritoriesCollection: "TerritoriesCollection",
-		EmployeeTerritoriesCollectionByEmployeeID: "EmployeeTerritoriesCollection",
-		OrdersCollectionByEmployeeID: "OrdersCollection"
-	};
-	
-	es.objects.Employees.prototype.esRoutes = {
-		commit: { method: 'PUT', url: 'Employees_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' }
-	};
+    //#region Prototype Level Information
 
-	es.objects.Employees.prototype.esColumnMap = {
-		'EmployeeID': 1,
-		'LastName': 1,
-		'FirstName': 1,
-		'Title': 1,
-		'TitleOfCourtesy': 1,
-		'BirthDate': 1,
-		'HireDate': 1,
-		'Address': 1,
-		'City': 1,
-		'Region': 1,
-		'PostalCode': 1,
-		'Country': 1,
-		'HomePhone': 1,
-		'Extension': 1,
-		'Photo': 1,
-		'Notes': 1,
-		'ReportsTo': 1,
-		'PhotoPath': 1
-	};
+    es.objects.Employees.prototype.esTypeDefs = {
+        EmployeesCollectionByReportsTo: "EmployeesCollection",
+        UpToEmployeesByReportsTo: "Employees",
+        UpToTerritoriesCollection: "TerritoriesCollection",
+        EmployeeTerritoriesCollectionByEmployeeID: "EmployeeTerritoriesCollection",
+        OrdersCollectionByEmployeeID: "OrdersCollection"
+    };
 
-	//#endregion
+    es.objects.Employees.prototype.esRoutes = {
+        commit: { method: 'PUT', url: 'Employees_Save', response: 'entity' },
+        loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' },
+        OrdersCollectionByEmployeeID: { method: 'GET', url: 'Employees_OrdersCollectionByEmployeeID', response: 'collection' },
+    };
 
-}(window.es, window.myNS));
+    es.objects.Employees.prototype.esColumnMap = {
+        'EmployeeID': 1,
+        'LastName': 1,
+        'FirstName': 1,
+        'Title': 1,
+        'TitleOfCourtesy': 1,
+        'BirthDate': 1,
+        'HireDate': 1,
+        'Address': 1,
+        'City': 1,
+        'Region': 1,
+        'PostalCode': 1,
+        'Country': 1,
+        'HomePhone': 1,
+        'Extension': 1,
+        'Photo': 1,
+        'Notes': 1,
+        'ReportsTo': 1,
+        'PhotoPath': 1
+    };
+
+    //#endregion
+
+} (window.es, window.myNS));
 
 (function (es) {
 

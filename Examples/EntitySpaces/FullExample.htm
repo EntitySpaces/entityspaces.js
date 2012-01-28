@@ -8,6 +8,8 @@
     <script src="koGrid/koGrid.debug.js" type="text/javascript"></script>
     <script src="../../Release/entityspaces.XHR.debug.js" type="text/javascript"></script>
     <script src="Generated/Employees.js" type="text/javascript"></script>
+<!--    <script src="Generated/Orders.js" type="text/javascript"></script>
+    <script src="Generated/OrderDetails.js" type="text/javascript"></script>-->
     <link href="koGrid/KoGrid.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -178,7 +180,8 @@
 
 <script type="text/javascript">
 
-    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+  // es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+  es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
 
     $(document).ready(function () {
 
@@ -190,6 +193,13 @@
 
             onAddNew: function () {
                 vm.error("");
+
+//                var cc = new es.objects.OrderDetails();
+//                cc.loadByPrimaryKey({data: {orderID: 10248, productID: 11}});
+
+//                var value1 = vm.collection()[0].OrdersCollectionByEmployeeID();
+//                var value2 = vm.collection()[1].OrdersCollectionByEmployeeID();
+//                var value3 = vm.collection()[2].OrdersCollectionByEmployeeID();
 
                 //  Add the new Employee
                 var newEmployee = vm.collection.addNew();
