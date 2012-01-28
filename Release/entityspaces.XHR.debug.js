@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.19-pre 
+// The entityspaces.js JavaScript library v1.0.20-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Fri 01/27/2012 at 22:49:25.76    
+// Built on Fri 01/27/2012 at 23:03:01.85    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -193,7 +193,7 @@ es.lazyLoader = function (esRoute, esTypeDef) {
                 val = this.createObjectFromType(type);
 
                 if (val === undefined) {
-                    throw "Please include the class file for " + type;
+                    throw "Please include the JavaScript class file for the '" + type + "'";
                 }
 
                 val.load({

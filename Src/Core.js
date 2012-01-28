@@ -72,7 +72,7 @@ es.lazyLoader = function (esRoute, esTypeDef) {
                 val = this.createObjectFromType(type);
 
                 if (val === undefined) {
-                    throw "Please include the class file for " + type;
+                    throw "Please include the JavaScript class file for the '" + type + "'";
                 }
 
                 val.load({
