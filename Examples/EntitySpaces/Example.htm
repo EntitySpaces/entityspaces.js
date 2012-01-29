@@ -21,8 +21,8 @@
 
 <script language="javascript" type="text/javascript">
 
-  //es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
-    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+  es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
+  //  es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     test1 = function () {
 
@@ -47,27 +47,33 @@
         //==========================================================================
         // The XMLHttpRequestProvider allows you to make any call you desire
         //==========================================================================
-        var request = es.dataProvider.makeRequest(es.dataProvider.baseURL, "Employees_LoadHierarchical", null);
+        //        var request = es.dataProvider.makeRequest(es.dataProvider.baseURL, "Employees_LoadHierarchical", null);
 
-        es.dataProvider.makeRequest(es.dataProvider.baseURL, "Employees_LoadHierarchical", null,
-        function (data) {
-            // Success ...
-        },
-        function (status, error) {
-            // Fail ...
-            var f = 0;
-        });
+        //        es.dataProvider.makeRequest(es.dataProvider.baseURL, "Employees_LoadHierarchical", null,
+        //        function (data) {
+        //            // Success ...
+        //        },
+        //        function (status, error) {
+        //            // Fail ...
+        //            var f = 0;
+        //        });
 
-        //----------------------------------------------------------
-        // Here is a code snippet using the synchronous approach
-        //----------------------------------------------------------
+        //        //----------------------------------------------------------
+        //        // Here is a code snippet using the synchronous approach
+        //        //----------------------------------------------------------
         var emp = new es.objects.Employees();
-        emp.loadByPrimaryKey(2);
-        emp.FirstName("sync" + "!!!");
-        emp.save();
+        //        emp.loadByPrimaryKey(2);
+        //        emp.FirstName("sync" + "!!!");
+        //        emp.save();
+
 
         var coll = new es.objects.EmployeesCollection();
         coll.loadAll();
+
+        var k = es.isEsCollection(coll)
+        var kk = es.isEsLazyLoader(emp.OrdersCollectionByEmployeeID);
+
+        var l = coll()[0].OrdersCollectionByEmployeeID().length;
 
         coll()[0].FirstName("Rocks!!");
         coll.save();

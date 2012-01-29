@@ -44,7 +44,7 @@
         this.UpToEmployeesByReportsTo = undefined;
         this.UpToTerritoriesCollection = undefined;
         this.EmployeeTerritoriesCollectionByEmployeeID = undefined;
-        this.OrdersCollectionByEmployeeID = es.lazyLoader(this.esRoutes.OrdersCollectionByEmployeeID, this.esTypeDefs.OrdersCollectionByEmployeeID);
+        this.OrdersCollectionByEmployeeID = es.defineLazyLoader(this.esRoutes.OrdersCollectionByEmployeeID, this.esTypeDefs.OrdersCollectionByEmployeeID, 'OrdersCollectionByEmployeeID', this);
     });
 
     //#region Prototype Level Information

@@ -59,40 +59,54 @@ es.isEsEntity = function (entity) {
     return isEsEnt;
 };
 
-es.lazyLoader = function (esRoute, esTypeDef) {
-
-    var Function = function () {
-
-        var val = undefined;
-
-        if (arguments.length === 0) {
-
-            if (val === undefined) {
-
-                val = this.createObjectFromType(type);
-
-                if (val === undefined) {
-                    throw "Please include the JavaScript class file for the '" + type + "'";
-                }
-
-                val.load({
-                    route: route,
-                    data: this.esPrimaryKeys()
-                });
-
-            }
-            return val();
-        } else {
-            val = arguments[0];
-        }
-    };
-
-    var route = esRoute;
-    var type = esTypeDef
-    var data = undefined;
-
-    return Function;
+es.isEsLazyLoader = function (obj) {
+    var isEsLaz = false;
+    if (obj !== undefined && obj.es !== undefined && obj.es.___esLazyLoad___ !== undefined) {
+        isEsLaz = true;
+    }
+    return isEsLaz;
 };
+
+//es.esLazyLoader = function (esRoute, esTypeDef, propName) {
+
+//    //var self = this;
+
+//    var Function = function () {
+
+//        this.es = {};
+
+//        this.es.___esLazyLoad___ = true;
+
+//        var self = this;
+//        var val = undefined;
+
+//        if (arguments.length === 0) {
+
+//            if (val === undefined) {
+
+//                val = self.createObjectFromType(type);
+
+//                if (val === undefined) {
+//                    throw "Please include the JavaScript class file for the '" + type + "'";
+//                }
+
+//                val.load({
+//                    route: route,
+//                    data: self.esPrimaryKeys()
+//                });
+
+//                self[propName] = val;
+//            }
+//            return self[propName]; //()
+//        } 
+//    };
+
+//    var route = esRoute;
+//    var type = esTypeDef
+//    var data = undefined;
+
+//    return Function;
+//};
 
 //#endregion
 
