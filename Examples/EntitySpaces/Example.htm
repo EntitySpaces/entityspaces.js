@@ -70,6 +70,8 @@
         var coll = new es.objects.EmployeesCollection();
         coll.loadAll();
 
+        var o = ko.observable();
+
         var k = es.isEsCollection(coll)
         var kk = es.isEsLazyLoader(emp.OrdersCollectionByEmployeeID);
 

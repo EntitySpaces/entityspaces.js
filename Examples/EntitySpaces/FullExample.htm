@@ -179,79 +179,79 @@
   // es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
   es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
 
-    $(document).ready(function () {
+  $(document).ready(function () {
 
-        var vm = {
-            collection: new es.objects.EmployeesCollection(),
-            mySelectedItem: ko.observable(new es.objects.Employees()),
-            error: ko.observable(),
-            sortInfo: ko.observable(),
+      var vm = {
+          collection: new es.objects.EmployeesCollection(),
+          mySelectedItem: ko.observable(new es.objects.Employees()),
+          error: ko.observable(),
+          sortInfo: ko.observable(),
 
-            onAddNew: function () {
-                vm.error("");
+          onAddNew: function () {
+              vm.error("");
 
-                var cc = new es.objects.OrderDetails();
-                cc.loadByPrimaryKey({data: {orderID: 10248, productID: 11}});
+              var cc = new es.objects.OrderDetails();
+              cc.loadByPrimaryKey({ data: { orderID: 10248, productID: 11} });
 
-                var value1 = vm.collection()[0].OrdersCollectionByEmployeeID();
-                var value2 = vm.collection()[1].OrdersCollectionByEmployeeID();
-                var value3 = vm.collection()[2].OrdersCollectionByEmployeeID();
+              var value1 = vm.collection()[0].OrdersCollectionByEmployeeID();
+              var value2 = vm.collection()[1].OrdersCollectionByEmployeeID();
+              var value3 = vm.collection()[2].OrdersCollectionByEmployeeID();
 
-                //  Add the new Employee
-                var newEmployee = vm.collection.addNew();
-                newEmployee.FirstName("Joe");
-                newEmployee.LastName("Smith");
+              //  Add the new Employee
+              var newEmployee = vm.collection.addNew();
+              newEmployee.FirstName("Joe");
+              newEmployee.LastName("Smith");
 
-                vm.mySelectedItem(newEmployee);
-            },
+              vm.mySelectedItem(newEmployee);
+          },
 
-            onMarkAllAsDeleted: function () {
-                vm.error("");
-                vm.collection.markAllAsDeleted();
-            },
+          onMarkAllAsDeleted: function () {
+              vm.error("");
+              vm.collection.markAllAsDeleted();
+          },
 
-            onMarkAsDeleted: function () {
-                vm.error("");
+          onMarkAsDeleted: function () {
+              vm.error("");
 
-                var index = ko.utils.arrayIndexOf(vm.collection(), vm.mySelectedItem());
+              var index = ko.utils.arrayIndexOf(vm.collection(), vm.mySelectedItem());
 
-                // only line of entityspaces.js code necessary
-                vm.collection.markAsDeleted(vm.mySelectedItem());
+              // only line of entityspaces.js code necessary
+              vm.collection.markAsDeleted(vm.mySelectedItem());
 
-                if (vm.collection().length > 0) {
-                    vm.mySelectedItem(vm.collection()[Math.max(index, 0)]);
-                }
-            },
+              if (vm.collection().length > 0) {
+                  vm.mySelectedItem(vm.collection()[Math.max(index, 0)]);
+              }
+          },
 
-            onRejectChanges: function () {
-                vm.error("");
-                vm.collection.rejectChanges();
-            },
+          onRejectChanges: function () {
+              vm.error("");
+              vm.collection.rejectChanges();
+          },
 
-            onSave: function () {
-                vm.collection.save({
-                    success: function (data, state) {
-                        vm.error("");
-                        vm.collection.loadAll();
-                    },
-                    error: function (status, responseText, state) {
-                        vm.error(responseText);
-                    }
-                });
-            }
-        };
+          onSave: function () {
+              vm.collection.save({
+                  success: function (data, state) {
+                      vm.error("");
+                      vm.collection.loadAll();
+                  },
+                  error: function (status, responseText, state) {
+                      vm.error(responseText);
+                  }
+              });
+          }
+      };
 
-        // Hit our service ...
-        vm.collection.loadAll();
-        vm.mySelectedItem(vm.collection()[0]);
+      // Hit our service ...
+      vm.collection.loadAll();
+      vm.mySelectedItem(vm.collection()[0]);
 
-        ko.applyBindings(vm);
+      ko.applyBindings(vm);
 
-        // Hit our service ...
-        //vm.collection.loadAll();
+      // Hit our service ...
+      //vm.collection.loadAll();
 
       //  vm.mySelectedItem(vm.collection()[0]);
-    });
+  });
 </script>
 
 </html>

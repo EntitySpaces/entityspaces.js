@@ -2,7 +2,7 @@
 // The entityspaces.js JavaScript library v1.0.20-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Sun 01/29/2012 at 14:22:56.04    
+// Built on Sun 01/29/2012 at 17:05:06.92    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -497,14 +497,13 @@ es.exportSymbol('es.getDirtyGraph', es.getDirtyGraph);
 es.esLazyLoader = function (esRoute, esTypeDef, propName, selfy) {
 
     var self = selfy;
+    Function.__ko_proto__ = ko.observable;
     
     var esLazyLoader = function () {
 
-        ko.utils.extend(this, es.esLazyLoader.fn);
-
         var val = undefined;
 
-        if (arguments.length === 0) {
+//      if (arguments.length === 0) {
 
             if (val === undefined) {
 
@@ -519,10 +518,12 @@ es.esLazyLoader = function (esRoute, esTypeDef, propName, selfy) {
                     data: self.esPrimaryKeys()
                 });
 
-                self[propName] = val;
-            }
-            return self[propName];
-        }
+             }
+
+             self[propName] = val;
+            
+            return val();
+  //      }
     };
 
     var route = esRoute;
@@ -533,6 +534,8 @@ es.esLazyLoader = function (esRoute, esTypeDef, propName, selfy) {
 };
 
 es.esLazyLoader.fn = { //can't do prototype on this one bc its a function
+
+    __ko_proto__: ko.observable,
 
     isDirty: function () {
         return false;   
@@ -548,13 +551,14 @@ es.esLazyLoader.fn = { //can't do prototype on this one bc its a function
 };
 
 es.defineLazyLoader = function (esRoute, esTypeDef, propName, selfy) {
+    Function.__ko_proto__ = ko.observable;
 
     var eswhatever = function () {
 
         Function.__ko_proto__ = ko.observable;
 
         var lazy = new es.esLazyLoader(esRoute, esTypeDef, propName, selfy);
-        return lazy;
+        return lazy();
     };
 
     ko.utils.extend(eswhatever, es.esLazyLoader.fn);
