@@ -11,7 +11,7 @@ Dependencies: Knockout
 
 ##Features##
 * Built upon Knockout and the MVVM Model
-* Call class properties are observables and collections classes are observableArrays
+* All class properties are ko.observables and collections classes are ko.observableArrays
 * Only 16k minimized
 * Supports MS SQL Server, Azure, CE, MS Access, 
 Oracle, PostgreSQL, Sybase SQL Anywhere, MySQL, SQLite, and VistaDB
