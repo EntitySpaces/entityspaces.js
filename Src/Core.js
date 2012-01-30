@@ -11,15 +11,10 @@ es.clearTypes = function () {
 
 //#endregion
 
-//#region Error Handling
 es.onError = ko.observable({});
 es.onError.subscribe(function (error) {
     throw JSON.stringify(error);
 });
-
-//#endregion
-
-//#region Core Quick Methods
 
 es.isArray = function (array) {
     var arr = ko.utils.unwrapObservable(array);
@@ -66,48 +61,5 @@ es.isEsLazyLoader = function (obj) {
     }
     return isEsLaz;
 };
-
-//es.esLazyLoader = function (esRoute, esTypeDef, propName) {
-
-//    //var self = this;
-
-//    var Function = function () {
-
-//        this.es = {};
-
-//        this.es.___esLazyLoad___ = true;
-
-//        var self = this;
-//        var val = undefined;
-
-//        if (arguments.length === 0) {
-
-//            if (val === undefined) {
-
-//                val = self.createObjectFromType(type);
-
-//                if (val === undefined) {
-//                    throw "Please include the JavaScript class file for the '" + type + "'";
-//                }
-
-//                val.load({
-//                    route: route,
-//                    data: self.esPrimaryKeys()
-//                });
-
-//                self[propName] = val;
-//            }
-//            return self[propName]; //()
-//        } 
-//    };
-
-//    var route = esRoute;
-//    var type = esTypeDef
-//    var data = undefined;
-
-//    return Function;
-//};
-
-//#endregion
 
 es.exportSymbol('es.isEsCollection', es.isEsCollection);

@@ -2,7 +2,7 @@
 // The entityspaces.js JavaScript library v1.0.20-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Sun 01/29/2012 at 17:05:06.92    
+// Built on Sun 01/29/2012 at 21:05:25.17    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -132,15 +132,10 @@ es.clearTypes = function () {
 
 //#endregion
 
-//#region Error Handling
 es.onError = ko.observable({});
 es.onError.subscribe(function (error) {
     throw JSON.stringify(error);
 });
-
-//#endregion
-
-//#region Core Quick Methods
 
 es.isArray = function (array) {
     var arr = ko.utils.unwrapObservable(array);
@@ -187,49 +182,6 @@ es.isEsLazyLoader = function (obj) {
     }
     return isEsLaz;
 };
-
-//es.esLazyLoader = function (esRoute, esTypeDef, propName) {
-
-//    //var self = this;
-
-//    var Function = function () {
-
-//        this.es = {};
-
-//        this.es.___esLazyLoad___ = true;
-
-//        var self = this;
-//        var val = undefined;
-
-//        if (arguments.length === 0) {
-
-//            if (val === undefined) {
-
-//                val = self.createObjectFromType(type);
-
-//                if (val === undefined) {
-//                    throw "Please include the JavaScript class file for the '" + type + "'";
-//                }
-
-//                val.load({
-//                    route: route,
-//                    data: self.esPrimaryKeys()
-//                });
-
-//                self[propName] = val;
-//            }
-//            return self[propName]; //()
-//        } 
-//    };
-
-//    var route = esRoute;
-//    var type = esTypeDef
-//    var data = undefined;
-
-//    return Function;
-//};
-
-//#endregion
 
 es.exportSymbol('es.isEsCollection', es.isEsCollection); 
  
@@ -478,32 +430,18 @@ es.exportSymbol('es.getDirtyGraph', es.getDirtyGraph);
 /*********************************************** 
 * FILE: ..\Src\BaseClasses\EsLazyLoader.js 
 ***********************************************/ 
-﻿//es.esLazyLoader = function () {
-//    var obs = ko.observableArray([]);
+﻿es.esLazyLoader = function (esRoute, esTypeDef, propName, entity) {
 
-//    Function.__ko_proto__ = ko.observable;
+    var route = esRoute,
+        type = esTypeDef,
+        self = entity,
+        data;
 
-//    //define the 'es' utility object
-//    obs.es = {};
-
-//    //add all of our extra methods to the array
-//    ko.utils.extend(obs, es.esLazyLoader.fn);
-
-//    obs.es['___esLazyLoader___'] = es.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
-
-//    return obs;
-//};
-
-es.esLazyLoader = function (esRoute, esTypeDef, propName, selfy) {
-
-    var self = selfy;
-    Function.__ko_proto__ = ko.observable;
-    
     var esLazyLoader = function () {
 
-        var val = undefined;
+        var val;
 
-//      if (arguments.length === 0) {
+        if (arguments.length === 0) {
 
             if (val === undefined) {
 
@@ -517,18 +455,13 @@ es.esLazyLoader = function (esRoute, esTypeDef, propName, selfy) {
                     route: route,
                     data: self.esPrimaryKeys()
                 });
+            }
 
-             }
-
-             self[propName] = val;
-            
+            self[propName] = val;
+    
             return val();
-  //      }
+        }
     };
-
-    var route = esRoute;
-    var type = esTypeDef;
-    var data = undefined;
 
     return esLazyLoader;
 };
@@ -538,7 +471,7 @@ es.esLazyLoader.fn = { //can't do prototype on this one bc its a function
     __ko_proto__: ko.observable,
 
     isDirty: function () {
-        return false;   
+        return false;
     },
 
     isDirtyGraph: function () {
@@ -551,11 +484,8 @@ es.esLazyLoader.fn = { //can't do prototype on this one bc its a function
 };
 
 es.defineLazyLoader = function (esRoute, esTypeDef, propName, selfy) {
-    Function.__ko_proto__ = ko.observable;
 
     var eswhatever = function () {
-
-        Function.__ko_proto__ = ko.observable;
 
         var lazy = new es.esLazyLoader(esRoute, esTypeDef, propName, selfy);
         return lazy();
@@ -565,8 +495,7 @@ es.defineLazyLoader = function (esRoute, esTypeDef, propName, selfy) {
     eswhatever.es = {};
     eswhatever.es.___esLazyLoad___ = true;
     return eswhatever;
-};
- 
+}; 
  
  
 /*********************************************** 

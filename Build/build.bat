@@ -39,7 +39,7 @@ ECHO JSBuild Succeeded
 ENDLOCAL
 
 @rem Now call Google Closure Compiler to produce a minified version
-@rem tools\curl -d output_info=compiled_code -d output_format=text -d compilation_level=SIMPLE_OPTIMIZATIONS  --data-urlencode js_code@%OutPutFile%.temp "http://closure-compiler.appspot.com/compile" > %OutMinFile%
+tools\curl -d output_info=compiled_code -d output_format=text -d compilation_level=SIMPLE_OPTIMIZATIONS  --data-urlencode js_code@%OutPutFile%.temp "http://closure-compiler.appspot.com/compile" > %OutMinFile%
 
 DEL %OutPutFile%.temp
 
@@ -81,7 +81,7 @@ ECHO JSBuild Succeeded
 ENDLOCAL
 
 @rem Now call Google Closure Compiler to produce a minified version
-@rem tools\curl -d output_info=compiled_code -d output_format=text -d compilation_level=SIMPLE_OPTIMIZATIONS  --data-urlencode js_code@%OutPutFile%.temp "http://closure-compiler.appspot.com/compile" > %OutMinFile%
+tools\curl -d output_info=compiled_code -d output_format=text -d compilation_level=SIMPLE_OPTIMIZATIONS  --data-urlencode js_code@%OutPutFile%.temp "http://closure-compiler.appspot.com/compile" > %OutMinFile%
 
 DEL %OutPutFile%.temp
 
