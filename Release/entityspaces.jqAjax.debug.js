@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.20-pre 
+// The entityspaces.js JavaScript library v1.0.21-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Sun 01/29/2012 at 21:05:25.17    
+// Built on Sun 01/29/2012 at 23:40:13.74    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -430,11 +430,9 @@ es.exportSymbol('es.getDirtyGraph', es.getDirtyGraph);
 /*********************************************** 
 * FILE: ..\Src\BaseClasses\EsLazyLoader.js 
 ***********************************************/ 
-﻿es.esLazyLoader = function (esRoute, esTypeDef, propName, entity) {
+﻿es.esLazyLoader = function (entity, propName) {
 
-    var route = esRoute,
-        type = esTypeDef,
-        self = entity,
+    var self = entity,
         data;
 
     var esLazyLoader = function () {
@@ -445,21 +443,25 @@ es.exportSymbol('es.getDirtyGraph', es.getDirtyGraph);
 
             if (val === undefined) {
 
-                val = self.createObjectFromType(type);
+                val = self.createObjectFromType(self.esTypeDefs[propName]);
 
                 if (val === undefined) {
                     throw "Please include the JavaScript class file for the '" + type + "'";
                 }
 
                 val.load({
-                    route: route,
+                    route: self.esRoutes[propName],
                     data: self.esPrimaryKeys()
                 });
             }
 
             self[propName] = val;
-    
-            return val();
+
+            if (self.esRoutes[propName].response === 'collection') {
+                return val();
+            } else {
+                return val;
+            }
         }
     };
 
@@ -483,11 +485,10 @@ es.esLazyLoader.fn = { //can't do prototype on this one bc its a function
     }
 };
 
-es.defineLazyLoader = function (esRoute, esTypeDef, propName, selfy) {
+es.defineLazyLoader = function (entity, propName) {
 
     var eswhatever = function () {
-
-        var lazy = new es.esLazyLoader(esRoute, esTypeDef, propName, selfy);
+        var lazy = new es.esLazyLoader(entity, propName);
         return lazy();
     };
 

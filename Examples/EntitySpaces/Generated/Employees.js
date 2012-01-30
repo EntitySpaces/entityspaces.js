@@ -40,11 +40,11 @@
         this.esExtendedData = undefined;
 
         // Hierarchical Properties
-        this.EmployeesCollectionByReportsTo = undefined;
-        this.UpToEmployeesByReportsTo = undefined;
-        this.UpToTerritoriesCollection = undefined;
-        this.EmployeeTerritoriesCollectionByEmployeeID = undefined;
-        this.OrdersCollectionByEmployeeID = es.defineLazyLoader(this.esRoutes.OrdersCollectionByEmployeeID, this.esTypeDefs.OrdersCollectionByEmployeeID, 'OrdersCollectionByEmployeeID', this);
+        this.EmployeesCollectionByReportsTo = new es.defineLazyLoader(this, 'EmployeesCollectionByReportsTo'); ;
+        this.UpToEmployeesByReportsTo = new es.defineLazyLoader(this, 'UpToEmployeesByReportsTo'); ;
+        this.UpToTerritoriesCollection = new es.defineLazyLoader(this, 'UpToTerritoriesCollection'); ;
+        this.EmployeeTerritoriesCollectionByEmployeeID = new es.defineLazyLoader(this, 'EmployeeTerritoriesCollectionByEmployeeID'); ;
+        this.OrdersCollectionByEmployeeID = new es.defineLazyLoader(this, 'OrdersCollectionByEmployeeID');
     });
 
     //#region Prototype Level Information
@@ -60,7 +60,11 @@
     es.objects.Employees.prototype.esRoutes = {
         commit: { method: 'PUT', url: 'Employees_Save', response: 'entity' },
         loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' },
-        OrdersCollectionByEmployeeID: { method: 'GET', url: 'Employees_OrdersCollectionByEmployeeID', response: 'collection' },
+        EmployeesCollectionByReportsTo: { method: 'GET', url: 'Employees_EmployeesCollectionByReportsTo', response: 'collection' },
+        UpToEmployeesByReportsTo: { method: 'GET', url: 'Employees_UpToEmployeesByReportsTo', response: 'entity' },
+        UpToTerritoriesCollection: { method: 'GET', url: 'Employees_UpToTerritoriesCollection', response: 'collection' },
+        EmployeeTerritoriesCollectionByEmployeeID: { method: 'GET', url: 'Employees_EmployeeTerritoriesCollectionByEmployeeID', response: 'collection' },
+        OrdersCollectionByEmployeeID: { method: 'GET', url: 'Employees_OrdersCollectionByEmployeeID', response: 'collection' }
     };
 
     es.objects.Employees.prototype.esColumnMap = {

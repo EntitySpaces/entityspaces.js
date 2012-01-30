@@ -1,8 +1,6 @@
-﻿es.esLazyLoader = function (esRoute, esTypeDef, propName, entity) {
+﻿es.esLazyLoader = function (entity, propName) {
 
-    var route = esRoute,
-        type = esTypeDef,
-        self = entity,
+    var self = entity,
         data;
 
     var esLazyLoader = function () {
@@ -13,21 +11,25 @@
 
             if (val === undefined) {
 
-                val = self.createObjectFromType(type);
+                val = self.createObjectFromType(self.esTypeDefs[propName]);
 
                 if (val === undefined) {
                     throw "Please include the JavaScript class file for the '" + type + "'";
                 }
 
                 val.load({
-                    route: route,
+                    route: self.esRoutes[propName],
                     data: self.esPrimaryKeys()
                 });
             }
 
             self[propName] = val;
-    
-            return val();
+
+            if (self.esRoutes[propName].response === 'collection') {
+                return val();
+            } else {
+                return val;
+            }
         }
     };
 
@@ -51,11 +53,10 @@ es.esLazyLoader.fn = { //can't do prototype on this one bc its a function
     }
 };
 
-es.defineLazyLoader = function (esRoute, esTypeDef, propName, selfy) {
+es.defineLazyLoader = function (entity, propName) {
 
     var eswhatever = function () {
-
-        var lazy = new es.esLazyLoader(esRoute, esTypeDef, propName, selfy);
+        var lazy = new es.esLazyLoader(entity, propName);
         return lazy();
     };
 

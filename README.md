@@ -41,13 +41,19 @@ Dependencies: Knockout
 * Will Generate your WCF JSON Service for you that will work Out-Of-The-Box 
 * Supports MS SQL Server, Azure, CE, MS Access, Oracle, PostgreSQL, Sybase SQL Anywhere, MySQL, SQLite, VistaDB
 
-##Watch a video of entityspaces.js in action##
+##Watch a few videos of entityspaces.js in action##
 <table border="0">
     <tr>
         <td>
-            <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a>
+            Lazy Loading Properties <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/LazyLoad.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a>
         </td>
     </tr>
+    <tr>
+        <td>
+            The Basic Construction <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a>
+        </td>
+    </tr>
+
 </table>
 
 ##Example Class Definitions (pseudocode)##
