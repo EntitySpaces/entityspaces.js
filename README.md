@@ -12,8 +12,12 @@ Dependencies: Knockout
 ##Features##
 * Built upon Knockout and the MVVM Model
 * Only 16k minimized
+* Supports MS SQL Server, Azure, CE, MS Access, 
+Oracle, PostgreSQL, Sybase SQL Anywhere, MySQL, SQLite, and VistaDB
 * Supports WCF JSON Service and RESTFUL API's
 * Supports Full Hierarchical Data Models
+* Hierarchical Model Supports Lazy Loading (See video below)
+* All saves take place within transactions, including complex hierarchcial saves
 * Two Providers, either pure XHR or JQuery Ajax (you choose which one you want to use)
 * Tracks Row Level and Column Level Dirty State
 * Tracks Original Values so Edits can be Cancelled via RejectChanges
