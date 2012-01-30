@@ -44,13 +44,13 @@ Dependencies: Knockout
 ##Watch a few videos of entityspaces.js in action##
 <table border="0">
     <tr>
-        <td>
-            Lazy Loading Properties <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/LazyLoad.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a>
+        <td align="center">
+            <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/LazyLoad.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a> Lazy Loading Properties
         </td>
     </tr>
     <tr>
-        <td>
-            The Basic Construction <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a>
+        <td align="center">
+            <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a> The Basic Construction
         </td>
     </tr>
 
