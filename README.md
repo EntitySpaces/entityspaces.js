@@ -28,12 +28,12 @@ Dependencies: Knockout
     emp.LastName("Added");
     emp.save();
 
-	// Or the same as above
+    // Or the same as above
     var emp = new es.objects.Employees({
         FirstName: 'Just',
         LastName: 'Added'
     });
-	emp.Save();
+    emp.Save();
 ```
 
 ##EntitySpaces Studio Specific Abilities##
@@ -43,13 +43,13 @@ Dependencies: Knockout
 
 ##Watch a few videos of entityspaces.js in action##
 <table border="0">
-    <tr>
-        <td align="center">
+    <tr align=center">
+        <td>
             <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/LazyLoad.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a> Lazy Loading Properties
         </td>
     </tr>
-    <tr>
-        <td align="center">
+    <tr align=center">
+        <td>
             <a href="http://www.entityspaces.net/developer/Videos/entityspaces_js/entityspaces_js_cool.html" target="new"><img src="http://www.entityspaces.net/downloads/video.png" border="0"></a> The Basic Construction
         </td>
     </tr>
