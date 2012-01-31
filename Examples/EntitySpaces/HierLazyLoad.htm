@@ -21,10 +21,10 @@
         </tr>
         <tr>
             <td valign="top" align="left" style="width:1%;">
-                Employees:
-                <div id="myEmployees" style="max-height: 180px; max-width: 475px; border:1px solid rgb(0, 0, 0);" 
+                <b>Employees:</b>
+                <div id="myEmployees" style="height: 200px; width: 420px; border:1px solid rgb(0, 0, 0);" 
                     data-bind="koGrid:{ 
-                        data: employeesCollection, 
+                        data: employees, 
                         selectedItem: selectedEmployee,
                         isMultiSelect: false,
                         autogenerateColumns: false,
@@ -33,14 +33,15 @@
                             {field: 'FirstName', displayName: 'First Name', width: 120}, 
                             {field: 'LastName', displayName: 'Last Name', width: 160}
                         ],
-                        displayRowIndex: true }">
+						displaySelectionCheckbox: false,
+                        displayRowIndex: false }">
                 </div>
             </td>
         </tr>
         <tr>
             <td valign="top" align="left" style="width:1%">
-                Orders:
-                <div id="myOrders" style="max-height: 180px; max-width: 555px; border:1px solid rgb(0,0,0);" 
+                <b>Orders:</b>
+                <div id="myOrders" style="height: 200px; width: 500px; border:1px solid rgb(0,0,0);" 
                     data-bind="koGrid:{ 
                         data: orders, 
                         selectedItem: selectedOrder,
@@ -52,14 +53,15 @@
                             {field: 'CustomerID', displayName: 'Customer ID', width: 120}, 
                             {field: 'Freight', displayName: 'Freight', width: 120}
                         ],
-                        displayRowIndex: true }">
+						displaySelectionCheckbox: false,
+                        displayRowIndex: false }">
                 </div>
             </td>
         </tr>
         <tr>
             <td valign="top" align="left" style="width:1%">
-                Order Details:
-                <div id="myOrderDetails" style="max-height: 180px; max-width: 640px; border:1px solid rgb(0,0,0);" 
+                <b>Order Details:</b>
+                <div id="myOrderDetails" style="height: 240px; width: 580px; border:1px solid rgb(0,0,0);" 
                     data-bind="koGrid:{ 
                         data: orderDetails,
                         selectedItem: selectedOrderDetail,
@@ -72,8 +74,8 @@
                             {field: 'Quantity', displayName: 'Quantity', width: 120}, 
                             {field: 'Discount', displayName: 'Discount', width: 100}
                         ],
-                        displaySelectionCheckbox: true,
-                        displayRowIndex: true }">
+						displaySelectionCheckbox: false,
+                        displayRowIndex: false }">
                 </div>
             </td>
         </tr>
@@ -82,48 +84,31 @@
 
 <script type="text/javascript">
 
-    es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
-    //es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
+    //es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
+    es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     $(document).ready(function () {
 
         var vm = function () {
             var self = this;
 
-            this.employeesCollection = new es.objects.EmployeesCollection();
+            this.employees = new es.objects.EmployeesCollection();
 
             this.selectedEmployee = ko.observable(new es.objects.Employees());
             this.selectedOrder = ko.observable(new es.objects.Orders());
             this.selectedOrderDetail = ko.observable(new es.objects.OrderDetails());
 
-            this.employeeWasSelected = ko.computed(function () {
-                var entity = self.selectedEmployee();
-                if (entity !== null) {
-                    return entity.OrdersCollectionByEmployeeID();
-                } else {
-                    return [];
-                }
-            });
-
             this.orders = ko.computed(function () {
                 var employee = self.selectedEmployee();
-                if (employee !== null) {
-                    return employee.OrdersCollectionByEmployeeID();
-                } else {
-                    return [];
-                }
+				return (employee !== null) ? employee.OrdersCollectionByEmployeeID() : [];
             });
 
             this.orderDetails = ko.computed(function () {
                 // here just to make sure we change when a new employee is selected
                 var employee = self.selectedEmployee();
-
+		
                 var order = self.selectedOrder();
-                if (order !== null && employee !== null) {
-                    return order.OrderDetailsCollectionByOrderID();
-                } else {
-                    return [];
-                }
+				return (order === null || employee === null) ? [] : order.OrderDetailsCollectionByOrderID();
             });
         };
 
@@ -132,8 +117,9 @@
         ko.applyBindings(vmModel);
 
         // Hit our service ...
-        vmModel.employeesCollection.loadAll();
-        vmModel.selectedEmployee(vmModel.employeesCollection()[0]);
+        vmModel.employees.loadAll();
+        vmModel.selectedEmployee(vmModel.employees()[0]);
+		vmModel.selectedOrder(vmModel.employees()[0].OrdersCollectionByEmployeeID()[0]);
     });
 </script>
 
