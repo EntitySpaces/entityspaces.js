@@ -63,6 +63,7 @@
         //----------------------------------------------------------
         var emp = new es.objects.Employees();
         if (emp.loadByPrimaryKey(2)) {
+
             emp.FirstName("sync" + "!!!");
             emp.save();
         }

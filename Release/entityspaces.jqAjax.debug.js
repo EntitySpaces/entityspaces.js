@@ -2,7 +2,7 @@
 // The entityspaces.js JavaScript library v1.0.22-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Mon 01/30/2012 at 19:51:24.38    
+// Built on Mon 01/30/2012 at 20:19:38.62    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -862,16 +862,17 @@ es.EsEntity = function () { //empty constructor
             options.async = false;
         }
 
+        // Get all of the dirty data in the entire object graph
         options.data = es.utils.getDirtyGraph(self);
 
         if (options.data === null) {
             // there was no data to save
             if (options.async === false) {
-                self.es.isLoading(false);
-                return;
-            } else {
-                options.success(null, options);
+                options.success(null, options.state);
             }
+
+            self.es.isLoading(false);
+            return;
         }
 
         if (options.route) {

@@ -27,12 +27,17 @@
 		this.ShipPostalCode = ko.observable();
 		this.ShipCountry = ko.observable();
 
+		// Primary Key(s)
+		this.esPrimaryKeys = function () {
+		    return this.OrderID();
+		}
+
 		// extended columns
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
 		this.UpToProductsCollection = undefined;
-		this.OrderDetailsCollectionByOrderID = undefined;
+		this.OrderDetailsCollectionByOrderID = new es.defineLazyLoader(this, 'OrderDetailsCollectionByOrderID');
 		this.UpToCustomersByCustomerID = undefined;
 		this.UpToEmployeesByEmployeeID = undefined;
 		this.UpToShippersByShipVia = undefined;
@@ -50,7 +55,8 @@
 	
 	es.objects.Orders.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Orders_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity' }
+		loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity' },
+		OrderDetailsCollectionByOrderID: { method: 'GET', url: 'Orders_OrderDetailsCollectionByOrderID', response: 'collection' }
 	};
 
 	es.objects.Orders.prototype.esColumnMap = {

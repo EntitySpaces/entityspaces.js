@@ -358,16 +358,17 @@ es.EsEntity = function () { //empty constructor
             options.async = false;
         }
 
+        // Get all of the dirty data in the entire object graph
         options.data = es.utils.getDirtyGraph(self);
 
         if (options.data === null) {
             // there was no data to save
             if (options.async === false) {
-                self.es.isLoading(false);
-                return;
-            } else {
-                options.success(null, options);
+                options.success(null, options.state);
             }
+
+            self.es.isLoading(false);
+            return;
         }
 
         if (options.route) {
