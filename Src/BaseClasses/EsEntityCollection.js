@@ -50,8 +50,6 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
 
     acceptChanges: function () {
 
-        var self = this;
-
         ko.utils.arrayForEach(this(), function (entity) {
             if (entity.RowState() !== es.RowState.UNCHANGED) {
                 entity.acceptChanges();
@@ -282,8 +280,8 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         }
 
         //sprinkle in our own handlers, but make sure the original still gets called
-        var successHandler = options.success;
-        var errorHandler = options.error;
+        var successHandler = options.success, 
+            errorHandler = options.error;
 
         //wrap the passed in success handler so that we can populate the Entity
         options.success = function (data, options) {

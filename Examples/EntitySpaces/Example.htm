@@ -28,11 +28,11 @@
 
         // Load an employee with hierarchical model and save hierarchical data back to the server
         var emp = new es.objects.Employees();
-        emp.LoadByPrimaryKeyHierarchical(2);  // <== this method is in the Custom "Employee.js" file
-
-        emp.FirstName("Thiss");
-        emp.OrdersCollectionByEmployeeID()[0].ShipCity(Math.random().toString().substr(0, 4));
-        emp.save();
+        if(emp.LoadByPrimaryKeyHierarchical(2)) {  // <== this method is in the Custom "Employee.js" file
+            emp.FirstName("Thiss");
+            emp.OrdersCollectionByEmployeeID()[0].ShipCity(Math.random().toString().substr(0, 4));
+            emp.save();
+        }
 
         // Collection load/save
         var coll = new es.objects.EmployeesCollection();
@@ -62,9 +62,10 @@
         // Here is a code snippet using the synchronous approach
         //----------------------------------------------------------
         var emp = new es.objects.Employees();
-        emp.loadByPrimaryKey(2);
-        emp.FirstName("sync" + "!!!");
-        emp.save();
+        if (emp.loadByPrimaryKey(2)) {
+            emp.FirstName("sync" + "!!!");
+            emp.save();
+        }
 
         var coll = new es.objects.EmployeesCollection();
         coll.loadAll();
@@ -76,25 +77,28 @@
         // Here is the same code from above using the asynchronous approach
         //-----------------------------------------------------------------
         var emp = new es.objects.Employees();
-        emp.loadByPrimaryKey(2, function (data) {
+        emp.loadByPrimaryKey(2, function (data, state) {
 
-            emp.FirstName("sync" + "!!!");
+            if (state.wasLoaded) {
 
-            emp.save(function (data) {
+                emp.FirstName("sync" + "!!!");
 
-                var coll = new es.objects.EmployeesCollection();
+                emp.save(function (data) {
 
-                coll.loadAll(function (data) {
+                    var coll = new es.objects.EmployeesCollection();
 
-                    coll()[0].FirstName("Rocks!!");
+                    coll.loadAll(function (data) {
 
-                    coll.save(function (data) {
+                        coll()[0].FirstName("Rocks!!");
 
-                        var str = "Save is complete ...";
+                        coll.save(function (data) {
+
+                            var str = "Save is complete ...";
+                        });
                     });
                 });
-            });
-        });
+            }
+        }, null, "MyStateData");
     }
 
     test3 = function () {
@@ -140,9 +144,10 @@
 
         // Reload the new record and delete it
         emp = new es.objects.Employees();
-        emp.loadByPrimaryKey(employeeId);
-        emp.markAsDeleted();
-        emp.save();
+        if(emp.loadByPrimaryKey(employeeId)) {
+            emp.markAsDeleted();
+            emp.save();
+        }
 
         // Can we reload the deleted record
         emp = new es.objects.Employees();

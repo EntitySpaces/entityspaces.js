@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.21-pre 
+// The entityspaces.js JavaScript library v1.0.22-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Sun 01/29/2012 at 23:40:17.05    
+// Built on Mon 01/30/2012 at 19:51:28.38    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -547,7 +547,7 @@ es.EsEntity = function () { //empty constructor
 
         this.isDirtyGraph = function () {
 
-            var dirty = false;
+            var propertyName, dirty = false;
 
             if (self.RowState() !== es.RowState.UNCHANGED) {
                 return true;
@@ -557,18 +557,18 @@ es.EsEntity = function () { //empty constructor
 
                 if (this[propertyName] !== undefined) {
                     dirty = this[propertyName].isDirtyGraph();
-                    if (dirty == true) {
+                    if (dirty === true) {
                         break;
                     }
                 }
             }
 
             return dirty;
-        }
+        };
     };
 
     this.createObjectFromEsTypeDef = function (esTypeDef) {
-        var entityProp = undefined;
+        var entityProp, EntityCtor;
 
         if (this.esTypeDefs && this.esTypeDefs[esTypeDef]) {
             EntityCtor = es.getType(this.esTypeDefs[esTypeDef]);
@@ -581,7 +581,7 @@ es.EsEntity = function () { //empty constructor
     };
 
     this.createObjectFromType = function (type) {
-        var entityProp = undefined;
+        var entityProp, EntityCtor;
 
         EntityCtor = es.getType(type);
         if (EntityCtor) {
@@ -602,7 +602,6 @@ es.EsEntity = function () { //empty constructor
 
             switch (key) {
                 case 'es':
-                case 'esRoutes':
                 case 'esTypeDefs':
                 case 'esRoutes':
                 case 'esColumnMap':
@@ -628,7 +627,7 @@ es.EsEntity = function () { //empty constructor
                         if (srcValue === null || (!es.isEsCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined)) {
 
                             // This is a core column ...
-                            if (srcValue != null && srcValue instanceof Date) {
+                            if (srcValue !== null && srcValue instanceof Date) {
                                 stripped[key] = utils.dateParser.serialize(srcValue);
                             } else {
                                 stripped[key] = srcValue;
@@ -760,9 +759,13 @@ es.EsEntity = function () { //empty constructor
 
     //#region Loads
     this.load = function (options) {
-        var self = this;
+        var state = {},
+            self = this;
 
         self.es.isLoading(true);
+
+        state.wasLoaded = false;
+        state.state = options.state;
 
         if (options.success !== undefined || options.error !== undefined) {
             options.async = true;
@@ -783,16 +786,21 @@ es.EsEntity = function () { //empty constructor
         //wrap the passed in success handler so that we can populate the Entity
         options.success = function (data, options) {
 
-            //populate the entity with the returned data;
-            self.populateEntity(data);
+            if (data !== undefined && data !== null) {
+
+                state.wasLoaded = true;
+
+                //populate the entity with the returned data;
+                self.populateEntity(data);
+            }
 
             //fire the passed in success handler
-            if (successHandler) { successHandler.call(self, data, options.state); }
+            if (successHandler) { successHandler.call(self, data, state); }
             self.es.isLoading(false);
         };
 
         options.error = function (status, responseText, options) {
-            if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
+            if (errorHandler) { errorHandler.call(self, status, responseText, state); }
             self.es.isLoading(false);
         };
 
@@ -801,6 +809,8 @@ es.EsEntity = function () { //empty constructor
         if (options.async === false) {
             self.es.isLoading(false);
         }
+
+        return state.wasLoaded;
     };
 
     this.loadByPrimaryKey = function (primaryKey, success, error, state) { // or single argument of options
@@ -818,7 +828,7 @@ es.EsEntity = function () { //empty constructor
             options.state = state;
         }
 
-        this.load(options);
+        return this.load(options);
     };
     //#endregion Save
 
@@ -828,7 +838,7 @@ es.EsEntity = function () { //empty constructor
 
         self.es.isLoading(true);
 
-        var options = { success: success, error: error, state: state, route: self.esRoutes['commit'] }
+        var options = { success: success, error: error, state: state, route: self.esRoutes['commit'] };
 
         switch (self.RowState()) {
             case es.RowState.ADDED:
@@ -852,8 +862,6 @@ es.EsEntity = function () { //empty constructor
             options.async = false;
         }
 
-        var root = undefined;
-
         options.data = es.utils.getDirtyGraph(self);
 
         if (options.data === null) {
@@ -871,8 +879,8 @@ es.EsEntity = function () { //empty constructor
             options.type = options.route.method;
         }
 
-        var successHandler = options.success;
-        var errorHandler = options.error;
+        var successHandler = options.success,
+            errorHandler = options.error;
 
         options.success = function (data, options) {
             self.populateEntity(data);
@@ -957,8 +965,6 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
     },
 
     acceptChanges: function () {
-
-        var self = this;
 
         ko.utils.arrayForEach(this(), function (entity) {
             if (entity.RowState() !== es.RowState.UNCHANGED) {
@@ -1190,8 +1196,8 @@ es.EsEntityCollection.fn = { //can't do prototype on this one bc its a function
         }
 
         //sprinkle in our own handlers, but make sure the original still gets called
-        var successHandler = options.success;
-        var errorHandler = options.error;
+        var successHandler = options.success, 
+            errorHandler = options.error;
 
         //wrap the passed in success handler so that we can populate the Entity
         options.success = function (data, options) {
