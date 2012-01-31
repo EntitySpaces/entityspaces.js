@@ -33,7 +33,7 @@
                             {field: 'FirstName', displayName: 'First Name', width: 120}, 
                             {field: 'LastName', displayName: 'Last Name', width: 160}
                         ],
-						displaySelectionCheckbox: false,
+                        displaySelectionCheckbox: false,
                         displayRowIndex: false }">
                 </div>
             </td>
@@ -53,7 +53,7 @@
                             {field: 'CustomerID', displayName: 'Customer ID', width: 120}, 
                             {field: 'Freight', displayName: 'Freight', width: 120}
                         ],
-						displaySelectionCheckbox: false,
+                        displaySelectionCheckbox: false,
                         displayRowIndex: false }">
                 </div>
             </td>
@@ -74,7 +74,7 @@
                             {field: 'Quantity', displayName: 'Quantity', width: 120}, 
                             {field: 'Discount', displayName: 'Discount', width: 100}
                         ],
-						displaySelectionCheckbox: false,
+                        displaySelectionCheckbox: false,
                         displayRowIndex: false }">
                 </div>
             </td>
@@ -84,7 +84,7 @@
 
 <script type="text/javascript">
 
-    //es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
+  //es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
     es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     $(document).ready(function () {
@@ -100,15 +100,15 @@
 
             this.orders = ko.computed(function () {
                 var employee = self.selectedEmployee();
-				return (employee !== null) ? employee.OrdersCollectionByEmployeeID() : [];
+                return (employee !== null) ? employee.OrdersCollectionByEmployeeID() : [];
             });
 
             this.orderDetails = ko.computed(function () {
                 // here just to make sure we change when a new employee is selected
                 var employee = self.selectedEmployee();
-		
+        
                 var order = self.selectedOrder();
-				return (order === null || employee === null) ? [] : order.OrderDetailsCollectionByOrderID();
+                return (order === null || employee === null) ? [] : order.OrderDetailsCollectionByOrderID();
             });
         };
 
@@ -119,7 +119,7 @@
         // Hit our service ...
         vmModel.employees.loadAll();
         vmModel.selectedEmployee(vmModel.employees()[0]);
-		vmModel.selectedOrder(vmModel.employees()[0].OrdersCollectionByEmployeeID()[0]);
+        vmModel.selectedOrder(vmModel.employees()[0].OrdersCollectionByEmployeeID()[0]);
     });
 </script>
 
