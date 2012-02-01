@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/31/2012 8:46:08 PM
+// Date Generated       : 1/31/2012 8:54:00 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -17,9 +17,9 @@
 		this.RegionID = ko.observable();
 
 		// Primary Key(s)
-        this.esPrimaryKeys = function() {
-            return this.TerritoryID();
-        }
+		this.esPrimaryKeys = function() {
+			return this.TerritoryID();
+		}
 
 		// extended columns
 		this.esExtendedData = undefined;
