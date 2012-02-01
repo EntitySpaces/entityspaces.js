@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/15/2012 12:20:55 PM
+// Date Generated       : 1/31/2012 8:46:08 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -16,13 +16,18 @@
 		this.TerritoryDescription = ko.observable();
 		this.RegionID = ko.observable();
 
+		// Primary Key(s)
+        this.esPrimaryKeys = function() {
+            return this.TerritoryID();
+        }
+
 		// extended columns
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
-		this.UpToEmployeesCollection = undefined;
-		this.EmployeeTerritoriesCollectionByTerritoryID = undefined;
-		this.UpToRegionByRegionID = undefined;
+		this.UpToEmployeesCollection = new es.defineLazyLoader(this, 'UpToEmployeesCollection');
+		this.EmployeeTerritoriesCollectionByTerritoryID = new es.defineLazyLoader(this, 'EmployeeTerritoriesCollectionByTerritoryID');
+		this.UpToRegionByRegionID = new es.defineLazyLoader(this, 'UpToRegionByRegionID');
 	});
 
 	//#region Prototype Level Information
@@ -32,10 +37,13 @@
 		EmployeeTerritoriesCollectionByTerritoryID: "EmployeeTerritoriesCollection",
 		UpToRegionByRegionID: "Region"
 	};
-	
+
 	es.objects.Territories.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Territories_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Territories_LoadByPrimaryKey', response: 'entity' }
+		loadByPrimaryKey: { method: 'GET', url: 'Territories_LoadByPrimaryKey', response: 'entity' },
+		UpToEmployeesCollection: { method: 'GET', url: 'Territories_UpToEmployeesCollection', response: 'collection'},
+		EmployeeTerritoriesCollectionByTerritoryID: { method: 'GET', url: 'Territories_EmployeeTerritoriesCollectionByTerritoryID', response: 'collection'},
+		UpToRegionByRegionID: { method: 'GET', url: 'Territories_UpToRegionByRegionID', response: 'entity'}
 	};
 
 	es.objects.Territories.prototype.esColumnMap = {

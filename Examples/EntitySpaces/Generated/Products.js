@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/15/2012 12:20:55 PM
+// Date Generated       : 1/31/2012 8:46:08 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -23,14 +23,19 @@
 		this.ReorderLevel = ko.observable();
 		this.Discontinued = ko.observable();
 
+		// Primary Key(s)
+        this.esPrimaryKeys = function() {
+            return this.ProductID();
+        }
+
 		// extended columns
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
-		this.UpToOrdersCollection = undefined;
-		this.OrderDetailsCollectionByProductID = undefined;
-		this.UpToCategoriesByCategoryID = undefined;
-		this.UpToSuppliersBySupplierID = undefined;
+		this.UpToOrdersCollection = new es.defineLazyLoader(this, 'UpToOrdersCollection');
+		this.OrderDetailsCollectionByProductID = new es.defineLazyLoader(this, 'OrderDetailsCollectionByProductID');
+		this.UpToCategoriesByCategoryID = new es.defineLazyLoader(this, 'UpToCategoriesByCategoryID');
+		this.UpToSuppliersBySupplierID = new es.defineLazyLoader(this, 'UpToSuppliersBySupplierID');
 	});
 
 	//#region Prototype Level Information
@@ -41,10 +46,14 @@
 		UpToCategoriesByCategoryID: "Categories",
 		UpToSuppliersBySupplierID: "Suppliers"
 	};
-	
+
 	es.objects.Products.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Products_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Products_LoadByPrimaryKey', response: 'entity' }
+		loadByPrimaryKey: { method: 'GET', url: 'Products_LoadByPrimaryKey', response: 'entity' },
+		UpToOrdersCollection: { method: 'GET', url: 'Products_UpToOrdersCollection', response: 'collection'},
+		OrderDetailsCollectionByProductID: { method: 'GET', url: 'Products_OrderDetailsCollectionByProductID', response: 'collection'},
+		UpToCategoriesByCategoryID: { method: 'GET', url: 'Products_UpToCategoriesByCategoryID', response: 'entity'},
+		UpToSuppliersBySupplierID: { method: 'GET', url: 'Products_UpToSuppliersBySupplierID', response: 'entity'}
 	};
 
 	es.objects.Products.prototype.esColumnMap = {

@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/15/2012 12:20:55 PM
+// Date Generated       : 1/31/2012 8:46:08 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -18,12 +18,19 @@
 		this.Quantity = ko.observable();
 		this.Discount = ko.observable();
 
+		this.esPrimaryKeys = function() {
+			var val = {data: {}};
+			val.data.orderID = this.OrderID();
+			val.data.productID = this.ProductID();
+			return val;
+		};
+
 		// extended columns
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
-		this.UpToOrdersByOrderID = undefined;
-		this.UpToProductsByProductID = undefined;
+		this.UpToOrdersByOrderID = new es.defineLazyLoader(this, 'UpToOrdersByOrderID');
+		this.UpToProductsByProductID = new es.defineLazyLoader(this, 'UpToProductsByProductID');
 	});
 
 	//#region Prototype Level Information
@@ -32,10 +39,12 @@
 		UpToOrdersByOrderID: "Orders",
 		UpToProductsByProductID: "Products"
 	};
-	
+
 	es.objects.OrderDetails.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'OrderDetails_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'OrderDetails_LoadByPrimaryKey', response: 'entity' }
+		loadByPrimaryKey: { method: 'GET', url: 'OrderDetails_LoadByPrimaryKey', response: 'entity' },
+		UpToOrdersByOrderID: { method: 'GET', url: 'OrderDetails_UpToOrdersByOrderID', response: 'entity'},
+		UpToProductsByProductID: { method: 'GET', url: 'OrderDetails_UpToProductsByProductID', response: 'entity'}
 	};
 
 	es.objects.OrderDetails.prototype.esColumnMap = {

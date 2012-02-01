@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/15/2012 12:20:55 PM
+// Date Generated       : 1/31/2012 8:46:08 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -28,19 +28,19 @@
 		this.ShipCountry = ko.observable();
 
 		// Primary Key(s)
-		this.esPrimaryKeys = function () {
-		    return this.OrderID();
-		}
+        this.esPrimaryKeys = function() {
+            return this.OrderID();
+        }
 
 		// extended columns
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
-		this.UpToProductsCollection = undefined;
+		this.UpToProductsCollection = new es.defineLazyLoader(this, 'UpToProductsCollection');
 		this.OrderDetailsCollectionByOrderID = new es.defineLazyLoader(this, 'OrderDetailsCollectionByOrderID');
-		this.UpToCustomersByCustomerID = undefined;
-		this.UpToEmployeesByEmployeeID = undefined;
-		this.UpToShippersByShipVia = undefined;
+		this.UpToCustomersByCustomerID = new es.defineLazyLoader(this, 'UpToCustomersByCustomerID');
+		this.UpToEmployeesByEmployeeID = new es.defineLazyLoader(this, 'UpToEmployeesByEmployeeID');
+		this.UpToShippersByShipVia = new es.defineLazyLoader(this, 'UpToShippersByShipVia');
 	});
 
 	//#region Prototype Level Information
@@ -52,11 +52,15 @@
 		UpToEmployeesByEmployeeID: "Employees",
 		UpToShippersByShipVia: "Shippers"
 	};
-	
+
 	es.objects.Orders.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Orders_Save', response: 'entity' },
 		loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity' },
-		OrderDetailsCollectionByOrderID: { method: 'GET', url: 'Orders_OrderDetailsCollectionByOrderID', response: 'collection' }
+		UpToProductsCollection: { method: 'GET', url: 'Orders_UpToProductsCollection', response: 'collection'},
+		OrderDetailsCollectionByOrderID: { method: 'GET', url: 'Orders_OrderDetailsCollectionByOrderID', response: 'collection'},
+		UpToCustomersByCustomerID: { method: 'GET', url: 'Orders_UpToCustomersByCustomerID', response: 'entity'},
+		UpToEmployeesByEmployeeID: { method: 'GET', url: 'Orders_UpToEmployeesByEmployeeID', response: 'entity'},
+		UpToShippersByShipVia: { method: 'GET', url: 'Orders_UpToShippersByShipVia', response: 'entity'}
 	};
 
 	es.objects.Orders.prototype.esColumnMap = {

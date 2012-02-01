@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/15/2012 12:20:55 PM
+// Date Generated       : 1/31/2012 8:46:08 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -24,13 +24,18 @@
 		this.Phone = ko.observable();
 		this.Fax = ko.observable();
 
+		// Primary Key(s)
+        this.esPrimaryKeys = function() {
+            return this.CustomerID();
+        }
+
 		// extended columns
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
-		this.UpToCustomerDemographicsCollection = undefined;
-		this.CustomerCustomerDemoCollectionByCustomerID = undefined;
-		this.OrdersCollectionByCustomerID = undefined;
+		this.UpToCustomerDemographicsCollection = new es.defineLazyLoader(this, 'UpToCustomerDemographicsCollection');
+		this.CustomerCustomerDemoCollectionByCustomerID = new es.defineLazyLoader(this, 'CustomerCustomerDemoCollectionByCustomerID');
+		this.OrdersCollectionByCustomerID = new es.defineLazyLoader(this, 'OrdersCollectionByCustomerID');
 	});
 
 	//#region Prototype Level Information
@@ -40,10 +45,13 @@
 		CustomerCustomerDemoCollectionByCustomerID: "CustomerCustomerDemoCollection",
 		OrdersCollectionByCustomerID: "OrdersCollection"
 	};
-	
+
 	es.objects.Customers.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Customers_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Customers_LoadByPrimaryKey', response: 'entity' }
+		loadByPrimaryKey: { method: 'GET', url: 'Customers_LoadByPrimaryKey', response: 'entity' },
+		UpToCustomerDemographicsCollection: { method: 'GET', url: 'Customers_UpToCustomerDemographicsCollection', response: 'collection'},
+		CustomerCustomerDemoCollectionByCustomerID: { method: 'GET', url: 'Customers_CustomerCustomerDemoCollectionByCustomerID', response: 'collection'},
+		OrdersCollectionByCustomerID: { method: 'GET', url: 'Customers_OrdersCollectionByCustomerID', response: 'collection'}
 	};
 
 	es.objects.Customers.prototype.esColumnMap = {

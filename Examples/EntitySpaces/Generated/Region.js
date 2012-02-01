@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/15/2012 12:20:55 PM
+// Date Generated       : 1/31/2012 8:46:08 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -15,11 +15,16 @@
 		this.RegionID = ko.observable();
 		this.RegionDescription = ko.observable();
 
+		// Primary Key(s)
+        this.esPrimaryKeys = function() {
+            return this.RegionID();
+        }
+
 		// extended columns
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
-		this.TerritoriesCollectionByRegionID = undefined;
+		this.TerritoriesCollectionByRegionID = new es.defineLazyLoader(this, 'TerritoriesCollectionByRegionID');
 	});
 
 	//#region Prototype Level Information
@@ -27,10 +32,11 @@
 	es.objects.Region.prototype.esTypeDefs = {
 		TerritoriesCollectionByRegionID: "TerritoriesCollection"
 	};
-	
+
 	es.objects.Region.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Region_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Region_LoadByPrimaryKey', response: 'entity' }
+		loadByPrimaryKey: { method: 'GET', url: 'Region_LoadByPrimaryKey', response: 'entity' },
+		TerritoriesCollectionByRegionID: { method: 'GET', url: 'Region_TerritoriesCollectionByRegionID', response: 'collection'}
 	};
 
 	es.objects.Region.prototype.esColumnMap = {

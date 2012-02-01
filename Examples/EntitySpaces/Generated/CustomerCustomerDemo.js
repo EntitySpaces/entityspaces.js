@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/15/2012 12:20:55 PM
+// Date Generated       : 1/31/2012 8:46:07 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -15,12 +15,19 @@
 		this.CustomerID = ko.observable();
 		this.CustomerTypeID = ko.observable();
 
+		this.esPrimaryKeys = function() {
+			var val = {data: {}};
+			val.data.customerID = this.CustomerID();
+			val.data.customerTypeID = this.CustomerTypeID();
+			return val;
+		};
+
 		// extended columns
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
-		this.UpToCustomerDemographicsByCustomerTypeID = undefined;
-		this.UpToCustomersByCustomerID = undefined;
+		this.UpToCustomerDemographicsByCustomerTypeID = new es.defineLazyLoader(this, 'UpToCustomerDemographicsByCustomerTypeID');
+		this.UpToCustomersByCustomerID = new es.defineLazyLoader(this, 'UpToCustomersByCustomerID');
 	});
 
 	//#region Prototype Level Information
@@ -29,10 +36,12 @@
 		UpToCustomerDemographicsByCustomerTypeID: "CustomerDemographics",
 		UpToCustomersByCustomerID: "Customers"
 	};
-	
+
 	es.objects.CustomerCustomerDemo.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'CustomerCustomerDemo_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'CustomerCustomerDemo_LoadByPrimaryKey', response: 'entity' }
+		loadByPrimaryKey: { method: 'GET', url: 'CustomerCustomerDemo_LoadByPrimaryKey', response: 'entity' },
+		UpToCustomerDemographicsByCustomerTypeID: { method: 'GET', url: 'CustomerCustomerDemo_UpToCustomerDemographicsByCustomerTypeID', response: 'entity'},
+		UpToCustomersByCustomerID: { method: 'GET', url: 'CustomerCustomerDemo_UpToCustomersByCustomerID', response: 'entity'}
 	};
 
 	es.objects.CustomerCustomerDemo.prototype.esColumnMap = {

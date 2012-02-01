@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/15/2012 12:20:55 PM
+// Date Generated       : 1/31/2012 8:46:08 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -25,11 +25,16 @@
 		this.Fax = ko.observable();
 		this.HomePage = ko.observable();
 
+		// Primary Key(s)
+        this.esPrimaryKeys = function() {
+            return this.SupplierID();
+        }
+
 		// extended columns
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
-		this.ProductsCollectionBySupplierID = undefined;
+		this.ProductsCollectionBySupplierID = new es.defineLazyLoader(this, 'ProductsCollectionBySupplierID');
 	});
 
 	//#region Prototype Level Information
@@ -37,10 +42,11 @@
 	es.objects.Suppliers.prototype.esTypeDefs = {
 		ProductsCollectionBySupplierID: "ProductsCollection"
 	};
-	
+
 	es.objects.Suppliers.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'Suppliers_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Suppliers_LoadByPrimaryKey', response: 'entity' }
+		loadByPrimaryKey: { method: 'GET', url: 'Suppliers_LoadByPrimaryKey', response: 'entity' },
+		ProductsCollectionBySupplierID: { method: 'GET', url: 'Suppliers_ProductsCollectionBySupplierID', response: 'collection'}
 	};
 
 	es.objects.Suppliers.prototype.esColumnMap = {

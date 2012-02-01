@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/15/2012 12:20:55 PM
+// Date Generated       : 1/31/2012 8:46:08 PM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -15,12 +15,19 @@
 		this.EmployeeID = ko.observable();
 		this.TerritoryID = ko.observable();
 
+		this.esPrimaryKeys = function() {
+			var val = {data: {}};
+			val.data.employeeID = this.EmployeeID();
+			val.data.territoryID = this.TerritoryID();
+			return val;
+		};
+
 		// extended columns
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
-		this.UpToEmployeesByEmployeeID = undefined;
-		this.UpToTerritoriesByTerritoryID = undefined;
+		this.UpToEmployeesByEmployeeID = new es.defineLazyLoader(this, 'UpToEmployeesByEmployeeID');
+		this.UpToTerritoriesByTerritoryID = new es.defineLazyLoader(this, 'UpToTerritoriesByTerritoryID');
 	});
 
 	//#region Prototype Level Information
@@ -29,10 +36,12 @@
 		UpToEmployeesByEmployeeID: "Employees",
 		UpToTerritoriesByTerritoryID: "Territories"
 	};
-	
+
 	es.objects.EmployeeTerritories.prototype.esRoutes = {
 		commit: { method: 'PUT', url: 'EmployeeTerritories_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'EmployeeTerritories_LoadByPrimaryKey', response: 'entity' }
+		loadByPrimaryKey: { method: 'GET', url: 'EmployeeTerritories_LoadByPrimaryKey', response: 'entity' },
+		UpToEmployeesByEmployeeID: { method: 'GET', url: 'EmployeeTerritories_UpToEmployeesByEmployeeID', response: 'entity'},
+		UpToTerritoriesByTerritoryID: { method: 'GET', url: 'EmployeeTerritories_UpToTerritoriesByTerritoryID', response: 'entity'}
 	};
 
 	es.objects.EmployeeTerritories.prototype.esColumnMap = {
