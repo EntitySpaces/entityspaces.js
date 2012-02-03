@@ -2,7 +2,7 @@
 * KoGrid JavaScript Library 
 * (c) Eric M. Barnard 
 * License: MIT (http://www.opensource.org/licenses/mit-license.php) 
-* Compiled At:  0:26:16.82 Wed 02/01/2012 
+* Compiled At: 17:34:48.73 Thu 02/02/2012 
 ***********************************************/ 
 (function(window, undefined){ 
  
@@ -1092,10 +1092,11 @@ kg.ColumnCollection.fn = {
 ***********************************************/ 
 ﻿/******************************
 * Use cases to support:
-* 1. Always keep a selectedItem
+* 1. Always keep a selectedItem in single select mode
 *   - first item is selected by default (if selection is enabled)
 * 2. Don't keep both selectedItem/selectedItems in sync - pick one
 * 3. Remember selectedIndex, and if user deletes an item in the array - reselect the next index
+* 4. If Single Select, don't pick a selected item on first data load
 */
 
 kg.SelectionManager = function (options) {
@@ -1193,10 +1194,8 @@ kg.SelectionManager = function (options) {
                 keep = changedEntity[KEY]();
             }
 
-            if (!keep && (len > 1)) {
+            if (!keep) {
                 currentItems.remove(changedEntity);
-            } else if (!keep && (len <= 1)) {
-                changedEntity[KEY](true);
             } else {
                 //first see if it exists, if not add it
                 if (currentItems.indexOf(changedEntity) === -1) {
@@ -1225,21 +1224,44 @@ kg.SelectionManager = function (options) {
                 if (checkAll) {
                     self.selectedItems(data);
                 } else {
-                    self.selectedItems(data[0] ? [data[0]] : []);
+                    self.selectedItems([]);
                 }
             }
         }
     });
 
-    //now ensure we always have at least one item selected
-    (function (items) {
-        if (items && items.length > 0) {
-            if (!items[0][KEY]) {
-                items[0][KEY] = ko.observable(true);
-                self.changeSelectedItem(items[0]);
+    //make sure as the data changes, we keep the selectedItem(s) correct
+    dataSource.subscribe(function (items) {
+        var selectedItems, selectedItem, itemsToRemove;
+
+        if (!items) {
+            return;
+        }
+
+        //make sure the selectedItem/Items exist in the new data
+        if (isMulti) {
+            selectedItems = self.selectedItems();
+            itemsToRemove = [];
+
+            ko.utils.arrayForEach(selectedItems, function (item) {
+                if (ko.utils.arrayIndexOf(items, item) < 0) {
+                    itemsToRemove.push(item);
+                }
+            });
+
+            //clean out any selectedItems that don't exist in the new array
+            if (itemsToRemove.length > 0) {
+                self.selectedItems.removeAll(itemsToRemove);
+            }
+
+        } else {
+            selectedItem = self.selectedItem();
+
+            if (selectedItem && ko.utils.arrayIndexOf(items, selectedItem) < 0) {
+                self.selectedItem(items[0] ? items[0] : null);
             }
         }
-    } (dataSource()));
+    });
 }; 
  
  
@@ -1296,6 +1318,9 @@ kg.SelectionManager = function (options) {
             },
             scrollTop = 0,
             isDifferent = false;
+            
+            //catch this so we can return the viewer to their original scroll after the resize!
+            scrollTop = grid.$viewport.scrollTop();
 
             kg.domUtility.measureGrid(grid.$root, grid);
 
@@ -1314,11 +1339,9 @@ kg.SelectionManager = function (options) {
 
             if (isDifferent) {
 
-                scrollTop = grid.$viewport.scrollTop();
-
                 grid.refreshDomSizes();
 
-                grid.adjustScrollTop(scrollTop); //ensure that the user stays scrolled where they were
+                grid.adjustScrollTop(scrollTop, true); //ensure that the user stays scrolled where they were
             }
         });
     };
@@ -1399,7 +1422,7 @@ kg.KoGrid = function (options) {
         sortInfo: self.config.sortInfo,
         useExternalSorting: self.config.useExternalFiltering
     });
-    
+
     this.sortInfo = sortManager.sortInfo; //observable
     this.filterInfo = filterManager.filterInfo; //observable
     this.finalData = sortManager.sortedData; //observable Array
@@ -1678,6 +1701,9 @@ kg.KoGrid = function (options) {
         item = self.data()[0];
 
         utils.forIn(item, function (prop, propName) {
+            if (propName === '__kg_selected__') {
+                return;
+            }
 
             self.config.columnDefs.push({
                 field: propName
@@ -1754,6 +1780,8 @@ kg.KoGrid = function (options) {
 
         self.rows = self.rowManager.rows; // dependent observable
 
+        kg.cssBuilder.buildStyles(self);
+
         self.initPhase = 1;
     };
 
@@ -1792,10 +1820,10 @@ kg.KoGrid = function (options) {
         });
     };
 
-    this.adjustScrollTop = function (scrollTop) {
+    this.adjustScrollTop = function (scrollTop, force) {
         var rowIndex;
 
-        if (prevScrollTop === scrollTop) { return; }
+        if (prevScrollTop === scrollTop && !force) { return; }
 
         rowIndex = Math.floor(scrollTop / self.config.rowHeight);
 
@@ -1907,6 +1935,14 @@ kg.cssBuilder = {
         dims.maxWidth = $container.width();
         dims.maxHeight = $container.height();
 
+        //if they are zero, see what the parent's size is
+        if (dims.maxWidth === 0) {
+            dims.maxWidth = $container.parent().width();
+        }
+        if (dims.maxHeight === 0) {
+            dims.maxHeight = $container.parent().height();
+        }
+
         $test.remove();
 
         return dims;
@@ -1917,21 +1953,19 @@ kg.cssBuilder = {
 
         dims.minWidth = 0;
         dims.minHeight = 0;
-        //TODO, the rest of this is not working right now..
-        return dims;
 
-
-        //first hide the child items so that we can 
+        //first hide the child items so that we can get an accurate reading
         $container.children().hide();
 
         var $test = $("<div style='height: 0x; width: 0px;'></div>");
         $container.append($test);
 
         $container.wrap("<div style='width: 1px;'></div>");
-
+                
         dims.minWidth = $container.width();
         dims.minHeight = $container.height();
 
+        //This will blip the screen, so make sure to reset scroll bars, etc...
         $container.unwrap();
         $container.children().show();
 
@@ -1940,7 +1974,7 @@ kg.cssBuilder = {
         return dims;
     };
 
-    this.measureGrid = function ($container, grid) {
+    this.measureGrid = function ($container, grid, measureMins) {
 
         //find max sizes
         var dims = self.measureElementMaxDims($container);
@@ -1948,15 +1982,61 @@ kg.cssBuilder = {
         grid.elementDims.rootMaxW = dims.maxWidth;
         grid.elementDims.rootMaxH = dims.maxHeight;
 
+        //set scroll measurements
+        grid.elementDims.scrollW = kg.domUtility.scrollW;
+        grid.elementDims.scrollH = kg.domUtility.scrollH;
+
+//        if (!measureMins) {
+//            return;
+//        }
+
         //find min sizes
         dims = self.measureElementMinDims($container);
 
         grid.elementDims.rootMinW = dims.minWidth;
-        grid.elementDims.rootMinH = dims.minHeight;
 
-        //set scroll measurements
-        grid.elementDims.scrollW = kg.domUtility.scrollW;
-        grid.elementDims.scrollH = kg.domUtility.scrollH;
+        // do a little magic here to ensure we always have a decent viewport
+        dims.minHeight = Math.max(dims.minHeight, (grid.config.headerRowHeight + grid.config.footerRowHeight + (3 * grid.config.rowHeight)));
+        dims.minHeight = Math.min(grid.elementDims.rootMaxH, dims.minHeight);
+
+        grid.elementDims.rootMinH = dims.minHeight;
+    };
+
+    this.measureRow = function ($canvas, grid) {
+        var $row,
+            $cell,
+            isDummyRow,
+            isDummyCell;
+
+        $row = $canvas.children().first();
+        if ($row.length === 0) {
+            //add a dummy row
+            $canvas.append('<div class="kgRow"></div>');
+            $row = $canvas.children().first();
+            isDummyRow = true;
+        }
+
+        $cell = $row.children().first();
+        if ($cell.length === 0) {
+            //add a dummy cell
+            $row.append('<div class="kgCell col0"></div>');
+            $cell = $row.children().first();
+            isDummyCell = true;
+        }
+
+        grid.elementDims.rowWdiff = $row.outerWidth() - $row.width();
+        grid.elementDims.rowHdiff = $row.outerHeight() - $row.height();
+
+        grid.elementDims.cellWdiff = $cell.outerWidth() - $cell.width();
+        grid.elementDims.cellHdiff = $cell.outerHeight() - $cell.height();
+
+        grid.elementsNeedMeasuring = false;
+
+        if (isDummyRow) {
+            $row.remove();
+        } else if (isDummyCell) {
+            $cell.remove();
+        }
     };
 
     this.scrollH = 17; // default in IE, Chrome, & most browsers
@@ -2015,14 +2095,13 @@ ko.bindingHandlers['koGrid'] = (function () {
             kg.gridManager.storeGrid(element, grid);
 
             //get the container sizes
-            kg.domUtility.measureGrid($element, grid);
+            kg.domUtility.measureGrid($element, grid, true);
 
             $element.hide(); //first hide the grid so that its not freaking the screen out
 
             //set the right styling on the container
             $(element).addClass("kgGrid")
-                      .addClass(grid.gridId.toString())
-                      .css("position", "relative");
+                      .addClass(grid.gridId.toString());
 
             //make sure the templates are generated for the Grid
             kg.templateManager.ensureGridTemplates({
@@ -2111,20 +2190,7 @@ ko.bindingHandlers['kgRows'] = (function () {
             //only measure the row and cell differences when data changes
             if (grid.elementsNeedMeasuring && grid.initPhase > 0) {
                 //Measure the cell and row differences after rendering
-                $row = $(element).children().first();
-                if ($row) {
-                    $cell = $row.children().first();
-                    if ($cell) {
-
-                        grid.elementDims.rowWdiff = $row.outerWidth() - $row.width();
-                        grid.elementDims.rowHdiff = $row.outerHeight() - $row.height();
-
-                        grid.elementDims.cellWdiff = $cell.outerWidth() - $cell.width();
-                        grid.elementDims.cellHdiff = $cell.outerHeight() - $cell.height();
-
-                        grid.elementsNeedMeasuring = false;
-                    }
-                }
+                kg.domUtility.measureRow($(element), grid);
             }
             return retVal;
         }

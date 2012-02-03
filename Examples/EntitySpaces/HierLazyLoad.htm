@@ -20,9 +20,9 @@
             </td>
         </tr>
         <tr>
-            <td valign="top" align="left">
+            <td valign="top" align="left" colspan="3">
                 <b>Employees:</b><br />
-                <div id="myEmployees" style="height: 200px; max-width: 700px; float: left; margin-left: 100px; border: 1px solid #666666; margin: 10px auto;"
+                <div id="myEmployees" style="height: 200px; max-width: 800px; float: left; margin-left: 100px; border: 1px solid #666666; margin: 10px auto;"
                     data-bind="koGrid:{ 
                         data: employees, 
                         selectedItem: selectedEmployee,
@@ -32,7 +32,9 @@
                         columnDefs: [
                             {field: 'EmployeeID', displayName: 'Employee ID', width: 120}, 
                             {field: 'FirstName', displayName: 'First Name', width: 120}, 
-                            {field: 'LastName', displayName: 'Last Name', width: 160}
+                            {field: 'LastName', displayName: 'Last Name', width: 160},
+                            {field: 'Address', displayName: 'Address', width: 160},
+                            {field: 'City', displayName: 'City', width: 160}
                         ],
                         displaySelectionCheckbox: false,
                         displayRowIndex: false }">
@@ -59,8 +61,9 @@
                         displayRowIndex: false }">
                 </div>
             </td>
-        </tr>
-        <tr>
+            <td>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
             <td valign="top" align="left">
                 <b>Order Details:</b><br />
                 <div id="myOrderDetails" style="height: 200px; max-width: 960px; float: left; margin-left: 100px; border: 1px solid #666666; margin: 10px auto;"
@@ -74,8 +77,7 @@
                             {field: 'OrderID', displayName: 'Order ID', width: 120}, 
                             {field: 'ProductID', displayName: 'Product ID', width: 120}, 
                             {field: 'UnitPrice', displayName: 'Unit Price', width: 120}, 
-                            {field: 'Quantity', displayName: 'Quantity', width: 120}, 
-                            {field: 'Discount', displayName: 'Discount', width: 100}
+                            {field: 'Quantity', displayName: 'Quantity', width: 120}
                         ],
                         displaySelectionCheckbox: false,
                         displayRowIndex: false }">
@@ -102,27 +104,26 @@
             this.selectedOrderDetail = ko.observable(new es.objects.OrderDetails());
 
             this.orders = ko.computed(function () {
-                var employee = self.selectedEmployee();
-                return (employee !== null) ? employee.OrdersCollectionByEmployeeID() : [];
+                return self.selectedEmployee().OrdersCollectionByEmployeeID();
             });
 
             this.orderDetails = ko.computed(function () {
+
                 // here just to make sure we change when a new employee is selected
                 var employee = self.selectedEmployee();
-        
-                var order = self.selectedOrder();
-                return (order === null || employee === null) ? [] : order.OrderDetailsCollectionByOrderID();
+
+                return self.selectedOrder().OrderDetailsCollectionByOrderID();
             });
         };
 
         var vmModel = new vm();
 
-        ko.applyBindings(vmModel);
-
         // Hit our service ...
         vmModel.employees.loadAll();
-        vmModel.selectedEmployee(vmModel.employees()[0]);
+        vmModel.selectedEmployee(vmModel.employees()[1]);
         vmModel.selectedOrder(vmModel.employees()[0].OrdersCollectionByEmployeeID()[0]);
+
+        ko.applyBindings(vmModel);
     });
 </script>
 
