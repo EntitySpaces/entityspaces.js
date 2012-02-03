@@ -87,7 +87,7 @@
 
 <script type="text/javascript">
 
-  //es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
+    //es.dataProvider.baseURL = "http://localhost/esService/esJson.svc/";
     es.dataProvider.baseURL = "http://www.entityspaces.net/Knockout/Part1/esService/esJson.svc/";
 
     $(document).ready(function () {
@@ -109,7 +109,7 @@
             this.orderDetails = ko.computed(function () {
                 // here just to make sure we change when a new employee is selected
                 var employee = self.selectedEmployee();
-        
+
                 var order = self.selectedOrder();
                 return (order === null || employee === null) ? [] : order.OrderDetailsCollectionByOrderID();
             });
