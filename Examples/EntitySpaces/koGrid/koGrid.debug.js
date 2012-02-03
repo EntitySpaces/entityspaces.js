@@ -3,7 +3,7 @@
 * KoGrid JavaScript Library 
 * (c) Eric M. Barnard 
 * License: MIT (http://www.opensource.org/licenses/mit-license.php) 
-* Compiled At: 17:34:48.73 Thu 02/02/2012 
+* Compiled At: 12:33:58.25 Wed 02/01/2012 
 ***********************************************/ 
 (function(window, undefined){ 
  
@@ -1093,11 +1093,10 @@ kg.ColumnCollection.fn = {
 ***********************************************/ 
 ﻿/******************************
 * Use cases to support:
-* 1. Always keep a selectedItem in single select mode
+* 1. Always keep a selectedItem
 *   - first item is selected by default (if selection is enabled)
 * 2. Don't keep both selectedItem/selectedItems in sync - pick one
 * 3. Remember selectedIndex, and if user deletes an item in the array - reselect the next index
-* 4. If Single Select, don't pick a selected item on first data load
 */
 
 kg.SelectionManager = function (options) {
@@ -1195,8 +1194,10 @@ kg.SelectionManager = function (options) {
                 keep = changedEntity[KEY]();
             }
 
-            if (!keep) {
+            if (!keep && (len > 1)) {
                 currentItems.remove(changedEntity);
+            } else if (!keep && (len <= 1)) {
+                changedEntity[KEY](true);
             } else {
                 //first see if it exists, if not add it
                 if (currentItems.indexOf(changedEntity) === -1) {
@@ -1225,44 +1226,21 @@ kg.SelectionManager = function (options) {
                 if (checkAll) {
                     self.selectedItems(data);
                 } else {
-                    self.selectedItems([]);
+                    self.selectedItems(data[0] ? [data[0]] : []);
                 }
             }
         }
     });
 
-    //make sure as the data changes, we keep the selectedItem(s) correct
-    dataSource.subscribe(function (items) {
-        var selectedItems, selectedItem, itemsToRemove;
-
-        if (!items) {
-            return;
-        }
-
-        //make sure the selectedItem/Items exist in the new data
-        if (isMulti) {
-            selectedItems = self.selectedItems();
-            itemsToRemove = [];
-
-            ko.utils.arrayForEach(selectedItems, function (item) {
-                if (ko.utils.arrayIndexOf(items, item) < 0) {
-                    itemsToRemove.push(item);
-                }
-            });
-
-            //clean out any selectedItems that don't exist in the new array
-            if (itemsToRemove.length > 0) {
-                self.selectedItems.removeAll(itemsToRemove);
-            }
-
-        } else {
-            selectedItem = self.selectedItem();
-
-            if (selectedItem && ko.utils.arrayIndexOf(items, selectedItem) < 0) {
-                self.selectedItem(items[0] ? items[0] : null);
+    //now ensure we always have at least one item selected
+    (function (items) {
+        if (items && items.length > 0) {
+            if (!items[0][KEY]) {
+                items[0][KEY] = ko.observable(true);
+                self.changeSelectedItem(items[0]);
             }
         }
-    });
+    } (dataSource()));
 }; 
  
  
@@ -1319,9 +1297,6 @@ kg.SelectionManager = function (options) {
             },
             scrollTop = 0,
             isDifferent = false;
-            
-            //catch this so we can return the viewer to their original scroll after the resize!
-            scrollTop = grid.$viewport.scrollTop();
 
             kg.domUtility.measureGrid(grid.$root, grid);
 
@@ -1340,9 +1315,11 @@ kg.SelectionManager = function (options) {
 
             if (isDifferent) {
 
+                scrollTop = grid.$viewport.scrollTop();
+
                 grid.refreshDomSizes();
 
-                grid.adjustScrollTop(scrollTop, true); //ensure that the user stays scrolled where they were
+                grid.adjustScrollTop(scrollTop); //ensure that the user stays scrolled where they were
             }
         });
     };
@@ -1821,10 +1798,10 @@ kg.KoGrid = function (options) {
         });
     };
 
-    this.adjustScrollTop = function (scrollTop, force) {
+    this.adjustScrollTop = function (scrollTop) {
         var rowIndex;
 
-        if (prevScrollTop === scrollTop && !force) { return; }
+        if (prevScrollTop === scrollTop) { return; }
 
         rowIndex = Math.floor(scrollTop / self.config.rowHeight);
 
@@ -1936,14 +1913,6 @@ kg.cssBuilder = {
         dims.maxWidth = $container.width();
         dims.maxHeight = $container.height();
 
-        //if they are zero, see what the parent's size is
-        if (dims.maxWidth === 0) {
-            dims.maxWidth = $container.parent().width();
-        }
-        if (dims.maxHeight === 0) {
-            dims.maxHeight = $container.parent().height();
-        }
-
         $test.remove();
 
         return dims;
@@ -1962,11 +1931,10 @@ kg.cssBuilder = {
         $container.append($test);
 
         $container.wrap("<div style='width: 1px;'></div>");
-                
+
         dims.minWidth = $container.width();
         dims.minHeight = $container.height();
 
-        //This will blip the screen, so make sure to reset scroll bars, etc...
         $container.unwrap();
         $container.children().show();
 
@@ -1987,9 +1955,9 @@ kg.cssBuilder = {
         grid.elementDims.scrollW = kg.domUtility.scrollW;
         grid.elementDims.scrollH = kg.domUtility.scrollH;
 
-//        if (!measureMins) {
-//            return;
-//        }
+        if (!measureMins) {
+            return;
+        }
 
         //find min sizes
         dims = self.measureElementMinDims($container);
@@ -2102,7 +2070,8 @@ ko.bindingHandlers['koGrid'] = (function () {
 
             //set the right styling on the container
             $(element).addClass("kgGrid")
-                      .addClass(grid.gridId.toString());
+                      .addClass(grid.gridId.toString())
+                      .css("position", "relative");
 
             //make sure the templates are generated for the Grid
             kg.templateManager.ensureGridTemplates({
