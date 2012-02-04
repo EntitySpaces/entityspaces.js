@@ -6,7 +6,7 @@ License: [MIT](http://www.opensource.org/licenses/mit-license.php)
 
 Dependencies: Knockout
 
-##Live Example##
+##Live Examples##
 * [Editing Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
 * [Lazy Load Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/HierLazyLoad.htm)
 
