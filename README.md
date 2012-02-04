@@ -7,7 +7,8 @@ License: [MIT](http://www.opensource.org/licenses/mit-license.php)
 Dependencies: Knockout
 
 ##Live Example##
-* [Fully Editable Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
+* [Editing Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
+* [Lazy Load Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/HierLazyLoad.htm)
 
 ##Features##
 * Built upon Knockout and the MVVM Model
