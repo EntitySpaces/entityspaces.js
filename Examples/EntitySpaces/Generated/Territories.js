@@ -1,6 +1,6 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 2/2/2012 8:02:05 PM
+// Date Generated       : 2/4/2012 8:18:51 AM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
@@ -25,9 +25,9 @@
 		this.esExtendedData = undefined;
 
 		// Hierarchical Properties
-		this.UpToEmployeesCollection = new es.defineLazyLoader(this, 'UpToEmployeesCollection');
-		this.EmployeeTerritoriesCollectionByTerritoryID = new es.defineLazyLoader(this, 'EmployeeTerritoriesCollectionByTerritoryID');
-		this.UpToRegionByRegionID = new es.defineLazyLoader(this, 'UpToRegionByRegionID');
+		this.UpToEmployeesCollection = es.defineLazyLoader(this, 'UpToEmployeesCollection');
+		this.EmployeeTerritoriesCollectionByTerritoryID = es.defineLazyLoader(this, 'EmployeeTerritoriesCollectionByTerritoryID');
+		this.UpToRegionByRegionID = es.defineLazyLoader(this, 'UpToRegionByRegionID');
 	});
 
 	//#region Prototype Level Information

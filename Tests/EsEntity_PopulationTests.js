@@ -5,7 +5,7 @@
 /// <reference path="../Build/entityspaces.debug.js" />
 /// <reference path="MockProviders/MockAjaxProvider.js" />
 
-module('Populate Entity Tests');
+module('EsEntity_PopulationTests.js');
 
 test('basic smoke Test', function () {
 
@@ -19,8 +19,9 @@ test('basic smoke Test', function () {
     var emp = new es.objects.Employees();
 
     //this will test the entire request pipeline
-    emp.loadByPrimaryKey('testId');
+    var wasLoaded = emp.loadByPrimaryKey(1);
 
+    equals(wasLoaded, true, 'EmployeeId was loaded');
     equals(emp.EmployeeID(), 1, 'EmployeeId is correct');
 });
 
@@ -48,8 +49,9 @@ test('Two Level Hierarchical Test', function () {
     var emp = new es.objects.Employees();
 
     //this will test the entire request pipeline
-    emp.loadByPrimaryKey('testId');
+    var loaded = emp.loadByPrimaryKey(1);
 
+    equals(loaded, true, 'Employee was loaded');
     equals(emp.OrdersCollectionByEmployeeID().length, 2, 'emp.OrdersCollectionByEmployeeID was populated');
 });
 
@@ -65,7 +67,8 @@ test('Three Level Hierarchical Test', function () {
     var emp = new es.objects.Employees();
 
     //this will test the entire request pipeline
-    emp.loadByPrimaryKey('testId');
+    var loaded = emp.loadByPrimaryKey(1);
+    equals(loaded, true, 'Employee was loaded');
 
     var orderDetails = emp.OrdersCollectionByEmployeeID()[0].OrderDetailsCollectionByOrderID();
 

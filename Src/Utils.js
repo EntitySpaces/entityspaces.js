@@ -18,6 +18,8 @@ var utils = {
 
             if (source.hasOwnProperty(prop)) {
 
+                if (target.esTypeDefs && target.esTypeDefs[prop]) continue; // skip heirarchtical
+
                 srcProp = source[prop];
 
                 if (typeof srcProp === "string") {

@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.22-pre 
+// The entityspaces.js JavaScript library v1.0.24-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Mon 01/30/2012 at 20:19:38.62    
+// Built on Sat 02/04/2012 at  9:21:40.42    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -208,6 +208,8 @@ var utils = {
         for (prop in target) {
 
             if (source.hasOwnProperty(prop)) {
+
+                if (target.esTypeDefs && target.esTypeDefs[prop]) continue; // skip heirarchtical
 
                 srcProp = source[prop];
 
@@ -680,7 +682,11 @@ es.EsEntity = function () { //empty constructor
                                 entityProp.populateEntity(data[prop]);
                             }
 
-                            this[prop] = entityProp; //then set the property back to the new Entity Object
+                            if (es.isEsCollection(this[prop])) {
+                                this[prop](entityProp()); // Pass the entities into the already created collection
+                            } else {
+                                this[prop] = entityProp;  //then set the property back to the new Entity Object
+                            }
                         } else {
                             // NOTE: We have a hierarchical property but the .js file for that entity wasn't included
                             //       so we need to make these regular ol' javascript objects
@@ -867,7 +873,7 @@ es.EsEntity = function () { //empty constructor
 
         if (options.data === null) {
             // there was no data to save
-            if (options.async === false) {
+            if (options.async === true) {
                 options.success(null, options.state);
             }
 

@@ -4,7 +4,7 @@
 /// <reference path="Qunit/qunit.js" />
 /// <reference path="../Build/entityspaces.debug.js" />
 
-module('Basic Collection Tests');
+module('EsEntityCollection_tests.js');
 
 test('Basic Collection Smoke Test', function () {
 

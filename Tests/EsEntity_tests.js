@@ -6,7 +6,7 @@
 /// <reference path="TestObjects/Generated/Employees.js" />
 
 
-module('BaseEsObject Tests');
+module('EsEntity_tests.js');
 
 test('Basic Constructor Test', function () {
 

@@ -1,72 +1,88 @@
 //===============================================================================		
 // EntitySpaces Version : 2012.1.0000.0
-// Date Generated       : 1/15/2012 12:22:24 PM
+// Date Generated       : 2/4/2012 8:18:51 AM
 //===============================================================================
 
 (function (es) { //myNS = "myNameSpace" ... for example purposes
 
-	if (typeof (es) === undefined) {
-		throw "Please Load EntitySpaces.Core First";
-	}
+    if (typeof (es) === undefined) {
+        throw "Please Load EntitySpaces.Core First";
+    }
 
-	es.objects.Orders = es.defineEntity(function () {
+    es.objects.Orders = es.defineEntity(function () {
 
-		// core columns
-		this.OrderID = ko.observable();
-		this.CustomerID = ko.observable();
-		this.EmployeeID = ko.observable();
-		this.OrderDate = ko.observable();
-		this.RequiredDate = ko.observable();
-		this.ShippedDate = ko.observable();
-		this.ShipVia = ko.observable();
-		this.Freight = ko.observable();
-		this.ShipName = ko.observable();
-		this.ShipAddress = ko.observable();
-		this.ShipCity = ko.observable();
-		this.ShipRegion = ko.observable();
-		this.ShipPostalCode = ko.observable();
-		this.ShipCountry = ko.observable();
+        // core columns
+        this.OrderID = ko.observable();
+        this.CustomerID = ko.observable();
+        this.EmployeeID = ko.observable();
+        this.OrderDate = ko.observable();
+        this.RequiredDate = ko.observable();
+        this.ShippedDate = ko.observable();
+        this.ShipVia = ko.observable();
+        this.Freight = ko.observable();
+        this.ShipName = ko.observable();
+        this.ShipAddress = ko.observable();
+        this.ShipCity = ko.observable();
+        this.ShipRegion = ko.observable();
+        this.ShipPostalCode = ko.observable();
+        this.ShipCountry = ko.observable();
 
-		// extended columns
-		this.esExtendedData = undefined;
+        // Primary Key(s)
+        this.esPrimaryKeys = function () {
+            return this.OrderID();
+        }
 
-		// Hierarchical Properties
-		this.OrderDetailsCollectionByOrderID = undefined;
-		this.UpToEmployeesByEmployeeID = undefined;
-	});
+        // extended columns
+        this.esExtendedData = undefined;
 
-	//#region Prototype Level Information
+        // Hierarchical Properties
+        this.UpToProductsCollection = es.defineLazyLoader(this, 'UpToProductsCollection');
+        this.OrderDetailsCollectionByOrderID = es.defineLazyLoader(this, 'OrderDetailsCollectionByOrderID');
+        this.UpToCustomersByCustomerID = es.defineLazyLoader(this, 'UpToCustomersByCustomerID');
+        this.UpToEmployeesByEmployeeID = es.defineLazyLoader(this, 'UpToEmployeesByEmployeeID');
+        this.UpToShippersByShipVia = es.defineLazyLoader(this, 'UpToShippersByShipVia');
+    });
 
-	es.objects.Orders.prototype.esTypeDefs = {
-		OrderDetailsCollectionByOrderID: "OrderDetailsCollection",
-		UpToEmployeesByEmployeeID: "Employees"
-	};
-	
-	es.objects.Orders.prototype.esRoutes = {
-		commit: { method: 'PUT', url: 'Orders_Save', response: 'entity' },
-		loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity' }
-	};
+    //#region Prototype Level Information
 
-	es.objects.Orders.prototype.esColumnMap = {
-		'OrderID': 1,
-		'CustomerID': 1,
-		'EmployeeID': 1,
-		'OrderDate': 1,
-		'RequiredDate': 1,
-		'ShippedDate': 1,
-		'ShipVia': 1,
-		'Freight': 1,
-		'ShipName': 1,
-		'ShipAddress': 1,
-		'ShipCity': 1,
-		'ShipRegion': 1,
-		'ShipPostalCode': 1,
-		'ShipCountry': 1
-	};
+    es.objects.Orders.prototype.esTypeDefs = {
+        UpToProductsCollection: "ProductsCollection",
+        OrderDetailsCollectionByOrderID: "OrderDetailsCollection",
+        UpToCustomersByCustomerID: "Customers",
+        UpToEmployeesByEmployeeID: "Employees",
+        UpToShippersByShipVia: "Shippers"
+    };
 
-	//#endregion
+    es.objects.Orders.prototype.esRoutes = {
+        commit: { method: 'PUT', url: 'Orders_Save', response: 'entity' },
+        loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity' },
+        UpToProductsCollection: { method: 'GET', url: 'Orders_UpToProductsCollection', response: 'collection' },
+        OrderDetailsCollectionByOrderID: { method: 'GET', url: 'Orders_OrderDetailsCollectionByOrderID', response: 'collection' },
+        UpToCustomersByCustomerID: { method: 'GET', url: 'Orders_UpToCustomersByCustomerID', response: 'entity' },
+        UpToEmployeesByEmployeeID: { method: 'GET', url: 'Orders_UpToEmployeesByEmployeeID', response: 'entity' },
+        UpToShippersByShipVia: { method: 'GET', url: 'Orders_UpToShippersByShipVia', response: 'entity' }
+    };
 
-}(window.es, window.myNS));
+    es.objects.Orders.prototype.esColumnMap = {
+        'OrderID': 1,
+        'CustomerID': 1,
+        'EmployeeID': 1,
+        'OrderDate': 1,
+        'RequiredDate': 1,
+        'ShippedDate': 1,
+        'ShipVia': 1,
+        'Freight': 1,
+        'ShipName': 1,
+        'ShipAddress': 1,
+        'ShipCity': 1,
+        'ShipRegion': 1,
+        'ShipPostalCode': 1,
+        'ShipCountry': 1
+    };
+
+    //#endregion
+
+} (window.es, window.myNS));
 
 (function (es) {
 
