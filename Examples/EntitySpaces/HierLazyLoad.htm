@@ -13,12 +13,9 @@
     <link href="koGrid/KoGrid.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+ Lazy Loading <a href="https://github.com/EntitySpaces/entityspaces.js" target="new">entityspaces.js</a> demonstration. Only the first 10 or so rows have Orders. Click around in the grids and the data will be automatically lazy loaded. Do a view source to see how simple this page really is. The WCF JSON Service and the <a href="https://github.com/EntitySpaces/entityspaces.js/tree/master/Examples/EntitySpaces/Generated" target="new">entitityspaces.js JavaScript classes</a> were generated from the Northwind database schema.<br /><br />
+
     <table>
-        <tr>
-            <td colspan="3">
-                <h4>Lazy Loading <a href="https://github.com/EntitySpaces/entityspaces.js" target="new">entityspaces.js</a> demonstration. Only the first 10 or so rows have Orders.
-            </td>
-        </tr>
         <tr>
             <td valign="top" align="left" colspan="3">
                 <b>Employees:</b><br />
@@ -28,7 +25,7 @@
                         selectedItem: selectedEmployee,
                         isMultiSelect: false,
                         autogenerateColumns: false,
-						enablePaging: false,						
+                        enablePaging: false,
                         columnDefs: [
                             {field: 'EmployeeID', displayName: 'Employee ID', width: 120}, 
                             {field: 'FirstName', displayName: 'First Name', width: 120}, 
@@ -41,7 +38,7 @@
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr style="width="1%;">
             <td valign="top" align="left">
                 <b>Orders:</b><br />
                 <div id="myOrders" style="height: 200px; max-width: 700px; float: left; margin-left: 100px; border: 1px solid #666666; margin: 10px auto;"
@@ -50,7 +47,7 @@
                         selectedItem: selectedOrder,
                         isMultiSelect: false,
                         autogenerateColumns: false,
-						enablePaging: false,						
+                        enablePaging: false,
                         columnDefs: [
                             {field: 'OrderID', displayName: 'Order ID', width: 120}, 
                             {field: 'EmployeeID', displayName: 'Employee ID', width: 120},
@@ -61,7 +58,7 @@
                         displayRowIndex: false }">
                 </div>
             </td>
-            <td>
+            <td align="left">
                 &nbsp;&nbsp;&nbsp;&nbsp;
             </td>
             <td valign="top" align="left">
@@ -72,7 +69,7 @@
                         selectedItem: selectedOrderDetail,
                         isMultiSelect: false,
                         autogenerateColumns: false,
-						enablePaging: false,						
+                        enablePaging: false,
                         columnDefs: [
                             {field: 'OrderID', displayName: 'Order ID', width: 120}, 
                             {field: 'ProductID', displayName: 'Product ID', width: 120}, 
@@ -103,15 +100,20 @@
             this.selectedOrder = ko.observable(new es.objects.Orders());
             this.selectedOrderDetail = ko.observable(new es.objects.OrderDetails());
 
+            // Called when an employee is selected in the myEmployees
             this.orders = ko.computed(function () {
+
+                // Set the myOrders grid to this employees 'Orders'
                 return self.selectedEmployee().OrdersCollectionByEmployeeID();
             });
 
+            // Called when an order is selected in the myOrders grid
             this.orderDetails = ko.computed(function () {
 
                 // here just to make sure we change when a new employee is selected
                 var employee = self.selectedEmployee();
 
+                // Set the order myOrderDetails grid to the selected orders OrderDetails data
                 return self.selectedOrder().OrderDetailsCollectionByOrderID();
             });
         };
