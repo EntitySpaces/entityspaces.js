@@ -6,8 +6,8 @@ License: [MIT](http://www.opensource.org/licenses/mit-license.php)
 
 Dependencies: Knockout
 
-##February 29th##
-*On February 29th, 2012 you will be able to download the EntitySpaces 2012 Trial version and generate your entityspaces.js classes and your WCF JSON Service.
+##1,000 License Giveway##
+* [EntitySpaces 1,000 License Giveaway on February 29th, 2012 (no catches)] (http://www.entityspaces.net/blog/2012/02/17/EntitySpaces+1000+License+Give+Away.aspx)
 
 ##Live Examples##
 * [Editing Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
