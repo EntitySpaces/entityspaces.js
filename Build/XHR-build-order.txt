@@ -3,6 +3,7 @@
 ..\Src\DateParser.js
 ..\Src\Core.js
 ..\Src\utils.js
+..\Src\Paging.js
 ..\Src\BaseClasses\EsLazyLoader.js
 ..\Src\BaseClasses\EsEntity.js
 ..\Src\BaseClasses\EsEntityCollection.js

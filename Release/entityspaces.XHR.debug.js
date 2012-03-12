@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.24-pre 
+// The entityspaces.js JavaScript library v1.0.25-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Sat 02/04/2012 at  9:21:44.11    
+// Built on Mon 03/12/2012 at  6:20:49.12    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -427,6 +427,36 @@ es.utils = utils;
 es.exportSymbol('es.extend', es.extend);
 es.exportSymbol('es.startTracking', es.startTracking);
 es.exportSymbol('es.getDirtyGraph', es.getDirtyGraph); 
+ 
+ 
+/*********************************************** 
+* FILE: ..\Src\Paging.js 
+***********************************************/ 
+/*globals es, ko*/
+
+es.PagerFilterCriteria = function() {
+    this.column;
+    this.criteria1;
+    this.criteria2;
+    this.operation;
+    this.conjuction;
+};
+
+es.PagerSortCriteria = function() {
+    this.column;
+    this.direction;
+};
+
+es.PagerRequest = function () {
+    this.initialRequest = 1;
+    this.totalRows = 0;
+    this.pageSize = 20;
+    this.pageNumber = 1;
+    this.conjuction = "AND";
+
+    this.sortCriteria;
+    this.filterCriteria;
+}; 
  
  
 /*********************************************** 
