@@ -5,7 +5,7 @@ es.PagerFilterCriteria = function() {
     this.criteria1;
     this.criteria2;
     this.operation;
-    this.conjuction;
+    this.conjuction = "AND";
 };
 
 es.PagerSortCriteria = function() {
@@ -18,7 +18,6 @@ es.PagerRequest = function () {
     this.totalRows = 0;
     this.pageSize = 20;
     this.pageNumber = 1;
-    this.conjuction = "AND";
 
     this.sortCriteria;
     this.filterCriteria;
