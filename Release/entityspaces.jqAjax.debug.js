@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The entityspaces.js JavaScript library v1.0.25-pre 
+// The entityspaces.js JavaScript library v1.0.26-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Tue 03/13/2012 at  7:50:06.00    
+// Built on Tue 03/13/2012 at  9:02:57.61    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 

@@ -65,6 +65,8 @@ es.XMLHttpRequestProvider = function () {
         // Make the HTTP request
         xmlHttp.open("POST", path, options.async || false);
         xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
+		// Hack to make it work with FireFox
+        xmlHttp.setRequestHeader("accept", "text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");		
 
         if (options.async === true) {
             xmlHttp.onreadystatechange = function () {
@@ -117,6 +119,9 @@ es.XMLHttpRequestProvider = function () {
         // Make the HTTP request
         xmlHttp.open("POST", path, async);
         xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
+		// Hack to make it work with FireFox
+        xmlHttp.setRequestHeader("accept", "text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+		
 
         if (async === true) {
             xmlHttp.onreadystatechange = function () {
