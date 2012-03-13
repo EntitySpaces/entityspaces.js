@@ -10,6 +10,17 @@ es.objects.Employees.prototype.LoadByPrimaryKeyHierarchical = function (employee
     });
 };
 
+es.objects.EmployeesCollection.prototype.Employees_Pager = function (pagerRequest, success, error, state) {
+
+    return this.load({
+        route: this.esRoutes['Employees_Pager'],
+        data: pagerRequest,
+        success: success,
+        error: error,
+        state: state
+    });
+};
+
 // Custom Properties goes in the "customize" method and this is called for you automatically
 es.objects.Employees.prototype.customize(function () {
 
@@ -20,7 +31,12 @@ es.objects.Employees.prototype.customize(function () {
 
 });
 
-//#region Routing
+//#region Entity Routing
 es.objects.Employees.prototype.esRoutes['LoadByPrimaryKeyHierarchical'] = 
     { method: 'GET', url: 'Employees_LoadByPrimaryKeyHierarchical', response: 'entity' }
+//#endregion 
+
+//#region Collection Routing
+es.objects.EmployeesCollection.prototype.esRoutes['Employees_Pager'] =
+    { method: 'GET', url: 'Employees_Pager', response: 'collection' }
 //#endregion 
