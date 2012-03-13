@@ -23,8 +23,8 @@ es.isArray = function (array) {
 };
 
 es.objectKeys = Object.keys || function (obj) {
-    var res = [];
-    for (var key in obj) {
+    var key, res = [];
+    for (key in obj) {
         res.push(key);
     }
     return res;

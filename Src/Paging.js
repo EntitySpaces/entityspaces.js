@@ -1,16 +1,16 @@
 /*globals es, ko*/
 
-es.PagerFilterCriteria = function() {
-    this.column;
-    this.criteria1;
-    this.criteria2;
-    this.operation;
+es.PagerFilterCriteria = function () {
+    this.column = null;
+    this.criteria1 = null;
+    this.criteria2 = null;
+    this.operation = null;
     this.conjuction = "AND";
 };
 
-es.PagerSortCriteria = function() {
-    this.column;
-    this.direction;
+es.PagerSortCriteria = function () {
+    this.column = null;
+    this.direction = "ASC";
 };
 
 es.PagerRequest = function () {
@@ -19,6 +19,6 @@ es.PagerRequest = function () {
     this.pageSize = 20;
     this.pageNumber = 1;
 
-    this.sortCriteria;
-    this.filterCriteria;
+    this.sortCriteria = null;
+    this.filterCriteria = null;
 };

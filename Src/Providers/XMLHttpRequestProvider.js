@@ -92,7 +92,7 @@ es.XMLHttpRequestProvider = function () {
                     success(response.data, options);
                 }
             } else {
-                error(xmlHttp.status, response.error || xmlHttp.responseText, options)
+                error(xmlHttp.status, response.error || xmlHttp.responseText, options);
             }
         }
     };

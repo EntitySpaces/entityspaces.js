@@ -2,7 +2,7 @@
 // The entityspaces.js JavaScript library v1.0.25-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Mon 03/12/2012 at  6:20:42.35    
+// Built on Tue 03/13/2012 at  7:50:06.00    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -14,9 +14,7 @@
 /*********************************************** 
 * FILE: ..\Src\Namespace.js 
 ***********************************************/ 
-﻿window['es'] = {}; //define root namespace
-
-"use-strict";
+﻿var es = window['es'] = {}; //define root namespace
 
 // Google Closure Compiler helpers (used only to make the minified file smaller)
 es.exportSymbol = function (publicPath, object) {
@@ -144,8 +142,8 @@ es.isArray = function (array) {
 };
 
 es.objectKeys = Object.keys || function (obj) {
-    var res = [];
-    for (var key in obj) {
+    var key, res = [];
+    for (key in obj) {
         res.push(key);
     }
     return res;
@@ -434,17 +432,17 @@ es.exportSymbol('es.getDirtyGraph', es.getDirtyGraph);
 ***********************************************/ 
 /*globals es, ko*/
 
-es.PagerFilterCriteria = function() {
-    this.column;
-    this.criteria1;
-    this.criteria2;
-    this.operation;
-    this.conjuction;
+es.PagerFilterCriteria = function () {
+    this.column = null;
+    this.criteria1 = null;
+    this.criteria2 = null;
+    this.operation = null;
+    this.conjuction = "AND";
 };
 
-es.PagerSortCriteria = function() {
-    this.column;
-    this.direction;
+es.PagerSortCriteria = function () {
+    this.column = null;
+    this.direction = "ASC";
 };
 
 es.PagerRequest = function () {
@@ -452,10 +450,9 @@ es.PagerRequest = function () {
     this.totalRows = 0;
     this.pageSize = 20;
     this.pageNumber = 1;
-    this.conjuction = "AND";
 
-    this.sortCriteria;
-    this.filterCriteria;
+    this.sortCriteria = null;
+    this.filterCriteria = null;
 }; 
  
  
