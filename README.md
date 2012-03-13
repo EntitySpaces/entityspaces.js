@@ -12,6 +12,7 @@ Dependencies: Knockout
 ##Live Examples##
 * [Editing Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
 * [Lazy Load Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/HierLazyLoad.htm)
+* [Paging, Sorting, Filtering] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/Paging.htm)
 
 ##Features##
 * Built upon Knockout and the MVVM Model
