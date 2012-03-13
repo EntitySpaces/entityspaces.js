@@ -1,13 +1,13 @@
 /*
 ===============================================================================
-                    EntitySpaces 2012 by EntitySpaces, LLC
+                    EntitySpaces Studio by EntitySpaces, LLC
              Persistence Layer and Business Objects for Microsoft .NET
              EntitySpaces(TM) is a legal trademark of EntitySpaces, LLC
                           http://www.entityspaces.net
 ===============================================================================
-EntitySpaces Version : 2012.1.0000.0
+EntitySpaces Version : 2012.1.0229.0
 EntitySpaces Driver  : SQL
-Date Generated       : 2/2/2012 6:55:38 PM
+Date Generated       : 3/13/2012 7:11:10 PM
 ===============================================================================
 */
 
@@ -111,7 +111,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
 		public jsResponse<ProductsCollection, Products> Categories_ProductsCollectionByCategoryID(System.Int32 categoryID)
 		{
@@ -213,7 +212,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
 		public jsResponse<CustomerDemographicsCollection, CustomerDemographics> CustomerCustomerDemo_UpToCustomerDemographicsByCustomerTypeID(System.String customerID, System.String customerTypeID)
 		{
@@ -336,7 +334,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
 		public jsResponse<CustomersCollection, Customers> CustomerDemographics_UpToCustomersCollection(System.String customerTypeID)
 		{
@@ -457,7 +454,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
 		public jsResponse<CustomerDemographicsCollection, CustomerDemographics> Customers_UpToCustomerDemographicsCollection(System.String customerID)
 		{
@@ -597,7 +593,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
 		public jsResponse<EmployeesCollection, Employees> Employees_EmployeesCollectionByReportsTo(System.Int32 employeeID)
 		{
@@ -775,7 +770,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
 		public jsResponse<EmployeesCollection, Employees> EmployeeTerritories_UpToEmployeesByEmployeeID(System.Int32 employeeID, System.String territoryID)
 		{
@@ -898,7 +892,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
 		public jsResponse<OrdersCollection, Orders> OrderDetails_UpToOrdersByOrderID(System.Int32 orderID, System.Int32 productID)
 		{
@@ -1021,7 +1014,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
 		public jsResponse<ProductsCollection, Products> Orders_UpToProductsCollection(System.Int32 orderID)
 		{
@@ -1199,7 +1191,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
 		public jsResponse<OrdersCollection, Orders> Products_UpToOrdersCollection(System.Int32 productID)
 		{
@@ -1358,7 +1349,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
 		public jsResponse<TerritoriesCollection, Territories> Region_TerritoriesCollectionByRegionID(System.Int32 regionID)
 		{
@@ -1460,7 +1450,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
 		public jsResponse<OrdersCollection, Orders> Shippers_OrdersCollectionByShipVia(System.Int32 shipperID)
 		{
@@ -1562,7 +1551,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
 		public jsResponse<ProductsCollection, Products> Suppliers_ProductsCollectionBySupplierID(System.Int32 supplierID)
 		{
@@ -1664,7 +1652,6 @@ namespace EntitySpaces.Services
 		}
 		
 		// Hierarchical Data Access Methods Start Here ...
-		
 		[WebInvoke(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
 		public jsResponse<EmployeesCollection, Employees> Territories_UpToEmployeesCollection(System.String territoryID)
 		{
