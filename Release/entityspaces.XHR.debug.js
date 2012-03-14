@@ -2,7 +2,7 @@
 // The entityspaces.js JavaScript library v1.0.27-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Wed 03/14/2012 at  7:23:25.79    
+// Built on Wed 03/14/2012 at  7:28:39.94    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -446,7 +446,7 @@ es.PagerSortCriteria = function () {
 };
 
 es.PagerRequest = function () {
-	this.getTotalRows = true;
+    this.getTotalRows = true;
     this.totalRows = 0;
     this.pageSize = 20;
     this.pageNumber = 1;

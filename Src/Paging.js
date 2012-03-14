@@ -14,7 +14,7 @@ es.PagerSortCriteria = function () {
 };
 
 es.PagerRequest = function () {
-	this.getTotalRows = true;
+    this.getTotalRows = true;
     this.totalRows = 0;
     this.pageSize = 20;
     this.pageNumber = 1;
