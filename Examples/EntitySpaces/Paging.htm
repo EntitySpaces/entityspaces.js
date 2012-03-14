@@ -63,6 +63,8 @@
 			this.selectedItem = ko.observable();
 			this.sortInfo = ko.observable();
 			this.filterInfo = ko.observable();
+			this.resetPageToOne = false;
+			
 
 			var getTotalRows = true;
 
@@ -133,11 +135,25 @@
 					if (getTotalRows === true) {
 						self.totalRows(300); //pagerRequest.totalRows);
 					}
+					
+					if(self.resetPageToOne === true) {
+						self.resetPageToOne = false;
+						self.currentPage(1);
+					}
 
 					getTotalRows = false;
 
 				}, 0);
 			};
+			
+			this.filterSortChanged = ko.computed(function () {
+			
+				// We access this two merely to be notified when one changes
+				var junk = self.filterInfo();
+				junk = self.sortInfo();
+				
+				self.resetPageToOne = true;
+			});
 
 			this.dataChangedTrigger = ko.computed(function () {
 				var page = self.currentPage(),
