@@ -7,11 +7,45 @@ using EntitySpaces.Loader;
 using EntitySpaces.DynamicQuery;
 
 using BusinessObjects;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.Web;
+using System.Web.Script.Services;
+using EntitySpaces.Core;
 
 namespace EntitySpaces.Services
 {
     public partial class esJson
     {
+        private void Authenticate()
+        {
+            // A couple of ways to get at the cookie
+
+            //--------------------------------------------------
+            // Commented out but probably the easier way
+            //--------------------------------------------------
+            /*
+            var req = HttpContext.Current.Request;
+            string cookieValue = req.Cookies[0].Value;
+            */
+
+            //--------------------------------------------------------------------------------------
+            // Of course, this isn't enough security, you could for instance store the user id and
+            // the ip address in the cookie, and verify this information in the user table, that you
+            // would have filled in when the user logged in.
+            //
+            // Here we are just ensuring any ol' cookie exists to show you how your WCF service can
+            // get to this information.
+            //--------------------------------------------------------------------------------------
+            var properties = OperationContext.Current.IncomingMessageProperties;
+            var property = properties[HttpRequestMessageProperty.Name] as HttpRequestMessageProperty;
+            if (string.IsNullOrEmpty(property.Headers["Cookie"]))
+            {
+                //HttpContext.Current.Response.End();
+                throw new Exception("Not Authenticated");
+            }
+        }
+
         [WebInvoke(ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         public jsResponse<EmployeesCollection, Employees> Employees_LoadHierarchical()
         {
@@ -120,7 +154,7 @@ namespace EntitySpaces.Services
                     for (int i = 0; i < request.filterCriteria.Length; i++)
                     {
                         jsPagerFilterCriteria filter = request.filterCriteria[i];
-                        comp = q.Where(filter.column, filter.operation, filter.criteria1, filter.criteria2, filter.conjuction);
+                        comp = q.ManualWhere(filter.column, filter.operation, filter.criteria1, filter.criteria2, filter.conjuction);
                     }
 
                     q.Where(comp);
