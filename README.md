@@ -13,7 +13,6 @@ Dependencies: Knockout
 * [Editing Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
 * [Lazy Load Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/HierLazyLoad.htm)
 * [Paging, Sorting, Filtering] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/Paging.htm)
-* [All 3 Samples above in an ASP.NET App] (http://www.entityspaces.net/js/Editing.aspx)
 
 ##Features##
 * Built upon Knockout and the MVVM Model
