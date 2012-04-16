@@ -41,6 +41,18 @@ test('Basic Populate Collection Test', function () {
     equals(coll()[1].EmployeeID(), 81, 'First item has correct property value');
 });
 
+test('Ctor Populate Collection Test', function () {
+
+    var coll = new es.objects.EmployeesCollection([
+        { EmployeeID: 56 },
+        { EmployeeID: 81 }
+    ]);
+
+    equals(coll().length, 2, 'Collection contains 2 items');
+    equals(coll()[0].EmployeeID(), 56, 'First item has correct property value');
+    equals(coll()[1].EmployeeID(), 81, 'First item has correct property value');
+});
+
 test('Collection IsDirty Test', function () {
 
     var coll = new es.objects.EmployeesCollection();

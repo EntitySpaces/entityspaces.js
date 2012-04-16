@@ -26,6 +26,17 @@ test('Basic Constructor Test with Hydrating data', function () {
 
 });
 
+test('Hydrating Constructor Test with data', function () {
+
+    var emp = new es.objects.Employees({
+        EmployeeID: 42
+    });
+
+    ok(emp, 'New Class Instantiated');
+    equals(emp.EmployeeID(), 42, 'EmployeeID Id matches passed in value');
+
+});
+
 test('Extended Constructor Test', function () {
 
     //define an object

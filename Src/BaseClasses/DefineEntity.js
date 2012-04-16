@@ -3,7 +3,7 @@ es.defineEntity = function (typeName, constrctor) {
     var isAnonymous = (typeof (typeName) !== 'string'),
         Ctor = isAnonymous ? arguments[0] : arguments[1];
 
-    var EsCtor = function () {
+    var EsCtor = function (data) {
         this.es = {};
 
         //MUST do this here so that obj.hasOwnProperty actually returns the keys in the object!
@@ -15,10 +15,10 @@ es.defineEntity = function (typeName, constrctor) {
         //call the init method on the base prototype
         this.init();
 
-        // Are they initializing it during construction?
-        if (arguments[0]) {
-            this.populateEntity(arguments[0]);
-        } 
+        // finally, if we were given data, populate it
+        if (data) {
+            this.populateEntity(data);
+        }
     };
 
     //Setup the prototype chain correctly
