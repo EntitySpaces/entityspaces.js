@@ -45,16 +45,19 @@ es.AjaxProvider = function () {
 
         // override the passed in errorHandler so we can add global processing if needed
         options.error = function (xhr, textStatus, errorThrown) {
-           	if (origError) {
-           		origError(xhr.status, xhr.responseText, options);
-           	} else {
-           		es.onError({ code: xhr.status, message: xhr.responseText });
-           	}
+            if (origError) {
+                origError(xhr.status, xhr.responseText, options);
+            } else {
+                es.onError({ code: xhr.status, message: xhr.responseText });
+            }
         };
 
-        //parameterize the Url
+        // parameterize the Url
+        // url = "/Product/{id}" => "/Product/57966910-C5EF-400A-8FC4-615159D95C2D
         options.url = parameterizeUrl(options.url, options.data);
-        if (options.data) {
+
+        // don't json-ize a 'GET's data object bc jQuery $.param will do this automatically
+        if (options.data && options.type !== 'GET') {
             options.data = ko.toJSON(options.data);
         }
 

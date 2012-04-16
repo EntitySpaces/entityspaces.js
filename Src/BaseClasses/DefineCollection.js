@@ -3,7 +3,7 @@ es.defineCollection = function (typeName, entityName) {
     var isAnonymous = (typeof (typeName) !== 'string'),
         ctorName = isAnonymous ? arguments[0] : arguments[1];
 
-    var EsCollCtor = function () {
+    var EsCollCtor = function (data) {
 
         var coll = new es.EsEntityCollection();
 
@@ -12,8 +12,12 @@ es.defineCollection = function (typeName, entityName) {
 
         this.init.call(coll); //Trickery and sorcery on the prototype
 
-        return coll;
+        // make sure that if we were handed a JSON array, that we initialize the collection with it
+        if (data) {
+            coll.populateCollection(data);
+        }
 
+        return coll;
     };
 
     var F = function () {
@@ -41,41 +45,11 @@ es.defineCollection = function (typeName, entityName) {
                 }
             }
 
-            /*
-            this.isDirty = ko.computed(function () {
-
-            var i,
-            entity,
-            arr = self(),
-            dirty = false;
-
-            if (self.es.deletedEntities().length > 0) {
-            dirty = true;
-            } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
-            dirty = true;
-            } else {
-            for (i = 0; i < arr.length; i++) {
-
-            entity = arr[i];
-
-            if (entity.RowState() !== es.RowState.UNCHANGED) {
-            dirty = true;
-            break;
-            }
-            }
-            }
-
-            return dirty;
-            });
-            */
-
-
             this.isDirty = function () {
-
                 var i,
-            entity,
-            arr = self(),
-            dirty = false;
+                entity,
+                arr = self(),
+                dirty = false;
 
                 if (this.es.deletedEntities().length > 0) {
                     dirty = true;

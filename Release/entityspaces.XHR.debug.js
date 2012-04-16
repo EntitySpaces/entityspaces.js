@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------- 
 // The entityspaces.js JavaScript library v1.0.9-pre 
-// Built on Tue 01/17/2012 at 11:09:55.05    
+// Built on Mon 04/16/2012 at 14:52:26.02    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -1149,7 +1149,7 @@ es.defineEntity = function (typeName, constrctor) {
     var isAnonymous = (typeof (typeName) !== 'string'),
         Ctor = isAnonymous ? arguments[0] : arguments[1];
 
-    var EsCtor = function () {
+    var EsCtor = function (data) {
         this.es = {};
 
         //MUST do this here so that obj.hasOwnProperty actually returns the keys in the object!
@@ -1160,6 +1160,11 @@ es.defineEntity = function (typeName, constrctor) {
 
         //call the init method on the base prototype
         this.init();
+
+        // finally, if we were given data, populate it
+        if (data) {
+            this.populateEntity(data);
+        }
     };
 
     //Setup the prototype chain correctly
@@ -1184,7 +1189,7 @@ es.defineCollection = function (typeName, entityName) {
     var isAnonymous = (typeof (typeName) !== 'string'),
         ctorName = isAnonymous ? arguments[0] : arguments[1];
 
-    var EsCollCtor = function () {
+    var EsCollCtor = function (data) {
 
         var coll = new es.EsEntityCollection();
 
@@ -1193,8 +1198,12 @@ es.defineCollection = function (typeName, entityName) {
 
         this.init.call(coll); //Trickery and sorcery on the prototype
 
-        return coll;
+        // make sure that if we were handed a JSON array, that we initialize the collection with it
+        if (data) {
+            coll.populateCollection(data);
+        }
 
+        return coll;
     };
 
     var F = function () {
@@ -1222,41 +1231,11 @@ es.defineCollection = function (typeName, entityName) {
                 }
             }
 
-            /*
-            this.isDirty = ko.computed(function () {
-
-            var i,
-            entity,
-            arr = self(),
-            dirty = false;
-
-            if (self.es.deletedEntities().length > 0) {
-            dirty = true;
-            } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
-            dirty = true;
-            } else {
-            for (i = 0; i < arr.length; i++) {
-
-            entity = arr[i];
-
-            if (entity.RowState() !== es.RowState.UNCHANGED) {
-            dirty = true;
-            break;
-            }
-            }
-            }
-
-            return dirty;
-            });
-            */
-
-
             this.isDirty = function () {
-
                 var i,
-            entity,
-            arr = self(),
-            dirty = false;
+                entity,
+                arr = self(),
+                dirty = false;
 
                 if (this.es.deletedEntities().length > 0) {
                     dirty = true;
