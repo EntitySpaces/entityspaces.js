@@ -2,7 +2,7 @@
 // The entityspaces.js JavaScript library v1.0.29-pre 
 // (c) EntitySpaces, LLC - http://www.entityspaces.net/ 
 // 
-// Built on Wed 05/09/2012 at 10:45:34.21    
+// Built on Thu 05/17/2012 at 22:18:02.22    
 // https://github.com/EntitySpaces/entityspaces.js 
 // 
 // License: MIT (http://www.opensource.org/licenses/mit-license.php) 
@@ -1628,7 +1628,7 @@ es.XMLHttpRequestProvider = function () {
     };
 
     // So developers can make their own requests, synchronous or aynchronous
-    this.makeRequest = function (url, methodName, params, successCallback, failureCallback) {
+    this.makeRequest = function (url, methodName, params, successCallback, failureCallback, state) {
 
         var theData = null, path = null, async = false, xmlHttp, success, failure;
 
@@ -1655,9 +1655,9 @@ es.XMLHttpRequestProvider = function () {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState === 4) {
                     if (xmlHttp.status === 200) {
-                        success(JSON.parse(xmlHttp.responseText));
+                        success(JSON.parse(xmlHttp.responseText), state);
                     } else {
-                        failure(xmlHttp.status, xmlHttp.statusText);
+                        failure(xmlHttp.status, xmlHttp.statusText, state);
                     }
                 }
             };

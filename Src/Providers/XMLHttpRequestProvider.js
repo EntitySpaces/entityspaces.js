@@ -100,7 +100,7 @@ es.XMLHttpRequestProvider = function () {
     };
 
     // So developers can make their own requests, synchronous or aynchronous
-    this.makeRequest = function (url, methodName, params, successCallback, failureCallback) {
+    this.makeRequest = function (url, methodName, params, successCallback, failureCallback, state) {
 
         var theData = null, path = null, async = false, xmlHttp, success, failure;
 
@@ -127,9 +127,9 @@ es.XMLHttpRequestProvider = function () {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState === 4) {
                     if (xmlHttp.status === 200) {
-                        success(JSON.parse(xmlHttp.responseText));
+                        success(JSON.parse(xmlHttp.responseText), state);
                     } else {
-                        failure(xmlHttp.status, xmlHttp.statusText);
+                        failure(xmlHttp.status, xmlHttp.statusText, state);
                     }
                 }
             };
