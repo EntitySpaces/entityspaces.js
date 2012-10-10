@@ -7,7 +7,7 @@ License: [MIT](http://www.opensource.org/licenses/mit-license.php)
 Dependencies: Knockout
 
 ##Download EntitySpaces 2012, it's 100% Free##
- (http://download.cnet.com/EntitySpaces-Studio/3000-10250_4-10590953.html?tag=mncol;1)
+ [EntitySpaces on Download.com](http://download.cnet.com/EntitySpaces-Studio/3000-10250_4-10590953.html?tag=mncol;1)
 
 ##Live Examples##
 * [Editing Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
