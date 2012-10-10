@@ -6,8 +6,8 @@ License: [MIT](http://www.opensource.org/licenses/mit-license.php)
 
 Dependencies: Knockout
 
-##Download the Fully Functional EntitySpaces 2012 Trial##
-* This version is fully capabable of generating your entityspaces.js classes and your WCF JSON Service. (http://www.entityspaces.net/portal/Products/TrialDownload.aspx)
+##Download EntitySpaces 2012, it's 100% Free##
+ (http://download.cnet.com/EntitySpaces-Studio/3000-10250_4-10590953.html?tag=mncol;1)
 
 ##Live Examples##
 * [Editing Example] (http://www.entityspaces.net/entityspaces.js/examples/entityspaces/FullExample.htm)
